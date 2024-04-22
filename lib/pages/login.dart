@@ -14,7 +14,8 @@ class Login extends StatelessWidget {
               child: Text(
                 "YE Gestão De Saúde", 
                 style: TextStyle(fontFamily: 'Poppins',
-                fontSize: 21)
+                fontSize: 21,
+                color: Colors.blue)
               ),
             ),
           ),
