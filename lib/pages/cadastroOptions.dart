@@ -11,7 +11,7 @@ class CadastroOptions extends StatelessWidget {
     final double bodyPadding = screenSize.width < 560 ? 20.0 : 100.0;
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.fromLTRB(bodyPadding, 0, bodyPadding, 0),
+        padding: EdgeInsets.fromLTRB(bodyPadding, 60, bodyPadding, 0),
         child: ListView(
           // crossAxisAlignment: CrossAxisAlignment.center, // Use se necessário
           children: [
