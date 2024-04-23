@@ -12,7 +12,7 @@ class CadastroOptions extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: Padding(
-          padding: EdgeInsets.fromLTRB(bodyPadding, 0, bodyPadding, 0),
+          padding: EdgeInsets.fromLTRB(bodyPadding, 50, bodyPadding, 0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.stretch,
