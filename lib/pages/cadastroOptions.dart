@@ -119,52 +119,56 @@ class CadastroOptions extends StatelessWidget {
                   ),
                 ),
               ),
-              Container(
-                margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.fromLTRB(10, 25, 10, 25),
-                    backgroundColor: Colors.white,
-                    foregroundColor: const Color.fromRGBO(136, 149, 83, 1),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      side: const BorderSide(
-                        color: Color.fromRGBO(136, 149, 83, 1),
-                        width: 1,
+              Column(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.fromLTRB(10, 25, 10, 25),
+                        backgroundColor: Colors.white,
+                        foregroundColor: const Color.fromRGBO(136, 149, 83, 1),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          side: const BorderSide(
+                            color: Color.fromRGBO(136, 149, 83, 1),
+                            width: 1,
+                          ),
+                        ),
+                      ),
+                      child: SizedBox(
+                        width: 325,
+                        height: 17,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'lib/assets/fb_icon_325x325 (1) 1.png',
+                            ),
+                            const SizedBox(width: 5),
+                            const Text(
+                              "Faça login com o ",
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const Text(
+                              "Facebook",
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                  child: SizedBox(
-                    width: 325,
-                    height: 17,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'lib/assets/fb_icon_325x325 (1) 1.png',
-                        ),
-                        const SizedBox(width: 5),
-                        const Text(
-                          "Faça login com o ",
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const Text(
-                          "Facebook",
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 13,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                ],
               ),
               Container(
                 margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
