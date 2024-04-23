@@ -6,12 +6,13 @@ class CadastroOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
+    var screenSize = MediaQuery.of(context).size;
 
     final double bodyPadding = screenSize.width < 560 ? 20.0 : 100.0;
+    final double topPadding = screenSize.height / 60;
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.fromLTRB(bodyPadding, 60, bodyPadding, 0),
+        padding: EdgeInsets.fromLTRB(bodyPadding, topPadding, bodyPadding, 0),
         child: ListView(
           // crossAxisAlignment: CrossAxisAlignment.center, // Use se necessário
           children: [
