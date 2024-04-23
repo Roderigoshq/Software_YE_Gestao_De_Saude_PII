@@ -1,8 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/login.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class CadastroOptions extends StatelessWidget {
   const CadastroOptions({super.key});
+
+  Future<void> _loginWithGoogle(BuildContext context) async {
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+
+    try {
+      final GoogleSignInAccount? googleSignInAccount =
+          await googleSignIn.signIn();
+      if (googleSignInAccount != null) {
+        // Sucesso ao fazer login com o Google
+        // Você pode prosseguir com o que deseja fazer após o login bem-sucedido
+        // Por exemplo, navegar para a próxima tela
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const Login()),
+        );
+      } else {
+        // Cancelado pelo usuário
+        print('Login com Google cancelado.');
+      }
+    } catch (error) {
+      // Tratar erros de autenticação do Google
+      print('Erro ao fazer login com o Google: $error');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +105,9 @@ class CadastroOptions extends StatelessWidget {
                     Container(
                       margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          _loginWithGoogle(context);
+                        },
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.fromLTRB(10, 25, 10, 25),
                           backgroundColor: Colors.white,
