@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 class CadastroOptions extends StatelessWidget {
   const CadastroOptions({super.key});
+
+  // GOOGLE
 
   Future<void> _loginWithGoogle(BuildContext context) async {
     final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -26,6 +29,30 @@ class CadastroOptions extends StatelessWidget {
     } catch (error) {
       // Tratar erros de autenticação do Google
       print('Erro ao fazer login com o Google: $error');
+    }
+  }
+
+  // FACEBOOK
+
+  Future<void> _loginWithFacebook(BuildContext context) async {
+    try {
+      final LoginResult result = await FacebookAuth.instance.login();
+
+      if (result.status == LoginStatus.success) {
+        // Sucesso ao fazer login com o Facebook
+        // Você pode prosseguir com o que deseja fazer após o login bem-sucedido
+        // Por exemplo, navegar para a próxima tela
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const Login()),
+        );
+      } else {
+        // O usuário cancelou o login ou ocorreu um erro
+        print('Login com Facebook cancelado ou falhou.');
+      }
+    } catch (error) {
+      // Tratar erros de autenticação do Facebook
+      print('Erro ao fazer login com o Facebook: $error');
     }
   }
 
@@ -155,7 +182,9 @@ class CadastroOptions extends StatelessWidget {
                     Container(
                       margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          _loginWithFacebook(context);
+                        },
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.fromLTRB(10, 25, 10, 25),
                           backgroundColor: Colors.white,
