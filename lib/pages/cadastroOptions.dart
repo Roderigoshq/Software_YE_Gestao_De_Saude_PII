@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/login.dart';
 
 class CadastroOptions extends StatelessWidget {
-  const CadastroOptions({Key? key});
+  const CadastroOptions({super.key});
 
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
 
-    final double bodyPadding = screenSize.width < 560 ? 20.0 : 100.0;
+    final double bodyPadding = screenSize.width < 560 ? 25.0 : 100.0;
     return Scaffold(
       body: Center(
         child: Padding(
@@ -18,7 +18,7 @@ class CadastroOptions extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
-                child: ListView(
+                child: Column(
                   children: [
                     Container(
                       margin: const EdgeInsets.fromLTRB(0, 40, 0, 25),
