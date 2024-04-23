@@ -249,7 +249,7 @@ class CadastroOptions extends StatelessWidget {
                 ],
               ),
               Container(
-                margin: const EdgeInsets.fromLTRB(0, 55, 0, 7),
+                margin: const EdgeInsets.fromLTRB(0, 70, 0, 7),
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
