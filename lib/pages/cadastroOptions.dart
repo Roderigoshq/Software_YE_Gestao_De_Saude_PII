@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/pages/login.dart';
+import 'package:sc_ye_gestao_de_saude/pages/login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
@@ -8,7 +8,7 @@ class CadastroOptions extends StatelessWidget {
 
   // GOOGLE
 
-  Future<void> _loginWithGoogle(BuildContext context) async {
+  Future<void> loginWithGoogle(BuildContext context) async {
     final GoogleSignIn googleSignIn = GoogleSignIn();
 
     try {
@@ -33,19 +33,15 @@ class CadastroOptions extends StatelessWidget {
   }
 
   // FACEBOOK
-
   Future<void> _loginWithFacebook(BuildContext context) async {
     try {
-      final LoginResult result = await FacebookAuth.instance.login();
+      final permissions = ['email', 'public_profile'];
+      final LoginResult result =
+          await FacebookAuth.instance.login(permissions: permissions);
 
       if (result.status == LoginStatus.success) {
         // Sucesso ao fazer login com o Facebook
-        // Você pode prosseguir com o que deseja fazer após o login bem-sucedido
-        // Por exemplo, navegar para a próxima tela
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const Login()),
-        );
+        // Faça o que precisar aqui, como navegar para a próxima tela
       } else {
         // O usuário cancelou o login ou ocorreu um erro
         print('Login com Facebook cancelado ou falhou.');
@@ -133,7 +129,7 @@ class CadastroOptions extends StatelessWidget {
                       margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
                       child: ElevatedButton(
                         onPressed: () {
-                          _loginWithGoogle(context);
+                          loginWithGoogle(context);
                         },
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.fromLTRB(10, 25, 10, 25),
@@ -319,7 +315,7 @@ class CadastroOptions extends StatelessWidget {
               // Este Container agrupa os elementos no final da tela
               Container(
                 margin: const EdgeInsets.fromLTRB(0, 80, 0, 7),
-                child: Column(
+                child: const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Row(

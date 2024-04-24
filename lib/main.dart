@@ -1,6 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/pages/cadastroOptions.dart';
+import 'package:sc_ye_gestao_de_saude/pages/cadastroOptions.dart';
 
 void main() {
   runApp(const MyApp());
