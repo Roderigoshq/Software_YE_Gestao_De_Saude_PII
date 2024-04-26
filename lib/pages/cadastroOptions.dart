@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sc_ye_gestao_de_saude/pages/login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:ye_gestao_de_saude/pages/login.dart';
 
 class CadastroOptions extends StatelessWidget {
   const CadastroOptions({super.key});
