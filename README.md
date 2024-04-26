@@ -1,4 +1,4 @@
-# sc_ye_gestao_de_saude
+# ye_gestao_de_saude
 
 A new Flutter project.
 
