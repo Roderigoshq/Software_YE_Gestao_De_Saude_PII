@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:ye_gestao_de_saude/pages/login.dart';
+import 'package:ye_gestao_de_saude/pages/register.dart';
 
 class CadastroOptions extends StatelessWidget {
   const CadastroOptions({super.key});
@@ -96,7 +97,12 @@ class CadastroOptions extends StatelessWidget {
                     Container(
                       margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Register()),
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.fromLTRB(73, 22, 73, 22),
                             backgroundColor:
