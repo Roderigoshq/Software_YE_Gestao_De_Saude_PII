@@ -12,16 +12,20 @@ class AuthService {
     required String repetirSenha,
   }) async {
     try {
-      UserCredential userCredential =
-          await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email,
-        password: senha,
-      );
+      
+      if (senha == repetirSenha) {
+        UserCredential userCredential =
+            await _firebaseAuth.createUserWithEmailAndPassword(
+          email: email,
+          password: senha,
+        );
 
-      await userCredential.user!.updateDisplayName('$nome $sobrenome');
-      await userCredential.user!.sendEmailVerification();
-
-      return null;
+        await userCredential.user!.updateDisplayName('$nome $sobrenome');
+        await userCredential.user!.sendEmailVerification();
+        return null;
+      } else {
+        return "As senhas não estão iguais!";
+      }
     } on FirebaseAuthException catch (e) {
       if (nome.isEmpty ||
           sobrenome.isEmpty ||
@@ -31,13 +35,17 @@ class AuthService {
         return "Há campos que não estão preenchidos";
       } else if (e.code == "email-already-in-use") {
         return "O usuário já está cadastrado!";
+      } else if (!email.contains('@')) {
+        return "Por favor, insira um endereço de e-mail válido.";
+      } else if(senha.length < 7) {
+        return "A senha deve ter no mínimo 8 caracteres";
       }
       return e
           .message; // Retorna a mensagem de erro da exceção FirebaseAuthException
     } catch (e) {
       // Captura exceções não tratadas e exibe uma mensagem genérica
-      print("Erro desconhecido: $e");
-      return "Erro desconhecido";
+      print("Erro ao cadastrar usuário: $e");
+      return "Erro ao cadastrar usuário. Por favor, tente novamente mais tarde.";
     }
   }
 

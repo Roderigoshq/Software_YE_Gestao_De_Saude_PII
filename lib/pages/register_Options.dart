@@ -100,7 +100,7 @@ class CadastroOptions extends StatelessWidget {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => Register()),
+                            MaterialPageRoute(builder: (context) => const Register()),
                           );
                         },
                         style: ElevatedButton.styleFrom(
