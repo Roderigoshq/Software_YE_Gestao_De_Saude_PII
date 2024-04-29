@@ -19,7 +19,7 @@ class AuthService {
         );
 
         await userCredential.user!.updateDisplayName('$nome $sobrenome');
-        // await userCredential.user!.sendEmailVerification();
+        await userCredential.user!.sendEmailVerification();
         return null;
       } else {
         return "As senhas não estão iguais!";
@@ -49,10 +49,17 @@ class AuthService {
 
   Future<String?> login({required String email, required String senha}) async {
     try {
-      await _firebaseAuth.signInWithEmailAndPassword(
+      UserCredential userCredential =
+          await _firebaseAuth.signInWithEmailAndPassword(
         email: email,
         password: senha,
       );
+
+      if (!userCredential.user!.emailVerified) {
+        // Se o e-mail não estiver verificado, retorne uma mensagem informando o usuário
+        return 'Email não verificado. Por favor, verifique seu e-mail ou caixa de Spam e tente novamente.';
+      }
+
       return null; // Login bem-sucedido
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
