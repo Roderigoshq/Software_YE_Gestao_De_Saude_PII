@@ -12,19 +12,40 @@ class AuthService {
   }) async {
     try {
       if (senha == repetirSenha) {
+        // Verifica se a senha atende aos critérios
+        if (senha.length < 8) {
+          return "A senha deve ter no mínimo 8 caracteres";
+        } else if (!senha.contains(RegExp(r'[0-9]'))) {
+          return "A senha deve conter pelo menos um número. (Exemplo: 1, 2, 3)";
+        } else if (!senha.contains(RegExp(r'[A-Z]'))) {
+          return "A senha deve conter pelo menos uma letra maiúscula. (Exemplo: A, B, C)";
+        } else if (!senha.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+          return "A senha deve conter pelo menos um caractere especial.  (Exemplo: @, #, %)";
+        }
+
+        // Verifica se nome e sobrenome contêm apenas letras e espaços
+        if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(nome)) {
+          return "Por favor, insira um nome válido";
+        }
+        if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(sobrenome)) {
+          return "Por favor, insira um sobrenome válido";
+        }
+
+        // Cria o usuário
         UserCredential userCredential =
-            await _firebaseAuth.createUserWithEmailAndPassword(
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: email,
           password: senha,
         );
 
         await userCredential.user!.updateDisplayName('$nome $sobrenome');
         await userCredential.user!.sendEmailVerification();
-        return null;
+        return null; // Cadastro bem-sucedido
       } else {
         return "As senhas não estão iguais!";
       }
     } on FirebaseAuthException catch (e) {
+      // Trata os erros específicos do Firebase Auth
       if (nome.isEmpty ||
           sobrenome.isEmpty ||
           email.isEmpty ||
@@ -35,8 +56,6 @@ class AuthService {
         return "O usuário já está cadastrado!";
       } else if (!email.contains('@')) {
         return "Por favor, insira um endereço de e-mail válido.";
-      } else if (senha.length < 7) {
-        return "A senha deve ter no mínimo 8 caracteres";
       }
       return e
           .message; // Retorna a mensagem de erro da exceção FirebaseAuthException

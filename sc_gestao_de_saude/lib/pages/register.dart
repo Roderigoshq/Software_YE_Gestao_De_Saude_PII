@@ -1,13 +1,12 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:sc_gestao_de_saude/components/snackbar.dart';
 import 'package:sc_gestao_de_saude/pages/login_page.dart';
 import 'package:sc_gestao_de_saude/services/auth_service.dart';
 
 class Register extends StatefulWidget {
-  const Register({super.key});
+  const Register({Key? key}) : super(key: key);
 
   @override
   State<Register> createState() => _RegisterState();
@@ -153,6 +152,11 @@ class _RegisterState extends State<Register> {
                       ),
                     ),
                   ),
+                  const SizedBox(height: 5),
+                  const Text(
+                    "Insira um email válido.",
+                    style: TextStyle(color: Color.fromRGBO(172, 172, 172, 1)),
+                  ),
                   const SizedBox(height: 15),
                   TextField(
                     controller: _senhaController,
@@ -188,8 +192,8 @@ class _RegisterState extends State<Register> {
                   ),
                   const SizedBox(height: 5),
                   const Text(
-                    "Sua senha deve conter no mínimo 8 caracteres*",
-                    style: TextStyle(color: Color.fromRGBO(196, 196, 196, 1)),
+                    "Sua senha deve conter no mínimo 8 caracteres, um caracter especial, número e letra maiúscula*",
+                    style: TextStyle(color: Color.fromRGBO(172, 172, 172, 1)),
                   ),
                   const SizedBox(height: 15),
                   TextField(
@@ -251,10 +255,33 @@ class _RegisterState extends State<Register> {
                   const SizedBox(height: 30),
                   ElevatedButton(
                     onPressed: () async {
+                      // Verifica se os campos obrigatórios estão preenchidos
+                      if (_nomeController.text.isEmpty ||
+                          _sobrenomeController.text.isEmpty ||
+                          _emailController.text.isEmpty ||
+                          _senhaController.text.isEmpty ||
+                          _repetirSenhaController.text.isEmpty) {
+                        showSnackBar(
+                          context: context,
+                          texto: "Há campos não preenchidos",
+                        );
+                        return;
+                      }
+
+                      // Transforma o primeiro caractere do nome e sobrenome em maiúscula
+                      String nome = _nomeController.text;
+                      String sobrenome = _sobrenomeController.text;
+                      if (nome.isNotEmpty || sobrenome.isNotEmpty) {
+                        sobrenome =
+                            sobrenome[0].toUpperCase() + sobrenome.substring(1);
+                        nome = nome[0].toUpperCase() + nome.substring(1);
+                      }
+
+                      // Chama o método cadastrarUsuario do AuthService
                       String? mensagemErro =
                           await AuthService().cadastrarUsuario(
-                        nome: _nomeController.text,
-                        sobrenome: _sobrenomeController.text,
+                        nome: nome,
+                        sobrenome: sobrenome,
                         email: _emailController.text,
                         senha: _senhaController.text,
                         repetirSenha: _repetirSenhaController.text,
@@ -262,46 +289,36 @@ class _RegisterState extends State<Register> {
 
                       if (mensagemErro == null) {
                         // Cadastro de usuário bem-sucedido, agora salve os dados no banco de dados
-                        String nome = _nomeController.text;
-                        String sobrenome = _sobrenomeController.text;
-                        String email = _emailController.text;
-                        String senha = _senhaController.text;
                         String dataNascimento = _selectedDate != null
                             ? _dateFormat.format(_selectedDate!)
                             : '';
-
                         try {
                           await databaseReference.push().set({
                             'nome': nome,
                             'sobrenome': sobrenome,
-                            'email': email,
-                            'senha': senha,
+                            'email': _emailController.text,
+                            'senha': _senhaController.text,
                             'dataNascimento': dataNascimento,
                           });
 
-                          String? erro;
-                          if (erro != null) {
-                            showSnackBar(context: context, texto: erro);
-                          } else {
-                            showSnackBar(
-                              context: context,
-                              texto: "Cadastro feito com sucesso! Verifique seu email!",
-                              isErro: false,
-                            );
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const LoginPage(),
-                              ),
-                            );
-                          }
-
-                          // Exiba o snackbar após a navegação para a próxima tela
+                          showSnackBar(
+                            context: context,
+                            texto:
+                                "Cadastro feito com sucesso! Verifique seu email!",
+                            isErro: false,
+                          );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const LoginPage(),
+                            ),
+                          );
                         } catch (error) {
                           // Ocorreu um erro ao enviar os dados para o Firebase
                           showSnackBar(
-                              context: context,
-                              texto: "Erro ao cadastrar usuário: $error");
+                            context: context,
+                            texto: "Erro ao cadastrar usuário: $error",
+                          );
                         }
                       } else {
                         // Exiba a mensagem de erro do cadastro do usuário

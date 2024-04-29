@@ -61,96 +61,103 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ),
-          TextField(
-            controller: _emailController,
-            decoration: const InputDecoration(
-              labelText: 'Email*',
-              labelStyle: TextStyle(fontSize: 14),
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(
-                  color: Color.fromRGBO(196, 196, 196, 1),
-                ),
-              ),
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(
-                  color: Color.fromRGBO(136, 149, 83, 1),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 15),
-          TextField(
-            controller: _senhaController,
-            decoration: InputDecoration(
-              labelText: 'Senha*',
-              labelStyle: const TextStyle(fontSize: 14),
-              enabledBorder: const UnderlineInputBorder(
-                borderSide: BorderSide(
-                  color: Color.fromRGBO(196, 196, 196, 1),
-                ),
-              ),
-              focusedBorder: const UnderlineInputBorder(
-                borderSide: BorderSide(
-                  color: Color.fromRGBO(136, 149, 83, 1),
-                ),
-              ),
-              suffixIcon: IconButton(
-                icon: Icon(
-                  _senhaVisivel ? Icons.visibility : Icons.visibility_off,
-                  color: Colors.grey,
-                ),
-                onPressed: () {
-                  setState(() {
-                    _senhaVisivel = !_senhaVisivel;
-                  });
-                },
-              ),
-            ),
-            obscureText:
-                !_senhaVisivel, // Altera a visibilidade da senha com base no estado
-          ),
-          const SizedBox(height: 30),
-          ElevatedButton(
-            onPressed: () async {
-              String email = _emailController.text;
-              String senha = _senhaController.text;
-
-              // Aguarde o resultado do método de login
-              String? errorMessage =
-                  await _autenServico.login(email: email, senha: senha);
-
-              // Verifique se o login foi bem-sucedido (sem mensagem de erro)
-              if (errorMessage == null) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const CadastroOptions(),
+          Container(
+            padding: const EdgeInsets.fromLTRB(100, 0, 100, 20),
+            child: Column(
+              children: [
+                TextField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(
+                    labelText: 'Email*',
+                    labelStyle: TextStyle(fontSize: 14),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color.fromRGBO(196, 196, 196, 1),
+                      ),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color.fromRGBO(136, 149, 83, 1),
+                      ),
+                    ),
                   ),
-                );
-              } else {
-                // Exiba a mensagem de erro ao usuário
-                showSnackBar(
-                  context: context,
-                  texto: errorMessage,
-                  isErro: true,
-                );
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.fromLTRB(73, 22, 73, 22),
-              backgroundColor: const Color.fromRGBO(136, 149, 83, 1),
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-            child: const Text(
-              "Logar",
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
-              ),
+                ),
+                const SizedBox(height: 15),
+                TextField(
+                  controller: _senhaController,
+                  decoration: InputDecoration(
+                    labelText: 'Senha*',
+                    labelStyle: const TextStyle(fontSize: 14),
+                    enabledBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color.fromRGBO(196, 196, 196, 1),
+                      ),
+                    ),
+                    focusedBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color.fromRGBO(136, 149, 83, 1),
+                      ),
+                    ),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _senhaVisivel ? Icons.visibility : Icons.visibility_off,
+                        color: Colors.grey,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _senhaVisivel = !_senhaVisivel;
+                        });
+                      },
+                    ),
+                  ),
+                  obscureText:
+                      !_senhaVisivel, // Altera a visibilidade da senha com base no estado
+                ),
+                const SizedBox(height: 30),
+                ElevatedButton(
+                  onPressed: () async {
+                    String email = _emailController.text;
+                    String senha = _senhaController.text;
+
+                    // Aguarde o resultado do método de login
+                    String? errorMessage =
+                        await _autenServico.login(email: email, senha: senha);
+
+                    // Verifique se o login foi bem-sucedido (sem mensagem de erro)
+                    if (errorMessage == null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const CadastroOptions(),
+                        ),
+                      );
+                    } else {
+                      // Exiba a mensagem de erro ao usuário
+                      showSnackBar(
+                        context: context,
+                        texto: errorMessage,
+                        isErro: true,
+                      );
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.fromLTRB(73, 22, 73, 22),
+                    backgroundColor: const Color.fromRGBO(136, 149, 83, 1),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: const Text(
+                    "Login",
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
