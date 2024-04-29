@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:sc_ye_gestao_de_saude/components/snackbar.dart';
+import 'package:sc_ye_gestao_de_saude/pages/home_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/register_options.dart';
 import 'package:sc_ye_gestao_de_saude/services/auth_service.dart';
 
@@ -128,7 +129,7 @@ class _LoginPageState extends State<LoginPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const CadastroOptions(),
+                          builder: (context) => HomePage(),
                         ),
                       );
                     } else {
