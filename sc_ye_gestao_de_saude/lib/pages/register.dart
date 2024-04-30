@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sc_ye_gestao_de_saude/components/snackbar.dart';
 import 'package:sc_ye_gestao_de_saude/pages/login_page.dart';
+import 'package:sc_ye_gestao_de_saude/pages/politica.dart';
+import 'package:sc_ye_gestao_de_saude/pages/sobrenos.dart';
 import 'package:sc_ye_gestao_de_saude/services/auth_service.dart';
 
 class Register extends StatefulWidget {
@@ -38,7 +40,7 @@ class _RegisterState extends State<Register> {
     final ThemeData theme = Theme.of(context);
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: _selectedDate,
+      initialDate: _selectedDate ?? DateTime.now(),
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
       builder: (BuildContext context, Widget? child) {
@@ -382,55 +384,83 @@ class _RegisterState extends State<Register> {
                   ),
                   Container(
                     margin: const EdgeInsets.fromLTRB(0, 80, 0, 7),
-                    child: const Column(
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
+                            const Text(
                               "Veja mais ",
                               style: TextStyle(
-                                  color: Color.fromRGBO(110, 110, 110, 1),
-                                  fontFamily: 'Poppins',
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                            Text(
-                              "sobre nós",
-                              style: TextStyle(
-                                color: Color.fromRGBO(136, 149, 83, 1),
+                                color: Color.fromRGBO(110, 110, 110, 1),
                                 fontFamily: 'Poppins',
-                                fontWeight: FontWeight.w700,
                                 fontSize: 12,
-                                decoration: TextDecoration.underline,
+                                fontWeight: FontWeight.w500,
                               ),
-                            )
+                            ),
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => AboutUsPage()),
+                                );
+                              },
+                              child: const Text(
+                                "sobre nós",
+                                style: TextStyle(
+                                  color: Color.fromRGBO(136, 149, 83, 1),
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 12,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
-                              "Termos e condições      ",
-                              style: TextStyle(
-                                color: Color.fromRGBO(136, 149, 83, 1),
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.w700,
-                                decoration: TextDecoration.underline,
-                                fontSize: 8,
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => TermsOfUsePage()),
+                                );
+                              },
+                              child: const Text(
+                                "Termos e condições",
+                                style: TextStyle(
+                                  color: Color.fromRGBO(136, 149, 83, 1),
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w700,
+                                  decoration: TextDecoration.underline,
+                                  fontSize: 8,
+                                ),
                               ),
                             ),
-                            Text(
-                              "política de privacidade",
-                              style: TextStyle(
-                                color: Color.fromRGBO(136, 149, 83, 1),
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.w700,
-                                decoration: TextDecoration.underline,
-                                fontSize: 8,
+                            const Text(
+                              "      ",
+                              style: TextStyle(fontSize: 8),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                // Navegar para a tela de Política de Privacidade
+                              },
+                              child: const Text(
+                                "política de privacidade",
+                                style: TextStyle(
+                                  color: Color.fromRGBO(136, 149, 83, 1),
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w700,
+                                  decoration: TextDecoration.underline,
+                                  fontSize: 8,
+                                ),
                               ),
-                            )
+                            ),
                           ],
                         ),
                       ],

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:sc_ye_gestao_de_saude/pages/login_page.dart';
+import 'package:sc_ye_gestao_de_saude/pages/politica.dart';
 import 'package:sc_ye_gestao_de_saude/pages/register.dart';
+import 'package:sc_ye_gestao_de_saude/pages/sobrenos.dart';
 
 
 
@@ -323,61 +325,89 @@ class CadastroOptions extends StatelessWidget {
 
               // Este Container agrupa os elementos no final da tela
               Container(
-                margin: const EdgeInsets.fromLTRB(0, 80, 0, 7),
-                child: const Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Row(
+                    margin: const EdgeInsets.fromLTRB(0, 80, 0, 7),
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          "Veja mais ",
-                          style: TextStyle(
-                              color: Color.fromRGBO(110, 110, 110, 1),
-                              fontFamily: 'Poppins',
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              "Veja mais ",
+                              style: TextStyle(
+                                color: Color.fromRGBO(110, 110, 110, 1),
+                                fontFamily: 'Poppins',
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => AboutUsPage()),
+                                );
+                              },
+                              child: const Text(
+                                "sobre nós",
+                                style: TextStyle(
+                                  color: Color.fromRGBO(136, 149, 83, 1),
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 12,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        Text(
-                          "sobre nós",
-                          style: TextStyle(
-                            color: Color.fromRGBO(136, 149, 83, 1),
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w700,
-                            fontSize: 12,
-                            decoration: TextDecoration.underline,
-                          ),
-                        )
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => TermsOfUsePage()),
+                                );
+                              },
+                              child: const Text(
+                                "Termos e condições",
+                                style: TextStyle(
+                                  color: Color.fromRGBO(136, 149, 83, 1),
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w700,
+                                  decoration: TextDecoration.underline,
+                                  fontSize: 8,
+                                ),
+                              ),
+                            ),
+                            const Text(
+                              "      ",
+                              style: TextStyle(fontSize: 8),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                // Navegar para a tela de Política de Privacidade
+                              },
+                              child: const Text(
+                                "política de privacidade",
+                                style: TextStyle(
+                                  color: Color.fromRGBO(136, 149, 83, 1),
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w700,
+                                  decoration: TextDecoration.underline,
+                                  fontSize: 8,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Termos e condições      ",
-                          style: TextStyle(
-                            color: Color.fromRGBO(136, 149, 83, 1),
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w700,
-                            decoration: TextDecoration.underline,
-                            fontSize: 8,
-                          ),
-                        ),
-                        Text(
-                          "política de privacidade",
-                          style: TextStyle(
-                            color: Color.fromRGBO(136, 149, 83, 1),
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w700,
-                            decoration: TextDecoration.underline,
-                            fontSize: 8,
-                          ),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+                  ),
             ],
           ),
         ),
