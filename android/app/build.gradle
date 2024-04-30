@@ -1,20 +1,10 @@
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        // Aqui você pode ter outras dependências do Gradle, como plugins
-        classpath 'com.android.tools.build:gradle:8.2.0' // Versão específica do Gradle
-        classpath 'com.google.gms:google-services:4.4.1' // Versão específica do Google Services Plugin
-    }
-}
-
 plugins {
+    id "com.android.application"
+    // START: FlutterFire Configuration
     id 'com.google.gms.google-services'
-    id 'com.android.application'
-    id 'kotlin-android'
-    id 'dev.flutter.flutter-gradle-plugin'
+    // END: FlutterFire Configuration
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
 }
 
 def localProperties = new Properties()
@@ -77,3 +67,6 @@ android {
 flutter {
     source '../..'
 }
+
+
+dependencies {}

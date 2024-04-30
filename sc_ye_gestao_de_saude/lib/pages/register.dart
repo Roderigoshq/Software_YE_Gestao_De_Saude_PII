@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:sc_ye_gestao_de_saude/components/snackbar.dart';
 import 'package:sc_ye_gestao_de_saude/pages/login_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/politica.dart';
-import 'package:sc_ye_gestao_de_saude/pages/sobrenos.dart';
+import 'package:sc_ye_gestao_de_saude/pages/about_us.dart';
 import 'package:sc_ye_gestao_de_saude/services/auth_service.dart';
 
 class Register extends StatefulWidget {

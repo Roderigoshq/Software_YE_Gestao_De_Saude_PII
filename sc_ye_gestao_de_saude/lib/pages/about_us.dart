@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 
 class AboutUsPage extends StatelessWidget {
@@ -10,7 +12,7 @@ class AboutUsPage extends StatelessWidget {
       ),
       body: Container(
         color: Colors.white, // Cor de fundo do corpo da tela
-        padding: EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -22,7 +24,7 @@ class AboutUsPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20.0),
-            Text(
+            const Text(
               'Sobre Nosso Aplicativo Gestão e Saúde',
               style: TextStyle(
                 fontSize: 24.0,
@@ -31,7 +33,7 @@ class AboutUsPage extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 20.0),
-            Text(
+            const Text(
               'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
               style: TextStyle(fontSize: 18.0),
               textAlign: TextAlign.center,

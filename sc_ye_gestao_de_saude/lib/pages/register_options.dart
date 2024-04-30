@@ -4,7 +4,7 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:sc_ye_gestao_de_saude/pages/login_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/politica.dart';
 import 'package:sc_ye_gestao_de_saude/pages/register.dart';
-import 'package:sc_ye_gestao_de_saude/pages/sobrenos.dart';
+import 'package:sc_ye_gestao_de_saude/pages/about_us.dart';
 
 
 
