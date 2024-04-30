@@ -4,6 +4,9 @@ import 'package:sc_ye_gestao_de_saude/components/snackbar.dart';
 import 'package:sc_ye_gestao_de_saude/pages/home_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/register_options.dart';
 import 'package:sc_ye_gestao_de_saude/services/auth_service.dart';
+import 'package:sc_ye_gestao_de_saude/pages/pages2/Task.dart';
+import 'package:sc_ye_gestao_de_saude/pages/pages2/TaskInherited.dart';
+import 'package:sc_ye_gestao_de_saude/pages/pages2/FormScreen.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
