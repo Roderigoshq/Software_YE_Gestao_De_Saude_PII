@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sc_ye_gestao_de_saude/pages/pages2/Task.dart';
+import 'package:sc_ye_gestao_de_saude/pages/pages2/task.dart';
 
 class TaskInherited extends InheritedWidget {
   TaskInherited({

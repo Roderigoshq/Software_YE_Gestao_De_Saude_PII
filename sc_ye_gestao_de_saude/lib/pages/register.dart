@@ -8,7 +8,7 @@ import 'package:sc_ye_gestao_de_saude/pages/about_us.dart';
 import 'package:sc_ye_gestao_de_saude/services/auth_service.dart';
 
 class Register extends StatefulWidget {
-  const Register({Key? key}) : super(key: key);
+  const Register({super.key});
 
   @override
   State<Register> createState() => _RegisterState();
