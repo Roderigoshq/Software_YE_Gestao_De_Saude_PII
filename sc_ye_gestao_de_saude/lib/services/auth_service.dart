@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -9,6 +12,7 @@ class AuthService {
     required String email,
     required String senha,
     required String repetirSenha,
+    required BuildContext context,
   }) async {
     try {
       if (senha == repetirSenha) {
@@ -40,6 +44,7 @@ class AuthService {
 
         await userCredential.user!.updateDisplayName('$nome $sobrenome');
         await userCredential.user!.sendEmailVerification();
+
         return null; // Cadastro bem-sucedido
       } else {
         return "As senhas não estão iguais!";

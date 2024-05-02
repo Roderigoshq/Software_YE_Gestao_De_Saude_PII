@@ -5,6 +5,7 @@ import 'package:sc_ye_gestao_de_saude/pages/home_page.dart';
 import 'package:sc_ye_gestao_de_saude/services/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
+
   const LoginPage({super.key});
 
   @override
@@ -62,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
           Container(
-            padding: const EdgeInsets.fromLTRB(100, 0, 100, 20),
+            padding: const EdgeInsets.fromLTRB(45, 0, 45, 20),
             child: Column(
               children: [
                 TextField(
@@ -113,7 +114,7 @@ class _LoginPageState extends State<LoginPage> {
                   obscureText:
                       !_senhaVisivel, // Altera a visibilidade da senha com base no estado
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 50),
                 ElevatedButton(
                   onPressed: () async {
                     String email = _emailController.text;

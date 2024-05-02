@@ -2,9 +2,10 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sc_ye_gestao_de_saude/components/snackbar.dart';
+import 'package:sc_ye_gestao_de_saude/components/success_popup.dart';
+import 'package:sc_ye_gestao_de_saude/pages/about_us.dart';
 import 'package:sc_ye_gestao_de_saude/pages/login_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/politica.dart';
-import 'package:sc_ye_gestao_de_saude/pages/about_us.dart';
 import 'package:sc_ye_gestao_de_saude/services/auth_service.dart';
 
 class Register extends StatefulWidget {
@@ -29,11 +30,12 @@ class _RegisterState extends State<Register> {
   bool _repetirSenhaVisivel = false;
   late DateTime? _selectedDate;
   final DateFormat _dateFormat = DateFormat('dd/MM/yyyy');
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _selectedDate = null; // Inicializando _selectedDate com a data atual
+    _selectedDate = null;
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -46,10 +48,8 @@ class _RegisterState extends State<Register> {
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: theme.copyWith(
-            // Personalize a cor de fundo da seleção aqui
             colorScheme: theme.colorScheme.copyWith(
-              primary: const Color.fromRGBO(
-                  136, 149, 83, 1), // Cor de fundo da seleção
+              primary: const Color.fromRGBO(136, 149, 83, 1),
             ),
           ),
           child: child!,
@@ -65,6 +65,7 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
+    String nome = _nomeController.text;
     return Scaffold(
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(20, 80, 20, 0),
@@ -93,50 +94,40 @@ class _RegisterState extends State<Register> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _nomeController,
-                          decoration: const InputDecoration(
-                            labelText: 'Nome*',
-                            labelStyle: TextStyle(fontSize: 14),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Color.fromRGBO(196, 196, 196, 1),
-                              ),
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Color.fromRGBO(136, 149, 83, 1),
-                              ),
-                            ),
-                          ),
+                  TextField(
+                    controller: _nomeController,
+                    decoration: const InputDecoration(
+                      labelText: 'Nome*',
+                      labelStyle: TextStyle(fontSize: 14),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color.fromRGBO(196, 196, 196, 1),
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: TextField(
-                          controller: _sobrenomeController,
-                          decoration: const InputDecoration(
-                            labelText: 'Sobrenome*',
-                            labelStyle: TextStyle(fontSize: 14),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Color.fromRGBO(196, 196, 196, 1),
-                              ),
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Color.fromRGBO(136, 149, 83, 1),
-                              ),
-                            ),
-                          ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color.fromRGBO(136, 149, 83, 1),
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                  const SizedBox(height: 15),
+                  TextField(
+                    controller: _sobrenomeController,
+                    decoration: const InputDecoration(
+                      labelText: 'Sobrenome*',
+                      labelStyle: TextStyle(fontSize: 14),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color.fromRGBO(196, 196, 196, 1),
+                        ),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color.fromRGBO(136, 149, 83, 1),
+                        ),
+                      ),
+                    ),
+                  ),
                   TextField(
                     controller: _emailController,
                     decoration: const InputDecoration(
@@ -159,7 +150,7 @@ class _RegisterState extends State<Register> {
                     "Insira um email válido.",
                     style: TextStyle(color: Color.fromRGBO(172, 172, 172, 1)),
                   ),
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 5),
                   TextField(
                     controller: _senhaController,
                     decoration: InputDecoration(
@@ -189,15 +180,13 @@ class _RegisterState extends State<Register> {
                         },
                       ),
                     ),
-                    obscureText:
-                        !_senhaVisivel, // Altera a visibilidade da senha com base no estado
+                    obscureText: !_senhaVisivel,
                   ),
                   const SizedBox(height: 5),
                   const Text(
                     "Sua senha deve conter no mínimo 8 caracteres, um caracter especial, número e letra maiúscula*",
                     style: TextStyle(color: Color.fromRGBO(172, 172, 172, 1)),
                   ),
-                  const SizedBox(height: 15),
                   TextField(
                     controller: _repetirSenhaController,
                     decoration: InputDecoration(
@@ -229,7 +218,6 @@ class _RegisterState extends State<Register> {
                     ),
                     obscureText: !_repetirSenhaVisivel,
                   ),
-                  const SizedBox(height: 15),
                   TextField(
                     readOnly: true,
                     onTap: () => _selectDate(context),
@@ -280,16 +268,30 @@ class _RegisterState extends State<Register> {
                       }
 
                       // Chama o método cadastrarUsuario do AuthService
-                      String? mensagemErro =
-                          await AuthService().cadastrarUsuario(
-                        nome: nome,
-                        sobrenome: sobrenome,
-                        email: _emailController.text,
-                        senha: _senhaController.text,
-                        repetirSenha: _repetirSenhaController.text,
-                      );
+                      String? mensagemErro = await AuthService()
+                          .cadastrarUsuario(
+                              nome: nome,
+                              sobrenome: sobrenome,
+                              email: _emailController.text,
+                              senha: _senhaController.text,
+                              repetirSenha: _repetirSenhaController.text,
+                              context: context);
 
                       if (mensagemErro == null) {
+                        // Cadastro de usuário bem-sucedido, agora exiba o pop-up
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return SuccessPopup();
+                          },
+                        );
+
+                        // Aguarde 2 segundos antes de fechar o pop-up
+                        await Future.delayed(Duration(seconds: 2));
+
+                        // Feche o pop-up
+                        Navigator.pop(context);
+
                         // Cadastro de usuário bem-sucedido, agora salve os dados no banco de dados
                         String dataNascimento = _selectedDate != null
                             ? _dateFormat.format(_selectedDate!)
@@ -305,8 +307,7 @@ class _RegisterState extends State<Register> {
 
                           showSnackBar(
                             context: context,
-                            texto:
-                                "Cadastro feito com sucesso! Verifique seu email!",
+                            texto: "Para fazer login verifique seu email!",
                             isErro: false,
                           );
                           Navigator.push(
@@ -365,7 +366,8 @@ class _RegisterState extends State<Register> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const LoginPage()),
+                                builder: (context) => LoginPage(),
+                              ),
                             );
                           },
                           child: const Text(
@@ -404,7 +406,8 @@ class _RegisterState extends State<Register> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => AboutUsPage()),
+                                    builder: (context) => AboutUsPage(),
+                                  ),
                                 );
                               },
                               child: const Text(
@@ -428,7 +431,8 @@ class _RegisterState extends State<Register> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => TermsOfUsePage()),
+                                    builder: (context) => TermsOfUsePage(),
+                                  ),
                                 );
                               },
                               child: const Text(

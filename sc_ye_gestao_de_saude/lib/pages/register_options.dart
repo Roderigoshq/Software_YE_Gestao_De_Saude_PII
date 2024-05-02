@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sc_ye_gestao_de_saude/pages/about_us.dart';
+import 'package:sc_ye_gestao_de_saude/pages/home_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/login_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/pages2/form_screen.dart';
 import 'package:sc_ye_gestao_de_saude/pages/politica.dart';
@@ -285,16 +286,27 @@ class CadastroOptions extends StatelessWidget {
                         ),
                       ),
                     ),
-                   ElevatedButton(
-  onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => FormScreen(taskContext: context)),
-    );
-  },
-  child: const Text("medicações")),
+                    ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    FormScreen(taskContext: context)),
+                          );
+                        },
+                        child: const Text("medicações")),
 
-
+                    ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const HomePage(),),
+                          );
+                        },
+                        child: const Text("medicações")),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -407,5 +419,4 @@ class CadastroOptions extends StatelessWidget {
       ),
     );
   }
-  
 }

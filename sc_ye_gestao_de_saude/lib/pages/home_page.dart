@@ -1,136 +1,114 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Index Screen',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-      ),
-      home: IndexScreen(),
-    );
-  }
-}
+    User? user = FirebaseAuth.instance.currentUser;
+    String userName = user != null ? user.displayName?.split(' ')[0] ?? '' : '';
 
-class IndexScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(100), // Aumentando o tamanho da AppBar
-        child: AppBar(
-          backgroundColor: Color(0xFF889553), // Cor de fundo da AppBar
-          actions: [
-            Spacer(), // Adiciona um espaçamento flexível entre os ícones e o texto
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: const Color(0xFF889553),
+        title: Row(
+          children: [
+            Image.asset(
+              'lib/assets/logo.png',
+              width: 150,
+              height: 150,
+            ),
+            Spacer(),
             IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.info,
-                color: Color(0xFFC6D687), // Cor do ícone
+                color: Color(0xFFC6D687),
               ),
+              iconSize: 30,
               onPressed: () {
                 // Ação ao clicar no ícone de informação
               },
             ),
             IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.settings,
-                color: Color(0xFFC6D687), // Cor do ícone
+                color: Color(0xFFC6D687),
               ),
+              iconSize: 30,
               onPressed: () {
                 // Ação ao clicar no ícone de configuração
               },
             ),
           ],
-          title: Text(
-            'YE Gestão de Saúde',
-            style: TextStyle(
-              color: Color(0xFFC6D687), // Cor do texto
-              fontSize: 24, // Tamanho do texto aumentado
-            ),
-          ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 20), // Adicionando o padding
-        child: Container(
-          color: Colors.white, // Fundo em branco
-          child: Column(
-            children: [
-              // Adiciona a parte inferior da tela
-              BottomContent(
-                clienteNome: 'Usuário',
-                imagePath: 'assets/user_image.png',
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class BottomContent extends StatelessWidget {
-  final String clienteNome;
-  final String imagePath;
-
-  const BottomContent({
-    required this.clienteNome,
-    required this.imagePath,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      color: const Color(0xFFFFFFFF), // Cor de fundo
-      child: Row(
-        children: [
-          // Texto à esquerda
-          Expanded(
-            child: Column(
+      body: Container(
+        height: 80,
+        padding: const EdgeInsets.fromLTRB(40, 35, 40, 0),
+        child: Row(
+          children: [
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      'Olá, ',
+                      "Olá, ",
                       style: TextStyle(
-                        color: Color.fromARGB(255, 0, 0, 0), // Cor do texto
-                        fontSize: 20, // Tamanho do texto aumentado
-                      ),
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w400,
+                          fontSize: 22),
                     ),
                     Text(
-                      clienteNome,
-                      style: TextStyle(
-                        color: Color(0xFF889553), // Cor do texto
-                        fontSize: 20, // Tamanho do texto aumentado
-                        fontWeight: FontWeight.bold, // Deixando o texto em negrito
-                      ),
+                      "$userName!",
+                      style: const TextStyle(
+                          color: Color.fromRGBO(136, 149, 83, 1),
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 22),
                     ),
                   ],
                 ),
-                SizedBox(height: 5), // Espaçamento entre os textos
-                // Texto adicional
-                Text(
-                  'Veja seus dados abaixo',
+                const Text(
+                  "Veja seus dados abaixo",
                   style: TextStyle(
-                    color: Color.fromARGB(255, 0, 0, 0), // Cor do texto
-                    fontSize: 16, // Tamanho do texto aumentado
-                  ),
+                      fontSize: 10,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w400),
                 ),
               ],
             ),
-          ),
-          SizedBox(width: 10), // Espaçamento entre o texto e a imagem
-          // Imagem à direita
-          CircleAvatar(
-            radius: 30, // Aumenta o tamanho da imagem
-            backgroundImage: AssetImage(imagePath),
-          ),
-        ],
+            const Spacer(),
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Dialog(
+                        backgroundColor: Colors
+                            .transparent, // Define o fundo como transparente
+                        child: InteractiveViewer(
+                          child: Image.asset(
+                            'lib/assets/3106921 2.png',
+                            height: 300,
+                            width: 300,
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+                child: Image.asset('lib/assets/3106921 2.png',
+                    height: 60, width: 60),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
