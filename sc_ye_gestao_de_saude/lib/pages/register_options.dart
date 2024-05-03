@@ -8,8 +8,8 @@ import 'package:sc_ye_gestao_de_saude/pages/pages2/form_screen.dart';
 import 'package:sc_ye_gestao_de_saude/pages/politica.dart';
 import 'package:sc_ye_gestao_de_saude/pages/register.dart';
 
-class CadastroOptions extends StatelessWidget {
-  const CadastroOptions({super.key});
+class RegisterOptions extends StatelessWidget {
+  const RegisterOptions({super.key});
 
   // GOOGLE
 
@@ -296,17 +296,16 @@ class CadastroOptions extends StatelessWidget {
                           );
                         },
                         child: const Text("medicações")),
-
                     ElevatedButton(
                         onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    const HomePage(),),
+                              builder: (context) => const HomePage(),
+                            ),
                           );
                         },
-                        child: const Text("medicações")),
+                        child: const Text("homepage")),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
