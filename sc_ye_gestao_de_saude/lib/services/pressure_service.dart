@@ -24,4 +24,6 @@ class PressureAdd {
        .collection('userPressures') // Subcoleção dentro do documento userId
        .snapshots();
   }
+
+  screamPressureByUser() {}
 }

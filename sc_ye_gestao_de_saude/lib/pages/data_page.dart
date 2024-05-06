@@ -20,10 +20,9 @@ class _DadosPageState extends State<DadosPage>
   late TextEditingController _selectedDateController;
   final TextEditingController _sistolicController = TextEditingController();
   final TextEditingController _diastolicController = TextEditingController();
-
-  bool expanded = true;
-
   final DateFormat _dateFormat = DateFormat('dd/MM/yyyy');
+
+  List<PressureModel> pressureList = [];
 
   @override
   void initState() {
@@ -84,7 +83,7 @@ class _DadosPageState extends State<DadosPage>
       date: date,
       diastolic: diastolic,
       sistolic: sistolic,
-      isExpanded: isExpanded,
+      isExpanded: isExpanded
     );
 
     Navigator.pop(context);
@@ -222,48 +221,46 @@ class _DadosPageState extends State<DadosPage>
                               );
                             } else {
                               if (snapshot.hasData) {
-                                List<PressureModel> pressureList = [];
-
                                 for (var doc in snapshot.data!.docs) {
                                   PressureModel pressure =
                                       PressureModel.fromMap(doc.data());
                                   pressureList.add(pressure);
                                 }
-                                return ExpansionPanelList(
-                                  expansionCallback:
-                                      (int index, bool isExpanded) {
-                                    pressureList[index].isExpanded;
-                                    setState(() {
-
-                                      print(pressureList[index]
-                                          .isExpanded); // Alternando o estado de expansão
-                                    });
-                                  },
-                                  children: pressureList
-                                      .map<ExpansionPanel>((pressureModel) {
-                                    return ExpansionPanel(
-                                      headerBuilder: (BuildContext context,
-                                          bool isExpanded) {
-                                        return ListTile(
-                                          title: Text(
-                                            pressureModel.date,
-                                            style: const TextStyle(
-                                              fontFamily: 'Poppins',
-                                              fontWeight: FontWeight.w600,
+                                return Column(
+                                  children: pressureList.map((pressureModel) {
+                                    return ExpansionPanelList(
+                                      expansionCallback:
+                                          (int index, bool isExpanded) {
+                                        pressureList[index].isExpanded =
+                                            !pressureList[index].isExpanded;
+                                        setState(() {});
+                                      },
+                                      children: [
+                                        ExpansionPanel(
+                                          headerBuilder: (BuildContext context,
+                                              bool isExpanded) {
+                                            return ListTile(
+                                              title: Text(
+                                                pressureModel.date,
+                                                style: const TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          body: ListTile(
+                                            title: Text(
+                                              'Diastolic: ${pressureModel.diastolic} - Sistolic: ${pressureModel.sistolic}',
+                                              style: const TextStyle(
+                                                fontFamily: 'Poppins',
+                                                fontWeight: FontWeight.w400,
+                                              ),
                                             ),
                                           ),
-                                        );
-                                      },
-                                      body: ListTile(
-                                        title: Text(
-                                          'Diastolic: ${pressureModel.diastolic} - Sistolic: ${pressureModel.sistolic}',
-                                          style: const TextStyle(
-                                            fontFamily: 'Poppins',
-                                            fontWeight: FontWeight.w400,
-                                          ),
+                                          isExpanded: pressureModel.isExpanded,
                                         ),
-                                      ),
-                                      isExpanded: expanded = !expanded,
+                                      ],
                                     );
                                   }).toList(),
                                 );
@@ -276,6 +273,7 @@ class _DadosPageState extends State<DadosPage>
                           },
                         ),
                       ),
+
                       // Conteúdo da aba Glicemia
                       Center(
                         child: Container(

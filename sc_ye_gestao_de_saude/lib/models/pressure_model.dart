@@ -10,7 +10,7 @@ class PressureModel {
     required this.date,
     required this.diastolic,
     required this.sistolic,
-    required this.isExpanded, // Adicionando isExpanded como parâmetro do construtor
+    required this.isExpanded,
   });
 
   PressureModel.fromMap(Map<String, dynamic> map, {bool isExpanded = false})
