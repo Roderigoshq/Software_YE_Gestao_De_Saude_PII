@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 class SuccessPopup extends StatelessWidget {
+  const SuccessPopup({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
+    return const AlertDialog(
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -12,7 +14,7 @@ class SuccessPopup extends StatelessWidget {
           Text(
             'Cadastro realizado com sucesso!',
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 18),
+            style: const TextStyle(fontSize: 18),
           ),
         ],
       ),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sc_ye_gestao_de_saude/pages/register_options.dart';
 
 class LoadingScreen extends StatefulWidget {
-  const LoadingScreen({Key? key}) : super(key: key);
+  const LoadingScreen({super.key});
 
   @override
   _LoadingScreenState createState() => _LoadingScreenState();
@@ -29,14 +29,14 @@ class _LoadingScreenState extends State<LoadingScreen>
     );
 
     // Simular um tempo de carregamento antes de navegar para a próxima tela
-    Future.delayed(Duration(seconds: 1), () {
+    Future.delayed(const Duration(seconds: 1), () {
       setState(() {
         _isTextVisible = true;
       });
-      Future.delayed(Duration(seconds: 2), () {
+      Future.delayed(const Duration(seconds: 2), () {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => RegisterOptions()),
+          MaterialPageRoute(builder: (context) => const RegisterOptions()),
         );
       });
     });
@@ -63,12 +63,12 @@ class _LoadingScreenState extends State<LoadingScreen>
                 );
               },
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             AnimatedOpacity(
               opacity: _isTextVisible ? 1.0 : 0.0,
-              duration: Duration(milliseconds: 500),
+              duration: const Duration(milliseconds: 500),
               curve: Curves.easeInOut,
-              child: Text(
+              child: const Text(
                 "YE Gestão De Saúde",
                 style: TextStyle(
                   fontFamily: 'Poppins',

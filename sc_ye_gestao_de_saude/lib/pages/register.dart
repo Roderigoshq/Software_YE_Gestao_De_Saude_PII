@@ -42,7 +42,7 @@ class _RegisterState extends State<Register> {
     final ThemeData theme = Theme.of(context);
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: _selectedDate ?? DateTime.now(),
+      initialDate: _selectedDate,
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
       builder: (BuildContext context, Widget? child) {
