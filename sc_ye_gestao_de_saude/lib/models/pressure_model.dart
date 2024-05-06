@@ -3,22 +3,22 @@ class PressureModel {
   String date;
   int diastolic;
   int sistolic;
-  bool isExpanded; // Adicionando a propriedade isExpanded
+  bool isExpanded = false;
 
   PressureModel({
     required this.id,
     required this.date,
     required this.diastolic,
     required this.sistolic,
-    this.isExpanded = false, // Valor padrão de false para isExpanded
+    required this.isExpanded, // Adicionando isExpanded como parâmetro do construtor
   });
 
-  PressureModel.fromMap(Map<String, dynamic> map)
+  PressureModel.fromMap(Map<String, dynamic> map, {bool isExpanded = false})
       : id = map["id"],
         date = map["date"],
         diastolic = map["diastolic"],
         sistolic = map["sistolic"],
-        isExpanded = map["isExpanded"] ?? false;
+        isExpanded = isExpanded; // Usando o valor passado ou false por padrão
 
   Map<String, dynamic> toMap() {
     return {
@@ -26,12 +26,6 @@ class PressureModel {
       "date": date,
       "diastolic": diastolic,
       "sistolic": sistolic,
-      "isExpanded": isExpanded,
     };
-  }
-
-  void toggleExpanded() {
-    isExpanded = !isExpanded;
-// Alternando entre true e false
   }
 }

@@ -21,6 +21,8 @@ class _DadosPageState extends State<DadosPage>
   final TextEditingController _sistolicController = TextEditingController();
   final TextEditingController _diastolicController = TextEditingController();
 
+  bool expanded = true;
+
   final DateFormat _dateFormat = DateFormat('dd/MM/yyyy');
 
   @override
@@ -75,12 +77,14 @@ class _DadosPageState extends State<DadosPage>
     int sistolic = int.tryParse(sistolicString) ?? 0;
     String diastolicString = _diastolicController.text;
     int diastolic = int.tryParse(diastolicString) ?? 0;
+    bool isExpanded = false;
 
     PressureModel pressure = PressureModel(
       id: const Uuid().v1(),
       date: date,
       diastolic: diastolic,
       sistolic: sistolic,
+      isExpanded: isExpanded,
     );
 
     Navigator.pop(context);
@@ -90,8 +94,6 @@ class _DadosPageState extends State<DadosPage>
     _selectedDateController.clear();
 
     _pressureAdd.addPressure(pressure);
-
-
   }
 
   @override
@@ -223,18 +225,18 @@ class _DadosPageState extends State<DadosPage>
                                 List<PressureModel> pressureList = [];
 
                                 for (var doc in snapshot.data!.docs) {
-                                  pressureList
-                                      .add(PressureModel.fromMap(doc.data()));
+                                  PressureModel pressure =
+                                      PressureModel.fromMap(doc.data());
+                                  pressureList.add(pressure);
                                 }
                                 return ExpansionPanelList(
                                   expansionCallback:
                                       (int index, bool isExpanded) {
+                                    pressureList[index].isExpanded;
                                     setState(() {
-                                      pressureList[index].isExpanded =
-                                          !isExpanded;
 
-                                      print(
-                                          pressureList); // Alternando o estado de expansão
+                                      print(pressureList[index]
+                                          .isExpanded); // Alternando o estado de expansão
                                     });
                                   },
                                   children: pressureList
@@ -261,7 +263,7 @@ class _DadosPageState extends State<DadosPage>
                                           ),
                                         ),
                                       ),
-                                      isExpanded: pressureModel.isExpanded,
+                                      isExpanded: expanded = !expanded,
                                     );
                                   }).toList(),
                                 );
@@ -420,8 +422,7 @@ class _DadosPageState extends State<DadosPage>
                                       style: TextStyle(
                                         fontFamily: 'Poppins',
                                         fontWeight: FontWeight.w600,
-                                        color: Color.fromARGB(
-                                            255, 88, 88, 88),
+                                        color: Color.fromARGB(255, 88, 88, 88),
                                       ),
                                     ),
                                   ),
@@ -461,7 +462,8 @@ class _DadosPageState extends State<DadosPage>
                                                 const Color.fromARGB(
                                                     255, 255, 255, 255),
                                             foregroundColor:
-                                                const Color.fromARGB(255, 77, 77, 77),
+                                                const Color.fromARGB(
+                                                    255, 77, 77, 77),
                                           ),
                                           child: const Text(
                                             'Adicionar',
