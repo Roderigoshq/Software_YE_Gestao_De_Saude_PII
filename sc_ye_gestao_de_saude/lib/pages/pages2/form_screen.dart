@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sc_ye_gestao_de_saude/pages/pages2/task_inherited.dart';
+import 'package:sc_ye_gestao_de_saude/pages/pages2/data/task_inherited.dart';
 
 class FormScreen extends StatefulWidget {
   const FormScreen({super.key, required this.taskContext});

@@ -5,6 +5,7 @@ import 'package:sc_ye_gestao_de_saude/pages/about_us.dart';
 import 'package:sc_ye_gestao_de_saude/pages/home_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/login_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/pages2/form_screen.dart';
+import 'package:sc_ye_gestao_de_saude/pages/pages2/initial_screen.dart';
 import 'package:sc_ye_gestao_de_saude/pages/politica.dart';
 import 'package:sc_ye_gestao_de_saude/pages/register.dart';
 
@@ -292,7 +293,8 @@ class RegisterOptions extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    FormScreen(taskContext: context)),
+                                    InitialScreen()
+                                    ),
                           );
                         },
                         child: const Text("medicações")),
