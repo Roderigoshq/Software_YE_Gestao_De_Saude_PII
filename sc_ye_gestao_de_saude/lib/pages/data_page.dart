@@ -79,12 +79,11 @@ class _DadosPageState extends State<DadosPage>
     bool isExpanded = false;
 
     PressureModel pressure = PressureModel(
-      id: const Uuid().v1(),
-      date: date,
-      diastolic: diastolic,
-      sistolic: sistolic,
-      isExpanded: isExpanded
-    );
+        id: const Uuid().v1(),
+        date: date,
+        diastolic: diastolic,
+        sistolic: sistolic,
+        isExpanded: isExpanded);
 
     Navigator.pop(context);
 
@@ -480,6 +479,64 @@ class _DadosPageState extends State<DadosPage>
                           );
                         },
                       );
+                    } else if (value == "glucose") {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return const AlertDialog(
+                            title: Center(
+                              child: Text(
+                                'Adicionar Glicose',
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 24, vertical: 20),
+                            content: SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  // Conteúdo para adicionar glicose
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    } else if (value == "weight_height") {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return const AlertDialog(
+                            title: Center(
+                              child: Text(
+                                'Adicionar Peso & Altura',
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 24, vertical: 20),
+                            content: SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  // Conteúdo para adicionar peso e altura
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
                     }
                   },
                   itemBuilder: (BuildContext context) => <PopupMenuEntry>[
@@ -508,7 +565,7 @@ class _DadosPageState extends State<DadosPage>
                             child: Icon(Icons.add),
                           ),
                           Text(
-                            'Adicionar Glicemia',
+                            'Adicionar Glicose',
                             style: TextStyle(fontSize: 15),
                           ),
                         ],
