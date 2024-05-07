@@ -23,6 +23,7 @@ class _DadosPageState extends State<DadosPage>
   final DateFormat _dateFormat = DateFormat('dd/MM/yyyy');
 
   List<PressureModel> pressureList = [];
+  PressureModel? pressureModel;
 
   @override
   void initState() {
@@ -230,9 +231,10 @@ class _DadosPageState extends State<DadosPage>
                                     return ExpansionPanelList(
                                       expansionCallback:
                                           (int index, bool isExpanded) {
-                                        pressureList[index].isExpanded =
-                                            !pressureList[index].isExpanded;
-                                        setState(() {});
+  
+                                        setState(() {
+                                           pressureList[index].isExpanded = !isExpanded;
+                                        });
                                       },
                                       children: [
                                         ExpansionPanel(
