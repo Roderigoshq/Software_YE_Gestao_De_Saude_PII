@@ -1,11 +1,9 @@
-import 'package:flutter/material.dart';
+ import 'package:flutter/material.dart';
 import 'package:sc_ye_gestao_de_saude/pages/pages2/data/task_inherited.dart';
 import 'package:sc_ye_gestao_de_saude/pages/pages2/form_screen.dart';
-import 'package:sc_ye_gestao_de_saude/pages/register_options.dart';
-
 
 class InitialScreen extends StatefulWidget {
-  const InitialScreen({super.key});
+  const InitialScreen({Key? key}) : super(key: key);
 
   @override
   State<InitialScreen> createState() => _InitialScreenState();
@@ -16,24 +14,71 @@ class _InitialScreenState extends State<InitialScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Container(),
-        title: const Text('Tarefas'),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.only(top: 8,bottom: 70),
-        children: TaskInherited.of(context).taskList,
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (contextNew) => FormScreen(taskContext: context,),
+        automaticallyImplyLeading: false,
+        backgroundColor: const Color(0xFF889553),
+        title: Row(
+          children: [
+            Image.asset(
+              'lib/assets/logo.png',
+              width: 150,
+              height: 150,
             ),
-          );
-        },
-        child: const Icon(Icons.add),
+            Spacer(),
+            IconButton(
+              icon: const Icon(Icons.info, color: Color(0xFFC6D687)),
+              iconSize: 30,
+              onPressed: () {
+                // Ação ao clicar no ícone de informação
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.settings, color: Color(0xFFC6D687)),
+              iconSize: 30,
+              onPressed: () {
+                // Ação ao clicar no ícone de configuração
+              },
+            ),
+          ],
+        ),
       ),
+      body: const Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.all(40.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Tome sempre seus ',
+                  style: TextStyle(fontSize: 22),
+                ),
+                Text(
+                  'medicamentos:',
+                  style: TextStyle(fontSize: 34, fontWeight: FontWeight.bold),
+                ),
+                // Aqui você pode adicionar widgets adicionais para exibir a lista de
+                // medicamentos ou outras informações relevantes.
+              ],
+            ),
+          ),
+        ],
+      ),
+      floatingActionButton: ClipOval(
+  child: FloatingActionButton(
+    onPressed: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (contextNew) => FormScreen(taskContext: context),
+        ),
+      );
+    },
+    child: const Icon(Icons.add, color: Colors.white),
+    backgroundColor: const Color(0xFFC6D687), // Alteração da cor de fundo
+  ),
+),
+
     );
   }
 }

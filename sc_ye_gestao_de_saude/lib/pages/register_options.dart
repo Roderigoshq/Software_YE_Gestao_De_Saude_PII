@@ -293,7 +293,7 @@ class RegisterOptions extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    InitialScreen()
+                                    const InitialScreen()
                                     ),
                           );
                         },
