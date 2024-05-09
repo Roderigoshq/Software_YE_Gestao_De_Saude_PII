@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:sc_ye_gestao_de_saude/firebase_options.dart';
-import 'package:sc_ye_gestao_de_saude/pages/data_page.dart';
+import 'package:sc_ye_gestao_de_saude/pages/chat_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/loading_page.dart';
 
 void main() async {
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: DadosPage(),
+      home: LoadingScreen(),
     );
   }
 }

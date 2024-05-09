@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:sc_ye_gestao_de_saude/components/custom_tab.dart';
+import 'package:sc_ye_gestao_de_saude/pages/chat_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/consult_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/data_page.dart';
+import 'package:sc_ye_gestao_de_saude/pages/pages2/initial_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -15,13 +16,12 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
   static const List<Widget> _pages = <Widget>[
-  DadosPage(),
-  Consult(),
-  DadosPage(),
-  DadosPage(),
-  DadosPage(),
-
-];
+    DadosPage(),
+    Consult(),
+    DadosPage(),
+    DadosPage(),
+    InitialScreen(),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +49,10 @@ class _HomePageState extends State<HomePage> {
                 ),
                 iconSize: 30,
                 onPressed: () {
-                  // Ação ao clicar no ícone de informação
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ChatPage()),
+                  );
                 },
               ),
               IconButton(

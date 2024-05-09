@@ -1,6 +1,5 @@
- import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:sc_ye_gestao_de_saude/pages/pages2/form_screen.dart';
-
 
 class InitialScreen extends StatefulWidget {
   const InitialScreen({super.key});
@@ -12,7 +11,7 @@ class InitialScreen extends StatefulWidget {
 class _HomeScreenState extends State<InitialScreen> {
   void _openIconButtonPressed() {
     showModalBottomSheet(
-      isScrollControlled: true,
+      isScrollControlled: false,
       context: context,
       builder: (ctx) => FormScreen(),
     );

@@ -43,6 +43,10 @@ dependencies:
   intl: ^0.19.0
   firebase_database: ^10.5.4
   uuid: ^4.4.0
+  flutter_spinkit: ^5.2.1
+  http: ^1.2.1
+  provider: ^6.1.2
+  animated_text_kit: ^4.2.2
 
 dev_dependencies:
   flutter_test:
@@ -71,6 +75,7 @@ flutter:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
   assets:
+  - lib/assets/Logo_gestao_de_saude 2.png
   - lib/assets/Logo_gestao_de_saude.png
   - lib/assets/Google__G__logo 1.png
   - lib/assets/fb_icon_325x325 (1) 1.png
