@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sc_ye_gestao_de_saude/pages/chat_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/consult_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/data_page.dart';
-import 'package:sc_ye_gestao_de_saude/pages/pages2/initial_screen.dart';
+import 'package:sc_ye_gestao_de_saude/pages/initial_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -20,7 +20,7 @@ class _HomePageState extends State<HomePage> {
     Consult(),
     DadosPage(),
     DadosPage(),
-    InitialScreen(),
+    InitialScreen()
   ];
 
   @override

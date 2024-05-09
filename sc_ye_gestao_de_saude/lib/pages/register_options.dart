@@ -4,8 +4,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sc_ye_gestao_de_saude/pages/about_us.dart';
 import 'package:sc_ye_gestao_de_saude/pages/home_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/login_page.dart';
-import 'package:sc_ye_gestao_de_saude/pages/pages2/form_screen.dart';
-import 'package:sc_ye_gestao_de_saude/pages/pages2/initial_screen.dart';
+import 'package:sc_ye_gestao_de_saude/pages/form_screen.dart';
+import 'package:sc_ye_gestao_de_saude/pages/initial_screen.dart';
 import 'package:sc_ye_gestao_de_saude/pages/politica.dart';
 import 'package:sc_ye_gestao_de_saude/pages/register.dart';
 
