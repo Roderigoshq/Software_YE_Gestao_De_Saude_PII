@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:sc_ye_gestao_de_saude/firebase_options.dart';
 import 'package:sc_ye_gestao_de_saude/pages/chat_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/loading_page.dart';
+import 'package:sc_ye_gestao_de_saude/pages/form_screen.dart';
+import 'package:sc_ye_gestao_de_saude/pages/initial_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
