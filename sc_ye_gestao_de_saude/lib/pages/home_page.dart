@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sc_ye_gestao_de_saude/pages/camera.dart';
 import 'package:sc_ye_gestao_de_saude/pages/chat_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/consult_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/data_page.dart';
@@ -20,7 +21,8 @@ class _HomePageState extends State<HomePage> {
     Consult(),
     DadosPage(),
     DadosPage(),
-    InitialScreen()
+    InitialScreen(),
+    CameraScreen()
   ];
 
   @override
