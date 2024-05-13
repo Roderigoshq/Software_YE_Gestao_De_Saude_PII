@@ -1,63 +1,105 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sc_ye_gestao_de_saude/pages/about_us.dart';
 import 'package:sc_ye_gestao_de_saude/pages/home_page.dart';
-import 'package:sc_ye_gestao_de_saude/pages/login_page.dart';
-import 'package:sc_ye_gestao_de_saude/pages/form_screen.dart';
 import 'package:sc_ye_gestao_de_saude/pages/initial_screen.dart';
+import 'package:sc_ye_gestao_de_saude/pages/login_page.dart';
+import 'package:sc_ye_gestao_de_saude/pages/pages2/initial_screen.dart';
 import 'package:sc_ye_gestao_de_saude/pages/politica.dart';
 import 'package:sc_ye_gestao_de_saude/pages/register.dart';
+import 'package:sc_ye_gestao_de_saude/services/user_data_service.dart';
 
 class RegisterOptions extends StatelessWidget {
-  const RegisterOptions({super.key});
+  RegisterOptions({super.key});
+  final UserDataService _userDataService = UserDataService();
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   // GOOGLE
 
-  Future<void> loginWithGoogle(BuildContext context) async {
-    final GoogleSignIn googleSignIn = GoogleSignIn();
+  // loginWithGoogle(BuildContext context) async {
+  //   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
+  //   try {
+  //     final GoogleSignInAccount? googleSignInAccount =
+  //         await _googleSignIn.signIn();
+  //     print('chegou aqui');
+  //     if (googleSignInAccount != null) {
+  //       final GoogleSignInAuthentication googleSignInAuthentication =
+  //           await googleSignInAccount.authentication;
+
+  //       final AuthCredential credential = GoogleAuthProvider.credential(
+  //         idToken: googleSignInAuthentication.idToken,
+  //         accessToken: googleSignInAuthentication.accessToken,
+  //       );
+
+  //       await _firebaseAuth.signInWithCredential(credential);
+
+  //       Navigator.push(
+  //         context,
+  //         MaterialPageRoute(builder: (context) => const LoginPage()),
+  //       );
+  //     } else {
+  //       print('Login com Google cancelado.');
+  //     }
+  //   } catch (error) {
+  //     print('Erro ao fazer login com o Google: $error');
+  //   }
+  // }
+
+  signInWithGoogle(BuildContext context) async {
     try {
-      final GoogleSignInAccount? googleSignInAccount =
-          await googleSignIn.signIn();
-      if (googleSignInAccount != null) {
-        // Sucesso ao fazer login com o Google
-        // Você pode prosseguir com o que deseja fazer após o login bem-sucedido
-        // Por exemplo, navegar para a próxima tela
-        Navigator.push(
+      final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
+      final GoogleSignInAuthentication gAuth = await gUser!.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        idToken: gAuth.idToken,
+        accessToken: gAuth.accessToken,
+      );
+
+      final authResult =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+
+      if (authResult.user != null) {
+        Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const LoginPage()),
+          MaterialPageRoute(builder: (context) => HomePage()),
         );
-      } else {
-        // Cancelado pelo usuário
-        print('Login com Google cancelado.');
       }
     } catch (error) {
-      // Tratar erros de autenticação do Google
       print('Erro ao fazer login com o Google: $error');
     }
   }
 
   // FACEBOOK
 
-  Future<void> _loginWithFacebook(BuildContext context) async {
-    try {
-      final permissions = ['email', 'public_profile'];
-      final LoginResult result =
-          await FacebookAuth.instance.login(permissions: permissions);
+  Future<void> signInWithFacebook(BuildContext context) async {
+  final LoginResult loginResult = await FacebookAuth.instance
+      .login(permissions: ['email', 'public_profile']);
 
-      if (result.status == LoginStatus.success) {
-        // Sucesso ao fazer login com o Facebook
-        // Faça o que precisar aqui, como navegar para a próxima tela
-      } else {
-        // O usuário cancelou o login ou ocorreu um erro
-        print('Login com Facebook cancelado ou falhou.');
-      }
-    } catch (error) {
-      // Tratar erros de autenticação do Facebook
-      print('Erro ao fazer login com o Facebook: $error');
+  final userData = await FacebookAuth.instance.getUserData();
+
+  final userEmail = userData['email'];
+
+  final OAuthCredential facebookAuthCredential =
+      FacebookAuthProvider.credential(loginResult.accessToken!.token);
+
+  try {
+    final authResult = await FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+
+    if (authResult.user != null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+      );
     }
+  } catch (e) {
+    print("Erro ao fazer login com o Facebook: $e");
+    // Trate o erro adequadamente, como exibindo uma mensagem de erro para o usuário.
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -143,7 +185,7 @@ class RegisterOptions extends StatelessWidget {
                       margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
                       child: ElevatedButton(
                         onPressed: () {
-                          loginWithGoogle(context);
+                          signInWithGoogle(context);
                         },
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.fromLTRB(10, 25, 10, 25),
@@ -193,7 +235,7 @@ class RegisterOptions extends StatelessWidget {
                       margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
                       child: ElevatedButton(
                         onPressed: () {
-                          _loginWithFacebook(context);
+                          signInWithFacebook(context);
                         },
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.fromLTRB(10, 25, 10, 25),
@@ -292,9 +334,7 @@ class RegisterOptions extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    const InitialScreen()
-                                    ),
+                                builder: (context) => const InitialScreen()),
                           );
                         },
                         child: const Text("medicações")),

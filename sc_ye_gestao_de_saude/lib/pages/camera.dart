@@ -56,17 +56,17 @@ class _CameraScreenState extends State<CameraScreen> {
     }
   }
 
-  Future<void> _pickImage() async {
-    final pickedFile = await ImagePicker().getImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _imageFile = pickedFile;
-      });
+  // Future<void> _pickImage() async {
+  //   final pickedFile = await ImagePicker().getImage(source: ImageSource.gallery);
+  //   if (pickedFile != null) {
+  //     setState(() {
+  //       _imageFile = pickedFile;
+  //     });
 
-      // Analisar a imagem quando selecionada da galeria
-      await analyzeImage(File(pickedFile.path).readAsBytesSync());
-    }
-  }
+  //     // Analisar a imagem quando selecionada da galeria
+  //     await analyzeImage(File(pickedFile.path).readAsBytesSync());
+  //   }
+  // }
 
   Future<void> analyzeImage(Uint8List imageBytes) async {
     final url = 'URL_DA_SUA_API/analisar_imagem'; // Substitua pela URL da sua API
