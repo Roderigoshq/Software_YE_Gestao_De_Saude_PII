@@ -1,0 +1,1 @@
+ C:\\Users\\rodri\\OneDrive\\Documentos\\GitHub\\Software_YE_Gestao_De_Saude\\sc_ye_gestao_de_saude\\.dart_tool\\flutter_build\\cb6ca1ca5aefb1d67bd340e82194df80\\native_assets.yaml: 
