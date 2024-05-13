@@ -6,7 +6,6 @@ import 'package:sc_ye_gestao_de_saude/pages/about_us.dart';
 import 'package:sc_ye_gestao_de_saude/pages/home_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/initial_screen.dart';
 import 'package:sc_ye_gestao_de_saude/pages/login_page.dart';
-import 'package:sc_ye_gestao_de_saude/pages/pages2/initial_screen.dart';
 import 'package:sc_ye_gestao_de_saude/pages/politica.dart';
 import 'package:sc_ye_gestao_de_saude/pages/register.dart';
 import 'package:sc_ye_gestao_de_saude/services/user_data_service.dart';
@@ -17,36 +16,6 @@ class RegisterOptions extends StatelessWidget {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   // GOOGLE
-
-  // loginWithGoogle(BuildContext context) async {
-  //   final GoogleSignIn _googleSignIn = GoogleSignIn();
-
-  //   try {
-  //     final GoogleSignInAccount? googleSignInAccount =
-  //         await _googleSignIn.signIn();
-  //     print('chegou aqui');
-  //     if (googleSignInAccount != null) {
-  //       final GoogleSignInAuthentication googleSignInAuthentication =
-  //           await googleSignInAccount.authentication;
-
-  //       final AuthCredential credential = GoogleAuthProvider.credential(
-  //         idToken: googleSignInAuthentication.idToken,
-  //         accessToken: googleSignInAuthentication.accessToken,
-  //       );
-
-  //       await _firebaseAuth.signInWithCredential(credential);
-
-  //       Navigator.push(
-  //         context,
-  //         MaterialPageRoute(builder: (context) => const LoginPage()),
-  //       );
-  //     } else {
-  //       print('Login com Google cancelado.');
-  //     }
-  //   } catch (error) {
-  //     print('Erro ao fazer login com o Google: $error');
-  //   }
-  // }
 
   signInWithGoogle(BuildContext context) async {
     try {

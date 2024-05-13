@@ -1,92 +1,73 @@
 import 'package:flutter/material.dart';
 
-/// Flutter code sample for [ExpansionPanelList].
+class Novals extends StatefulWidget {
+  @override
+  _NovalsState createState()
+  {
+    return _NovalsState();
+  }
+}
 
-void main() => runApp(const ExpansionPanelListExampleApp());
-
-class ExpansionPanelListExampleApp extends StatelessWidget {
-  const ExpansionPanelListExampleApp({super.key});
-
+class _NovalsState extends State<Novals> {
+  var _test = "Full Screen";
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('ExpansionPanelList Sample')),
-        body: const ExpansionPanelListExample(),
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: ListView.builder(
+          itemCount: 10,
+          itemBuilder: (context, index){
+            return StoryWidget(story: {},);
+          }
       ),
     );
   }
 }
 
-// stores ExpansionPanel state information
-class Item {
-  Item({
-    required this.expandedValue,
-    required this.headerValue,
-    this.isExpanded = false,
-  });
-
-  String expandedValue;
-  String headerValue;
-  bool isExpanded;
-}
-
-List<Item> generateItems(int numberOfItems) {
-  return List<Item>.generate(numberOfItems, (int index) {
-    return Item(
-      headerValue: 'Panel $index',
-      expandedValue: 'This is item number $index',
-    );
-  });
-}
-
-class ExpansionPanelListExample extends StatefulWidget {
-  const ExpansionPanelListExample({super.key});
+class StoryWidget extends StatefulWidget {
+  final Map<String, dynamic> story;
+  const StoryWidget({Key? key, required this.story}) : super(key: key);
 
   @override
-  State<ExpansionPanelListExample> createState() =>
-      _ExpansionPanelListExampleState();
+  _StoryWidgetState createState() => _StoryWidgetState();
 }
 
-class _ExpansionPanelListExampleState extends State<ExpansionPanelListExample> {
-  final List<Item> _data = generateItems(8);
+class _StoryWidgetState extends State<StoryWidget> {  
+bool _expanded = false;
 
-  @override
+@override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        child: _buildPanel(),
-      ),
-    );
-  }
-
-  Widget _buildPanel() {
-    return ExpansionPanelList(
-      expansionCallback: (int index, bool isExpanded) {
-        setState(() {
-          _data[index].isExpanded = isExpanded;
-        });
-      },
-      children: _data.map<ExpansionPanel>((Item item) {
-        return ExpansionPanel(
-          headerBuilder: (BuildContext context, bool isExpanded) {
-            return ListTile(
-              title: Text(item.headerValue),
-            );
-          },
-          body: ListTile(
-              title: Text(item.expandedValue),
-              subtitle:
-                  const Text('To delete this panel, tap the trash can icon'),
-              trailing: const Icon(Icons.delete),
-              onTap: () {
-                setState(() {
-                  _data.removeWhere((Item currentItem) => item == currentItem);
-                });
-              }),
-          isExpanded: item.isExpanded,
-        );
-      }).toList(),
+    return Column(
+        children: [
+          Center(
+            child: Container(
+              margin: EdgeInsets.all(10),
+              color: Colors.green,
+              child: ExpansionPanelList(
+                animationDuration: Duration(milliseconds: 2000),
+                children: [
+                  ExpansionPanel(
+                    headerBuilder: (context, isExpanded) {
+                      return ListTile(
+                        title: Text(widget.story["name"], style: TextStyle(color: Colors.black),),
+                      );
+                    },
+                    body:ListTile(
+                      title: Text(widget.story["lines"],style: TextStyle(color: Colors.black)),
+                    ),
+                    isExpanded: _expanded,
+                    canTapOnHeader: true,
+                  ),
+                ],
+                dividerColor: Colors.grey,
+                expansionCallback: (panelIndex, isExpanded) {
+                  _expanded = !_expanded;
+                  setState(() {});
+                },
+              ),
+            ),
+          ),
+        ]
     );
   }
 }

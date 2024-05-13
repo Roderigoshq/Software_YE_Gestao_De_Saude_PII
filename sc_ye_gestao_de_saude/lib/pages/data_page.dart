@@ -41,7 +41,7 @@ class _DadosPageState extends State<DadosPage>
       context: context,
       initialDate: _selectedDate ?? DateTime.now(),
       firstDate: DateTime(1900),
-      lastDate: DateTime(2050),
+      lastDate: DateTime.now(),
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: theme.copyWith(
@@ -210,70 +210,7 @@ class _DadosPageState extends State<DadosPage>
                   child: TabBarView(
                     controller: _tabController,
                     children: [
-                      SingleChildScrollView(
-                        child: StreamBuilder(
-                          stream: _pressureAdd.screamPressure(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            } else {
-                              if (snapshot.hasData) {
-                                for (var doc in snapshot.data!.docs) {
-                                  PressureModel pressure =
-                                      PressureModel.fromMap(doc.data());
-                                  pressureList.add(pressure);
-                                }
-                                return Column(
-                                  children: pressureList.map((pressureModel) {
-                                    return ExpansionPanelList(
-                                      expansionCallback:
-                                          (int index, bool isExpanded) {
-  
-                                        setState(() {
-                                           pressureList[index].isExpanded = !isExpanded;
-                                        });
-                                      },
-                                      children: [
-                                        ExpansionPanel(
-                                          headerBuilder: (BuildContext context,
-                                              bool isExpanded) {
-                                            return ListTile(
-                                              title: Text(
-                                                pressureModel.date,
-                                                style: const TextStyle(
-                                                  fontFamily: 'Poppins',
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                          body: ListTile(
-                                            title: Text(
-                                              'Diastolic: ${pressureModel.diastolic} - Sistolic: ${pressureModel.sistolic}',
-                                              style: const TextStyle(
-                                                fontFamily: 'Poppins',
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                          ),
-                                          isExpanded: pressureModel.isExpanded,
-                                        ),
-                                      ],
-                                    );
-                                  }).toList(),
-                                );
-                              } else {
-                                return const Center(
-                                  child: Text("Não há nenhum item"),
-                                );
-                              }
-                            }
-                          },
-                        ),
-                      ),
+                      ExtensionPanelPressure(),
 
                       // Conteúdo da aba Glicemia
                       Center(
@@ -365,12 +302,12 @@ class _DadosPageState extends State<DadosPage>
                                     children: [
                                       Expanded(
                                         child: TextField(
-                                          controller: _diastolicController,
+                                          controller: _sistolicController,
                                           onChanged: (value) {
                                             // Lógica para o primeiro TextField
                                           },
                                           decoration: const InputDecoration(
-                                            hintText: 'Pressão Diastólica',
+                                            hintText: 'Pressão sistólica',
                                             focusedBorder: UnderlineInputBorder(
                                               borderSide: BorderSide(
                                                   color: Color.fromRGBO(
@@ -396,12 +333,12 @@ class _DadosPageState extends State<DadosPage>
                                       ),
                                       Expanded(
                                         child: TextField(
-                                          controller: _sistolicController,
+                                          controller: _diastolicController,
                                           onChanged: (value) {
                                             // Lógica para o primeiro TextField
                                           },
                                           decoration: const InputDecoration(
-                                            hintText: 'Pressão Sistólica',
+                                            hintText: 'Pressão Diastólica',
                                             focusedBorder: UnderlineInputBorder(
                                               borderSide: BorderSide(
                                                   color: Color.fromRGBO(
@@ -436,8 +373,8 @@ class _DadosPageState extends State<DadosPage>
                                             Navigator.pop(context);
                                           },
                                           style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.red,
-                                            foregroundColor: Colors.white,
+                          backgroundColor: Color.fromARGB(255, 245, 245, 245),
+                          foregroundColor: Color.fromARGB(255, 63, 63, 63),
                                           ),
                                           child: const Text(
                                             'Cancelar',
@@ -455,14 +392,15 @@ class _DadosPageState extends State<DadosPage>
                                         child: ElevatedButton(
                                           onPressed: () {
                                             addPressure();
+                                            setState(() {
+                                              
+                                            });
                                           },
                                           style: ElevatedButton.styleFrom(
-                                            backgroundColor:
-                                                const Color.fromARGB(
-                                                    255, 255, 255, 255),
-                                            foregroundColor:
-                                                const Color.fromARGB(
-                                                    255, 77, 77, 77),
+                          backgroundColor:
+                          Color.fromRGBO(136, 149, 83, 1),
+                          foregroundColor:
+                          Colors.white,
                                           ),
                                           child: const Text(
                                             'Adicionar',

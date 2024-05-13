@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "455781150466-5oivs2ntnqn751leni7oqsn2rhcvmo9v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.sc_gestao_de_saude",
+            "certificate_hash": "aaada62377742e28a34b9f67fb1d7555b9a38bd6"
+          }
+        },
+        {
           "client_id": "455781150466-qsa85r01kmbi8kdv4rjsjvhrtkf35sp8.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -30,6 +38,13 @@
             {
               "client_id": "455781150466-qsa85r01kmbi8kdv4rjsjvhrtkf35sp8.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "455781150466-30tsp8i2gg84t5jpit25akp01cm0hu7n.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.yeGestaoDeSaude"
+              }
             }
           ]
         }
@@ -59,6 +74,13 @@
             {
               "client_id": "455781150466-qsa85r01kmbi8kdv4rjsjvhrtkf35sp8.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "455781150466-30tsp8i2gg84t5jpit25akp01cm0hu7n.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.yeGestaoDeSaude"
+              }
             }
           ]
         }
