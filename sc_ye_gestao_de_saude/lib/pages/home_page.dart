@@ -4,7 +4,7 @@ import 'package:sc_ye_gestao_de_saude/pages/camera.dart';
 import 'package:sc_ye_gestao_de_saude/pages/chat_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/consult_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/data_page.dart';
-import 'package:sc_ye_gestao_de_saude/pages/initial_screen.dart';
+import 'package:sc_ye_gestao_de_saude/pages/medication_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -20,8 +20,8 @@ class _HomePageState extends State<HomePage> {
     DadosPage(),
     Consult(),
     DadosPage(),
+    MedicationPage(),
     DadosPage(),
-    InitialScreen(),
     CameraScreen()
   ];
 
