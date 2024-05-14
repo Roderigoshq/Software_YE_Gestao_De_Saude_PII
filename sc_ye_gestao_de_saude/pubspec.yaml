@@ -54,6 +54,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   table_calendar: ^3.0.1  
+  fake_cloud_firestore: ^2.5.1
+  firebase_auth_mocks: ^0.13.0
+  mockito: ^5.4.4
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

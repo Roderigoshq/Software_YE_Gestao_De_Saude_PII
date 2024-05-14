@@ -49,7 +49,6 @@ class _CameraScreenState extends State<CameraScreen> {
         _imageFile = imageFile;
       });
 
-      // Analisar a imagem quando capturada
       await analyzeImage(File(imageFile.path).readAsBytesSync());
     } catch (e) {
       print(e);
@@ -69,20 +68,18 @@ class _CameraScreenState extends State<CameraScreen> {
   // }
 
   Future<void> analyzeImage(Uint8List imageBytes) async {
-    final url = 'URL_DA_SUA_API/analisar_imagem'; // Substitua pela URL da sua API
+    final url = 'URL_DA_SUA_API/analisar_imagem';
 
     try {
       // Codificar a imagem para base64
       String base64Image = base64Encode(imageBytes);
 
-      // Fazer uma solicitação POST para a API com a imagem codificada
       final response = await http.post(
         Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'image': base64Image}),
       );
 
-      // Verificar se a solicitação foi bem-sucedida e exibir o resultado
       if (response.statusCode == 200) {
         Map<String, dynamic> data = jsonDecode(response.body);
         print('Resultado da análise: ${data['result']}');

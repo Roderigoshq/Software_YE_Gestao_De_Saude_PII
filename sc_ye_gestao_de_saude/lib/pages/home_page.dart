@@ -1,3 +1,4 @@
+import 'package:fake_cloud_firestore/src/fake_cloud_firestore_instance.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sc_ye_gestao_de_saude/pages/camera.dart';
