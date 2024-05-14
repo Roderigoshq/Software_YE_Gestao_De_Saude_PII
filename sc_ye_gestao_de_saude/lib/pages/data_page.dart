@@ -2,8 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sc_ye_gestao_de_saude/components/custom_tab.dart';
+import 'package:sc_ye_gestao_de_saude/models/glucose_model.dart';
 import 'package:sc_ye_gestao_de_saude/models/pressure_model.dart';
+import 'package:sc_ye_gestao_de_saude/models/weight_height_model.dart';
+import 'package:sc_ye_gestao_de_saude/services/glucose_service.dart';
 import 'package:sc_ye_gestao_de_saude/services/pressure_service.dart';
+import 'package:sc_ye_gestao_de_saude/services/weight_height_service.dart';
 import 'package:uuid/uuid.dart';
 
 class DadosPage extends StatefulWidget {
@@ -15,19 +19,42 @@ class DadosPage extends StatefulWidget {
 
 class _DadosPageState extends State<DadosPage>
     with SingleTickerProviderStateMixin {
+  PressureModel? latestPressure;
+  GlucoseModel? latestGlucose;
+  WeightHeightModel? latestWeight;
+
+  String calculateIMC(int? weight, int? height) {
+    if (weight != null && height != null && height != 0) {
+      double heightInMeters = height / 100;
+      double bmi = weight / (heightInMeters * heightInMeters);
+      return bmi.toStringAsFixed(1);
+    } else {
+      return '-';
+    }
+  }
+
+  Future<void> _fetchLatestWeight() async {
+    final weightHeightAdd = WeightHeightAdd();
+    final latestWeight = await weightHeightAdd.getLatestWeight();
+    setState(() {
+      this.latestWeight = latestWeight; // Atualiza o estado com os dados mais recentes
+    });
+  }
+
   late TabController _tabController;
   late DateTime? _selectedDate;
   late TextEditingController _selectedDateController;
   final TextEditingController _sistolicController = TextEditingController();
   final TextEditingController _diastolicController = TextEditingController();
+  final TextEditingController _glucoseController = TextEditingController();
+  final TextEditingController _weightController = TextEditingController();
+  final TextEditingController _heightController = TextEditingController();
   final DateFormat _dateFormat = DateFormat('dd/MM/yyyy');
-
-  List<PressureModel> pressureList = [];
-  PressureModel? pressureModel;
 
   @override
   void initState() {
     super.initState();
+    _fetchLatestWeight();
     _selectedDate = null;
     _tabController = TabController(length: 4, vsync: this);
     _selectedDateController = TextEditingController();
@@ -93,13 +120,63 @@ class _DadosPageState extends State<DadosPage>
     _selectedDateController.clear();
 
     _pressureAdd.addPressure(pressure);
+    latestPressure = pressure;
+  }
+
+  final WeightHeightAdd _weightHeightAdd = WeightHeightAdd();
+
+  addWeightHeight() {
+    String date = _dateFormat.format(_selectedDate!);
+    String weightString = _weightController.text;
+    int weight = int.tryParse(weightString) ?? 0;
+    String heightString = _heightController.text;
+    int height = int.tryParse(heightString) ?? 0;
+    bool isExpanded = false;
+
+    WeightHeightModel weightHeights = WeightHeightModel(
+        id: const Uuid().v1(),
+        date: date,
+        weight: weight,
+        height: height,
+        isExpanded: isExpanded);
+
+    Navigator.pop(context);
+
+    _weightController.clear();
+    _heightController.clear();
+    _selectedDateController.clear();
+
+    _weightHeightAdd.addWeightHeight(weightHeights);
+    latestWeight = weightHeights;
+  }
+
+  final GlucoseAdd _glucoseAdd = GlucoseAdd();
+
+  addGlucose() {
+    String date = _dateFormat.format(_selectedDate!);
+    String glucoseString = _glucoseController.text;
+    int glucose = int.tryParse(glucoseString) ?? 0;
+    bool isExpanded = false;
+
+    GlucoseModel glucoses = GlucoseModel(
+        id: const Uuid().v1(),
+        date: date,
+        glucose: glucose,
+        isExpanded: isExpanded);
+
+    Navigator.pop(context);
+
+    _glucoseController.clear();
+    _selectedDateController.clear();
+
+    _glucoseAdd.addGlucose(glucoses);
+    latestGlucose = glucoses;
   }
 
   @override
   Widget build(BuildContext context) {
     User? user = FirebaseAuth.instance.currentUser;
     String userName = user != null ? user.displayName?.split(' ')[0] ?? '' : '';
-
     return DefaultTabController(
       length: 4,
       initialIndex: 0,
@@ -199,11 +276,24 @@ class _DadosPageState extends State<DadosPage>
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
-                  tabs: const [
-                    CustomTab(text: 'Pressão', subText: '150x100'),
-                    CustomTab(text: 'Glicemia', subText: '85mg/Dl'),
-                    CustomTab(text: 'Peso & Altura', subText: '90kg; 1,70m'),
-                    CustomTab(text: 'IMC', subText: '31,4'),
+                  tabs: [
+                    CustomTab(
+                        text: 'Pressão',
+                        subText:
+                            '${latestPressure?.sistolic ?? '-'}x${latestPressure?.diastolic ?? '-'}'),
+                    CustomTab(
+                      text: 'Glicemia',
+                      subText: '${latestGlucose?.glucose ?? '-'}mg/Dl',
+                    ),
+                    CustomTab(
+                      text: 'Peso & Altura',
+                      subText:
+                          '${latestWeight?.weight ?? '-'}kg; ${latestWeight?.height ?? '-'}m',
+                    ),
+                    CustomTab(
+                        text: 'IMC',
+                        subText:
+                            '${calculateIMC(latestWeight?.weight, latestWeight?.height)}'),
                   ],
                 ),
                 Expanded(
@@ -213,19 +303,9 @@ class _DadosPageState extends State<DadosPage>
                       ExtensionPanelPressure(),
 
                       // Conteúdo da aba Glicemia
-                      Center(
-                        child: Container(
-                          color: const Color.fromRGBO(248, 248, 248, 1),
-                          child: const Text('Conteúdo da aba Glicemia'),
-                        ),
-                      ),
+                      ExtensionPanelGlucose(),
                       // Conteúdo da aba Peso & Altura
-                      Center(
-                        child: Container(
-                          color: const Color.fromRGBO(248, 248, 248, 1),
-                          child: const Text('Conteúdo da aba Peso & Altura'),
-                        ),
-                      ),
+                      ExtensionPanelWeightHeight(),
                       // Conteúdo da aba IMC
                       Center(
                         child: Container(
@@ -373,8 +453,10 @@ class _DadosPageState extends State<DadosPage>
                                             Navigator.pop(context);
                                           },
                                           style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromARGB(255, 245, 245, 245),
-                          foregroundColor: Color.fromARGB(255, 63, 63, 63),
+                                            backgroundColor: Color.fromARGB(
+                                                255, 245, 245, 245),
+                                            foregroundColor:
+                                                Color.fromARGB(255, 63, 63, 63),
                                           ),
                                           child: const Text(
                                             'Cancelar',
@@ -392,15 +474,12 @@ class _DadosPageState extends State<DadosPage>
                                         child: ElevatedButton(
                                           onPressed: () {
                                             addPressure();
-                                            setState(() {
-                                              
-                                            });
+                                            setState(() {});
                                           },
                                           style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                          Color.fromRGBO(136, 149, 83, 1),
-                          foregroundColor:
-                          Colors.white,
+                                            backgroundColor:
+                                                Color.fromRGBO(136, 149, 83, 1),
+                                            foregroundColor: Colors.white,
                                           ),
                                           child: const Text(
                                             'Adicionar',
@@ -423,10 +502,10 @@ class _DadosPageState extends State<DadosPage>
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return const AlertDialog(
-                            title: Center(
+                          return AlertDialog(
+                            title: const Center(
                               child: Text(
-                                'Adicionar Glicose',
+                                'Adicionar Glicemia',
                                 style: TextStyle(
                                   fontFamily: 'Poppins',
                                   fontSize: 18,
@@ -434,14 +513,117 @@ class _DadosPageState extends State<DadosPage>
                                 ),
                               ),
                             ),
-                            contentPadding: EdgeInsets.symmetric(
+                            contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 24, vertical: 20),
                             content: SingleChildScrollView(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  // Conteúdo para adicionar glicose
+                                  TextField(
+                                    readOnly: true,
+                                    onTap: () => _selectDate(context),
+                                    controller: _selectedDateController,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Data',
+                                      labelStyle: TextStyle(fontSize: 14),
+                                      enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color:
+                                              Color.fromRGBO(196, 196, 196, 1),
+                                        ),
+                                      ),
+                                      focusedBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color:
+                                              Color.fromRGBO(136, 149, 83, 1),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 15),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: TextField(
+                                          controller: _glucoseController,
+                                          onChanged: (value) {
+                                            // Lógica para o primeiro TextField
+                                          },
+                                          decoration: const InputDecoration(
+                                            hintText: 'Glicemia',
+                                            focusedBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Color.fromRGBO(
+                                                      136, 149, 83, 1)),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 20,
+                                      ),
+                                      Text(
+                                        'mg/Dl',
+                                        style: TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontWeight: FontWeight.w600,
+                                          color:
+                                              Color.fromARGB(255, 88, 88, 88),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 17,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Color.fromARGB(
+                                                255, 245, 245, 245),
+                                            foregroundColor:
+                                                Color.fromARGB(255, 63, 63, 63),
+                                          ),
+                                          child: const Text(
+                                            'Cancelar',
+                                            style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            addGlucose();
+                                            setState(() {});
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                Color.fromRGBO(136, 149, 83, 1),
+                                            foregroundColor: Colors.white,
+                                          ),
+                                          child: const Text(
+                                            'Adicionar',
+                                            style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ],
                               ),
                             ),
@@ -452,8 +634,8 @@ class _DadosPageState extends State<DadosPage>
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return const AlertDialog(
-                            title: Center(
+                          return AlertDialog(
+                            title: const Center(
                               child: Text(
                                 'Adicionar Peso & Altura',
                                 style: TextStyle(
@@ -470,7 +652,117 @@ class _DadosPageState extends State<DadosPage>
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  // Conteúdo para adicionar peso e altura
+                                  TextField(
+                                    readOnly: true,
+                                    onTap: () => _selectDate(context),
+                                    controller: _selectedDateController,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Data',
+                                      labelStyle: TextStyle(fontSize: 14),
+                                      enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color:
+                                              Color.fromRGBO(196, 196, 196, 1),
+                                        ),
+                                      ),
+                                      focusedBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color:
+                                              Color.fromRGBO(136, 149, 83, 1),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 15),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: TextField(
+                                          controller: _weightController,
+                                          onChanged: (value) {
+                                            // Lógica para o primeiro TextField
+                                          },
+                                          decoration: const InputDecoration(
+                                            hintText: 'Peso',
+                                            focusedBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Color.fromRGBO(
+                                                      136, 149, 83, 1)),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 20,
+                                      ),
+                                      Expanded(
+                                        child: TextField(
+                                          controller: _heightController,
+                                          onChanged: (value) {
+                                            // Lógica para o primeiro TextField
+                                          },
+                                          decoration: const InputDecoration(
+                                            hintText: 'Altura',
+                                            focusedBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Color.fromRGBO(
+                                                      136, 149, 83, 1)),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Color.fromARGB(
+                                                255, 245, 245, 245),
+                                            foregroundColor:
+                                                Color.fromARGB(255, 63, 63, 63),
+                                          ),
+                                          child: const Text(
+                                            'Cancelar',
+                                            style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            addWeightHeight();
+                                            setState(() {});
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                Color.fromRGBO(136, 149, 83, 1),
+                                            foregroundColor: Colors.white,
+                                          ),
+                                          child: const Text(
+                                            'Adicionar',
+                                            style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ],
                               ),
                             ),
@@ -505,7 +797,7 @@ class _DadosPageState extends State<DadosPage>
                             child: Icon(Icons.add),
                           ),
                           Text(
-                            'Adicionar Glicose',
+                            'Adicionar Glicemia',
                             style: TextStyle(fontSize: 15),
                           ),
                         ],

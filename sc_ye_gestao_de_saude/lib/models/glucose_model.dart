@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:sc_ye_gestao_de_saude/services/pressure_service.dart';
+import 'package:sc_ye_gestao_de_saude/services/glucose_service.dart';
 
-class PressureModel {
+class GlucoseModel {
   String id;
   String date;
-  int diastolic;
-  int sistolic;
+  int glucose;
   bool isExpanded;
 
-  PressureModel({
+  GlucoseModel({
     required this.id,
     required this.date,
-    required this.diastolic,
-    required this.sistolic,
+    required this.glucose,
     required this.isExpanded,
   });
 
@@ -21,54 +19,48 @@ class PressureModel {
     return {
       "id": id,
       "date": date,
-      "diastolic": diastolic,
-      "sistolic": sistolic,
+      "glucose": glucose,
     };
   }
 
-  factory PressureModel.fromMap(Map<String, dynamic> map) {
-    return PressureModel(
+  factory GlucoseModel.fromMap(Map<String, dynamic> map) {
+    return GlucoseModel(
       id: map["id"],
       date: map["date"],
-      diastolic: map["diastolic"],
-      sistolic: map["sistolic"],
+      glucose: map["glucose"],
       isExpanded: false,
     );
   }
 }
 
-Color getColorForPressure(int sistolic, int diastolic) {
-  if (sistolic < 90 && diastolic < 60) {
+Color getColorForGlucose(int glucose) {
+  if (glucose < 70) {
     return const Color.fromRGBO(210, 223, 149, 1);
-  } else if (sistolic < 120 && diastolic < 80) {
+  } else if (glucose >= 70 && glucose < 100) {
     return Color.fromRGBO(136, 149, 83, 1);
-  } else if ((sistolic >= 120 && sistolic < 140) ||
-      (diastolic >= 80 && diastolic < 90)) {
-    return Colors.orange;
-  } else if ((sistolic >= 140 && sistolic < 160) ||
-      (diastolic >= 90 && diastolic < 100)) {
+  } else if ((glucose >= 100 && glucose < 120)) {
     return Color.fromRGBO(244, 94, 94, 1);
   } else {
     return Color.fromRGBO(253, 64, 64, 1);
   }
 }
 
-class ExtensionPanelPressure extends StatefulWidget {
-  const ExtensionPanelPressure({Key? key}) : super(key: key);
+class ExtensionPanelGlucose extends StatefulWidget {
+  const ExtensionPanelGlucose({Key? key}) : super(key: key);
 
   @override
-  State<ExtensionPanelPressure> createState() => _ExtensionPanelPressureState();
+  State<ExtensionPanelGlucose> createState() => _ExtensionPanelGlucoseState();
 }
 
-class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
-  final PressureAdd pressureService = PressureAdd();
+class _ExtensionPanelGlucoseState extends State<ExtensionPanelGlucose> {
+  final GlucoseAdd glucoseService = GlucoseAdd();
   final DateFormat _dateFormat = DateFormat('dd/MM/yyyy');
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<List<PressureModel>>(
-        future: pressureService.fetchPressureModels(),
+      body: FutureBuilder<List<GlucoseModel>>(
+        future: glucoseService.fetchGlucoseModels(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -78,8 +70,8 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
             );
           } else {
             if (snapshot.hasData) {
-              final pressureModels = snapshot.data!;
-              pressureModels.sort((a, b) {
+              final glucoseModels = snapshot.data!;
+              glucoseModels.sort((a, b) {
                 final RegExp dateRegExp = RegExp(r'^\d{2}/\d{2}/\d{4}$');
                 if (dateRegExp.hasMatch(a.date) &&
                     dateRegExp.hasMatch(b.date)) {
@@ -91,14 +83,14 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
                 }
               });
               return ListView.builder(
-                itemCount: pressureModels.length,
+                itemCount: glucoseModels.length,
                 itemBuilder: (context, index) {
-                  final pressure = pressureModels[index];
+                  final glucose = glucoseModels[index];
                   return ExpansionTile(
                     title: Row(
                       children: [
                         Text(
-                          pressure.date,
+                          glucose.date,
                           style: TextStyle(
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w600,
@@ -112,43 +104,43 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
                               PopupMenuItem(
                                 child: Center(
                                     child: Text(
-                                      'Editar',
-                                      style: TextStyle(
-                                          color: Color.fromRGBO(85, 85, 85, 1),
-                                          fontFamily: 'Poppins',
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 15),
-                                    )),
+                                  'Editar',
+                                  style: TextStyle(
+                                      color: Color.fromRGBO(85, 85, 85, 1),
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 15),
+                                )),
                                 value: 'edit',
                               ),
                               PopupMenuItem(
                                 child: Center(
                                     child: Text(
-                                      'Deletar',
-                                      style: TextStyle(
-                                          color: Color.fromRGBO(85, 85, 85, 1),
-                                          fontFamily: 'Poppins',
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 15),
-                                    )),
+                                  'Deletar',
+                                  style: TextStyle(
+                                      color: Color.fromRGBO(85, 85, 85, 1),
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 15),
+                                )),
                                 value: 'delete',
                               ),
                             ];
                           },
                           onSelected: (value) async {
                             if (value == 'edit') {
-                              final updatedPressure =
-                              await _showEditPressureDialog(
-                                  context, pressure);
+                              final updatedGlucose =
+                                  await _showEditGlucoseDialog(
+                                      context, glucose);
 
-                              if (updatedPressure != null) {
-                                await pressureService
-                                    .editPressure(updatedPressure);
+                              if (updatedGlucose != null) {
+                                await glucoseService
+                                    .editGlucose(updatedGlucose);
                                 setState(() {});
                               }
                             } else if (value == 'delete') {
-                                await pressureService.deletePressure(pressure.id);
-                                setState(() {});
+                              await glucoseService.deleteGlucose(glucose.id);
+                              setState(() {});
                             }
                           },
                         ),
@@ -162,14 +154,13 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
                             Container(
                               height: 21,
                               width: 4,
-                              color: getColorForPressure(
-                                  pressure.sistolic, pressure.diastolic),
+                              color: getColorForGlucose(glucose.glucose),
                             ),
                             SizedBox(
                               width: 20,
                             ),
                             Text(
-                              '${pressure.sistolic}X${pressure.diastolic} ',
+                              '${glucose.glucose} ',
                               style: TextStyle(
                                   fontFamily: 'Poppins',
                                   fontWeight: FontWeight.w600,
@@ -177,7 +168,7 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
                                   color: Color.fromRGBO(135, 135, 135, 1)),
                             ),
                             Text(
-                              'mmHg',
+                              'mg/Dl',
                               style: TextStyle(
                                   fontFamily: 'Poppins',
                                   fontWeight: FontWeight.w400,
@@ -188,15 +179,14 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
                             Column(
                               children: [
                                 Text(
-                                  'Sua pressão está',
+                                  'Sua glicemia está',
                                   style: TextStyle(
                                       fontFamily: 'Poppins',
                                       fontSize: 10,
                                       fontWeight: FontWeight.w400,
                                       color: Color.fromRGBO(135, 135, 135, 1)),
                                 ),
-                                getStatusForPressure(
-                                    pressure.sistolic, pressure.diastolic),
+                                getStatusForGlucose(glucose.glucose),
                               ],
                             )
                           ],
@@ -217,23 +207,21 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
     );
   }
 
-  Future<PressureModel?> _showEditPressureDialog(
-      BuildContext context, PressureModel pressure) async {
-    final TextEditingController sistolicController = TextEditingController();
-    final TextEditingController diastolicController = TextEditingController();
+  Future<GlucoseModel?> _showEditGlucoseDialog(
+      BuildContext context, GlucoseModel glucose) async {
+    final TextEditingController glucoseController = TextEditingController();
     final TextEditingController dateController = TextEditingController();
 
-    sistolicController.text = pressure.sistolic.toString();
-    diastolicController.text = pressure.diastolic.toString();
-    dateController.text = pressure.date;
+    glucoseController.text = glucose.glucose.toString();
+    dateController.text = glucose.date;
 
-    return showDialog<PressureModel>(
+    return showDialog<GlucoseModel>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Center(
             child: Text(
-              'Editar Pressão',
+              'Editar Glicemia',
               style: TextStyle(
                 fontFamily: 'Poppins',
                 fontSize: 18,
@@ -242,7 +230,7 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
             ),
           ),
           contentPadding:
-          const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+              const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
           content: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -272,10 +260,10 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
                   children: [
                     Expanded(
                       child: TextField(
-                        controller: sistolicController,
+                        controller: glucoseController,
                         onChanged: (value) {},
                         decoration: const InputDecoration(
-                          hintText: 'Pressão sistólica',
+                          hintText: 'Glicemia',
                           focusedBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
                                 color: Color.fromRGBO(136, 149, 83, 1)),
@@ -283,47 +271,18 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      width: 10,
+                    SizedBox(
+                      width: 20,
                     ),
-                    const Text(
-                      'X',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(255, 70, 70, 70),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Expanded(
-                      child: TextField(
-                        controller: diastolicController,
-                        onChanged: (value) {},
-                        decoration: const InputDecoration(
-                          hintText: 'Pressão Diastólica',
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Color.fromRGBO(136, 149, 83, 1)),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                const Center(
-                  child: Text(
-                    'mmHg',
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w600,
-                      color: Color.fromARGB(255, 88, 88, 88),
-                    ),
+                    Text(
+                  'mg/Dl',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w600,
+                    color: Color.fromARGB(255, 88, 88, 88),
                   ),
+                ),
+                  ],
                 ),
                 const SizedBox(
                   height: 17,
@@ -354,23 +313,18 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          final updatedPressure = PressureModel(
-                            id: pressure.id,
+                          final updatedGlucose = GlucoseModel(
+                            id: glucose.id,
                             date: dateController.text,
-                            sistolic: int.tryParse(sistolicController.text) ??
-                                pressure.sistolic,
-                            diastolic:
-                            int.tryParse(diastolicController.text) ??
-                                pressure.diastolic,
-                            isExpanded: pressure.isExpanded,
+                            glucose: int.tryParse(glucoseController.text) ??
+                                glucose.glucose,
+                            isExpanded: glucose.isExpanded,
                           );
-                          Navigator.of(context).pop(updatedPressure);
+                          Navigator.of(context).pop(updatedGlucose);
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                          Color.fromRGBO(136, 149, 83, 1),
-                          foregroundColor:
-                          Colors.white,
+                          backgroundColor: Color.fromRGBO(136, 149, 83, 1),
+                          foregroundColor: Colors.white,
                         ),
                         child: const Text(
                           'Atualizar',
@@ -402,8 +356,8 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
         return Theme(
           data: ThemeData.light().copyWith(
             colorScheme: ThemeData.light().colorScheme.copyWith(
-              primary: const Color.fromRGBO(136, 149, 83, 1),
-            ),
+                  primary: const Color.fromRGBO(136, 149, 83, 1),
+                ),
           ),
           child: child!,
         );
@@ -415,8 +369,8 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
     }
   }
 
-  Text getStatusForPressure(int sistolic, int diastolic) {
-    if (sistolic < 90 && diastolic < 60) {
+  Text getStatusForGlucose(int glucose) {
+    if (glucose < 70) {
       return Text(
         'Baixa',
         style: TextStyle(
@@ -425,7 +379,7 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
             fontSize: 18,
             color: Color.fromRGBO(85, 85, 85, 1)),
       );
-    } else if (sistolic < 120 && diastolic < 80) {
+    } else if (glucose >= 70 && glucose < 100) {
       return Text(
         'Normal',
         style: TextStyle(
@@ -434,18 +388,8 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
             fontSize: 18,
             color: Color.fromRGBO(85, 85, 85, 1)),
       );
-    } else if ((sistolic >= 120 && sistolic < 140) ||
-        (diastolic >= 80 && diastolic < 90)) {
-      return Text(
-        'Elevada',
-        style: TextStyle(
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w600,
-            fontSize: 18,
-            color: Color.fromRGBO(85, 85, 85, 1)),
-      );
-    } else if ((sistolic >= 140 && sistolic < 160) ||
-        (diastolic >= 90 && diastolic < 100)) {
+    } else if ((glucose >= 100 && glucose < 120) ||
+        (glucose >= 80 && glucose < 90)) {
       return Text(
         'Alta',
         style: TextStyle(
