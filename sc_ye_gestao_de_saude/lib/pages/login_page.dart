@@ -112,7 +112,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   obscureText:
-                      !_senhaVisivel, // Altera a visibilidade da senha com base no estado
+                      !_senhaVisivel,
                 ),
                 const SizedBox(height: 50),
                 ElevatedButton(
@@ -120,11 +120,9 @@ class _LoginPageState extends State<LoginPage> {
                     String email = _emailController.text;
                     String senha = _senhaController.text;
 
-                    // Aguarde o resultado do método de login
                     String? errorMessage =
                         await _autenServico.login(email: email, senha: senha);
 
-                    // Verifique se o login foi bem-sucedido (sem mensagem de erro)
                     if (errorMessage == null) {
                       Navigator.push(
                         context,
@@ -133,7 +131,6 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       );
                     } else {
-                      // Exiba a mensagem de erro ao usuário
                       showSnackBar(
                         context: context,
                         texto: errorMessage,

@@ -13,17 +13,17 @@ class CustomTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start, // Alinhamento superior
-      mainAxisSize: MainAxisSize.min, // Ocupar apenas o espaço mínimo vertical
+      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
         const SizedBox(
           height: 10,
         ),
         Text(
           text,
-          textAlign: TextAlign.center, // Alinhamento central horizontal
+          textAlign: TextAlign.center,
         ), // Texto da aba
-        const SizedBox(height: 2), // Espaçamento entre os textos
+        const SizedBox(height: 2),
         Text(
           subText,
           style: const TextStyle(
@@ -34,7 +34,7 @@ class CustomTab extends StatelessWidget {
         ),
         const SizedBox(
           height: 10,
-        ), // Texto adicional abaixo da aba
+        ),
       ],
     );
   }

@@ -34,12 +34,17 @@ class _DadosPageState extends State<DadosPage>
   }
 
   Future<void> _fetchLatestWeight() async {
-    final weightHeightAdd = WeightHeightAdd();
-    final latestWeight = await weightHeightAdd.getLatestWeight();
+  final weightHeightAdd = WeightHeightAdd();
+  final latestWeight = await weightHeightAdd.getLatestWeight();
+  
+  if (latestWeight != null) {
     setState(() {
-      this.latestWeight = latestWeight; // Atualiza o estado com os dados mais recentes
+      this.latestWeight = latestWeight;
     });
+  } else {
   }
+}
+
 
   late TabController _tabController;
   late DateTime? _selectedDate;
@@ -301,7 +306,6 @@ class _DadosPageState extends State<DadosPage>
                     controller: _tabController,
                     children: [
                       ExtensionPanelPressure(),
-
                       // Conteúdo da aba Glicemia
                       ExtensionPanelGlucose(),
                       // Conteúdo da aba Peso & Altura
@@ -384,7 +388,6 @@ class _DadosPageState extends State<DadosPage>
                                         child: TextField(
                                           controller: _sistolicController,
                                           onChanged: (value) {
-                                            // Lógica para o primeiro TextField
                                           },
                                           decoration: const InputDecoration(
                                             hintText: 'Pressão sistólica',
@@ -415,7 +418,6 @@ class _DadosPageState extends State<DadosPage>
                                         child: TextField(
                                           controller: _diastolicController,
                                           onChanged: (value) {
-                                            // Lógica para o primeiro TextField
                                           },
                                           decoration: const InputDecoration(
                                             hintText: 'Pressão Diastólica',
@@ -699,7 +701,6 @@ class _DadosPageState extends State<DadosPage>
                                         child: TextField(
                                           controller: _heightController,
                                           onChanged: (value) {
-                                            // Lógica para o primeiro TextField
                                           },
                                           decoration: const InputDecoration(
                                             hintText: 'Altura',

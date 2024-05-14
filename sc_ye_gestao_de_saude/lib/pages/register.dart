@@ -245,7 +245,6 @@ class _RegisterState extends State<Register> {
                   const SizedBox(height: 30),
                   ElevatedButton(
                     onPressed: () async {
-                      // Verifica se os campos obrigatórios estão preenchidos
                       if (_nomeController.text.isEmpty ||
                           _sobrenomeController.text.isEmpty ||
                           _emailController.text.isEmpty ||
@@ -258,7 +257,6 @@ class _RegisterState extends State<Register> {
                         return;
                       }
 
-                      // Transforma o primeiro caractere do nome e sobrenome em maiúscula
                       String nome = _nomeController.text;
                       String sobrenome = _sobrenomeController.text;
                       if (nome.isNotEmpty || sobrenome.isNotEmpty) {
@@ -267,7 +265,6 @@ class _RegisterState extends State<Register> {
                         nome = nome[0].toUpperCase() + nome.substring(1);
                       }
 
-                      // Chama o método cadastrarUsuario do AuthService
                       String? mensagemErro = await AuthService()
                           .cadastrarUsuario(
                               nome: nome,
@@ -278,7 +275,6 @@ class _RegisterState extends State<Register> {
                               context: context);
 
                       if (mensagemErro == null) {
-                        // Cadastro de usuário bem-sucedido, agora exiba o pop-up
                         showDialog(
                           context: context,
                           builder: (context) {
@@ -286,13 +282,10 @@ class _RegisterState extends State<Register> {
                           },
                         );
 
-                        // Aguarde 2 segundos antes de fechar o pop-up
                         await Future.delayed(Duration(seconds: 2));
 
-                        // Feche o pop-up
                         Navigator.pop(context);
 
-                        // Cadastro de usuário bem-sucedido, agora salve os dados no banco de dados
                         String dataNascimento = _selectedDate != null
                             ? _dateFormat.format(_selectedDate!)
                             : '';
@@ -317,14 +310,12 @@ class _RegisterState extends State<Register> {
                             ),
                           );
                         } catch (error) {
-                          // Ocorreu um erro ao enviar os dados para o Firebase
                           showSnackBar(
                             context: context,
                             texto: "Erro ao cadastrar usuário: $error",
                           );
                         }
                       } else {
-                        // Exiba a mensagem de erro do cadastro do usuário
                         showSnackBar(context: context, texto: mensagemErro);
                       }
                     },
@@ -452,7 +443,6 @@ class _RegisterState extends State<Register> {
                             ),
                             InkWell(
                               onTap: () {
-                                // Navegar para a tela de Política de Privacidade
                               },
                               child: const Text(
                                 "política de privacidade",

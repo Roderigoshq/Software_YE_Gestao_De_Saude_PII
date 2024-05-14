@@ -65,7 +65,6 @@ class RegisterOptions extends StatelessWidget {
     }
   } catch (e) {
     print("Erro ao fazer login com o Facebook: $e");
-    // Trate o erro adequadamente, como exibindo uma mensagem de erro para o usuário.
   }
 }
 

@@ -17,7 +17,7 @@ class NavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
-      color: Colors.white, // Cor de fundo da barra de navegação
+      color: Colors.white,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: destinations
@@ -26,7 +26,6 @@ class NavigationBar extends StatelessWidget {
                   children: [
                     IconButton(
                       onPressed: () {
-                        // Ação ao clicar no ícone
                       },
                       icon: destination.icon,
                     ),

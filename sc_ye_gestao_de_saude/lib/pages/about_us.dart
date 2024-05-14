@@ -10,17 +10,17 @@ class AboutUsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Sobre Nós'),
-        backgroundColor: Color.fromRGBO(136, 149, 83, 1), // Cor de fundo da app bar
+        backgroundColor: Color.fromRGBO(136, 149, 83, 1),
       ),
       body: Container(
-        color: Colors.white, // Cor de fundo do corpo da tela
+        color: Colors.white,
         padding: const EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Center(
               child: Image.asset(
-                'lib/assets/Logo_gestao_de_saude.png', // Caminho para o logo
+                'lib/assets/Logo_gestao_de_saude.png',
                 width: 100,
                 height: 100,
               ),

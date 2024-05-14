@@ -80,24 +80,21 @@ class PressureAdd {
         .snapshots();
   }
 
-  // Método para obter a pressão arterial mais recente
   Future<PressureModel?> getLatestPressure() async {
     try {
-      // Busque as pressões mais recentes
       final querySnapshot = await _firestore
           .collection('pressures')
           .doc(userId)
           .collection('userPressures')
-          .orderBy('date', descending: true) // Ordene pela data em ordem decrescente
-          .limit(1) // Limite para obter apenas uma pressão
+          .orderBy('date', descending: true)
+          .limit(1)
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
-        // Se houver documentos na consulta
         final latestPressure = querySnapshot.docs.first;
         return PressureModel.fromMap(latestPressure.data());
       } else {
-        return null; // Retorna null se não houver pressões
+        return null;
       }
     } catch (error) {
       print("Erro ao buscar a pressão mais recente: $error");

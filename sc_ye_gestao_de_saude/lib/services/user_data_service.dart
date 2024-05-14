@@ -8,7 +8,6 @@ class UserDataService {
   final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
 
   Future<void> saveUserData(GoogleSignInAccount user) async {
-    // Extraindo as informações necessárias do usuário
     String? userId = user.id;
     String? userEmail = user.email;
     String? userName = user.displayName;
@@ -17,7 +16,6 @@ class UserDataService {
     await usersCollection.doc(userId).set({
       'email': userEmail,
       'name': userName,
-      // Outros campos que você queira salvar
     });
   }
 

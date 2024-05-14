@@ -22,7 +22,7 @@ class FormScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            CalendarWidget(), // Widget de calendário
+            CalendarWidget(),
             const SizedBox(height: 20),
             const Text(
               'Medicamento:',

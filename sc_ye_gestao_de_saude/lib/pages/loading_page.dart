@@ -28,7 +28,6 @@ class _LoadingScreenState extends State<LoadingScreen>
       ),
     );
 
-    // Simular um tempo de carregamento antes de navegar para a próxima tela
     Future.delayed(const Duration(seconds: 1), () {
       setState(() {
         _isTextVisible = true;

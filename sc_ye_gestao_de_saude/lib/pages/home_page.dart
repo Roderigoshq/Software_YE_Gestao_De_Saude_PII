@@ -65,7 +65,6 @@ class _HomePageState extends State<HomePage> {
                 ),
                 iconSize: 30,
                 onPressed: () {
-                  // Ação ao clicar no ícone de configuração
                 },
               ),
             ],
@@ -77,15 +76,15 @@ class _HomePageState extends State<HomePage> {
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: Container(
           child: SizedBox(
-            width: 75, // Largura desejada
-            height: 75, // Altura desejada
+            width: 75,
+            height: 75,
             child: FloatingActionButton(
               onPressed: () {},
-              backgroundColor: Color(0xFF8F8F8F), // Cor de fundo do botão
+              backgroundColor: Color(0xFF8F8F8F),
               child: Icon(
                 Icons.document_scanner_rounded,
-                size: 35, // Tamanho do ícone
-                color: Colors.white, // Cor do ícone
+                size: 35,
+                color: Colors.white,
               ),
               shape: CircleBorder(),
             ),
@@ -106,7 +105,7 @@ class _HomePageState extends State<HomePage> {
             BottomNavigationBarItem(
                 icon: Padding(
                   padding: EdgeInsets.fromLTRB(
-                      10, 0, 0, 0), // Define o padding desejado para o ícone
+                      10, 0, 0, 0),
                   child: Icon(Icons.person_outline),
                 ),
                 label: 'Meus Dados'),

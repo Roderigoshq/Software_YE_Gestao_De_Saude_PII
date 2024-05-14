@@ -79,7 +79,6 @@ class GlucoseAdd {
         .snapshots();
   }
 
-  // Método para obter a glicemia mais recente
   Future<GlucoseModel?> getLatestGlucose() async {
     try {
       // Busque as glicemias mais recentes
@@ -87,16 +86,15 @@ class GlucoseAdd {
           .collection('glucose')
           .doc(userId)
           .collection('userGlucose')
-          .orderBy('date', descending: true) // Ordene pela data em ordem decrescente
-          .limit(1) // Limite para obter apenas uma glicemia
+          .orderBy('date', descending: true)
+          .limit(1)
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
-        // Se houver documentos na consulta
         final latestGlucose = querySnapshot.docs.first;
         return GlucoseModel.fromMap(latestGlucose.data());
       } else {
-        return null; // Retorna null se não houver glicemias
+        return null;
       }
     } catch (error) {
       print("Erro ao buscar a glicemia mais recente: $error");

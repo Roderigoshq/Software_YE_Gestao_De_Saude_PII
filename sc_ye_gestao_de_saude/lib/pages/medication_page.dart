@@ -43,17 +43,17 @@ class _InitialScreenState extends State<MedicationPage> {
                     ],
                   ),
                 ),
-                const SizedBox(width: 10), // Espaçamento entre o texto e a imagem
+                const SizedBox(width: 10),
                 Image.asset(
                   'lib/assets/pilula.png',
-                  height: 70, // Ajuste a altura conforme necessário
-                  width: 70, // Ajuste a largura conforme necessário
+                  height: 70,
+                  width: 70,
                 ),
               ],
             ),
           ),
           const Spacer(),
-          const SizedBox(height: 16), // Adicionando um espaçamento na parte inferior
+          const SizedBox(height: 16),
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
@@ -73,7 +73,7 @@ class _InitialScreenState extends State<MedicationPage> {
             size: 30,
             color: Colors.white,
           ),
-          shape: const CircleBorder(), // Deixando o botão redondo
+          shape: const CircleBorder(),
         ),
       ),
     );

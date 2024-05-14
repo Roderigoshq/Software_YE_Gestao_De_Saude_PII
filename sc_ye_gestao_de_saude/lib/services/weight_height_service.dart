@@ -81,44 +81,47 @@ class WeightHeightAdd {
         .snapshots();
   }
 
-  // Método para obter o peso e altura mais recentes
-  Future<WeightHeightModel?> getClosestWeightToCurrentDate() async {
-    try {
-      final currentTime = DateTime.now();
-      final currentDateString = DateFormat('dd/MM/yyyy').format(currentTime);
+  Future<WeightHeightModel?> getLatestWeight() async {
+  try {
+    final currentTime = DateTime.now();
+    final querySnapshot = await _firestore
+        .collection('weightHeight')
+        .doc(userId)
+        .collection('userWeightHeight')
+        .orderBy('date', descending: true)
+        .get();
 
-      // Busca todos os registros de peso e altura
-      final querySnapshot = await _firestore
-          .collection('weightHeight')
-          .doc(userId)
-          .collection('userWeightHeight')
-          .get();
+    if (querySnapshot.docs.isNotEmpty) {
+      WeightHeightModel? closestWeight;
+      int minDifference = double.maxFinite.toInt();
 
-      if (querySnapshot.docs.isNotEmpty) {
-        // Encontra o registro com a data mais próxima da data atual
-        WeightHeightModel? closestWeight;
-        int minDifference = double.maxFinite.toInt();
+      for (var doc in querySnapshot.docs) {
+        final weightHeight = WeightHeightModel.fromMap(doc.data());
+        final weightHeightDate = DateTime.parse(weightHeight.date); // Converte a data de String para DateTime
 
-        for (var doc in querySnapshot.docs) {
-          final weightHeight = WeightHeightModel.fromMap(doc.data());
-          final difference = (weightHeight.date).compareTo(currentDateString);
+        // Calcula a diferença de tempo em milissegundos
+        final difference = weightHeightDate.millisecondsSinceEpoch - currentTime.millisecondsSinceEpoch;
 
-          if (difference >= 0 && difference < minDifference) {
-            minDifference = difference;
-            closestWeight = weightHeight;
-          }
+        // Calcula o valor absoluto da diferença
+        final absoluteDifference = difference.abs();
+
+        if (absoluteDifference < minDifference) {
+          minDifference = absoluteDifference;
+          closestWeight = weightHeight;
         }
-
-        return closestWeight;
-      } else {
-        return null; // Retorna null se não houver dados de peso e altura
       }
-    } catch (error) {
-      print(
-          "Erro ao buscar o peso e altura mais próximos da data atual: $error");
+
+      return closestWeight;
+    } else {
       return null;
     }
+  } catch (error) {
+    print("Erro ao buscar o peso e altura mais próximos da data atual: $error");
+    return null;
   }
+}
 
-  getLatestWeight() {}
+
+
+
 }
