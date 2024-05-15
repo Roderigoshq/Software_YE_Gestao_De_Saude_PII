@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:sc_ye_gestao_de_saude/pages/form_screen_medication.dart';
+import 'package:sc_ye_gestao_de_saude/pages/form_screen_consultation.dart';
 
-class MedicationPage extends StatefulWidget {
-  const MedicationPage({super.key});
+class ConsultationPage extends StatefulWidget {
+  const ConsultationPage({super.key});
 
   @override
-  _MedicationPageState createState() => _MedicationPageState();
+  _ConsultationPageState createState() => _ConsultationPageState();
 }
 
-class _MedicationPageState extends State<MedicationPage> {
+class _ConsultationPageState extends State<ConsultationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,12 +20,12 @@ class _MedicationPageState extends State<MedicationPage> {
             padding: const EdgeInsets.fromLTRB(40, 35, 40, 0),
             child: Row(
               children: [
-                const Expanded(
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                    children: const [
                       Text(
-                        "Tome sempre seus ",
+                        "Gerencie suas  ",
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.w400,
@@ -33,7 +33,7 @@ class _MedicationPageState extends State<MedicationPage> {
                         ),
                       ),
                       Text(
-                        "medicamentos:",
+                        "consultas:",
                         style: TextStyle(
                           fontSize: 30,
                           fontFamily: 'Poppins',
@@ -62,9 +62,9 @@ class _MedicationPageState extends State<MedicationPage> {
         child: FloatingActionButton(
           onPressed: () {
             showModalBottomSheet(
-              isScrollControlled: false,
+              isScrollControlled: true,
               context: context,
-              builder: (ctx) => FormScreenMedication(),
+              builder: (ctx) => FormScreenConsultation(),
             );
           },
           backgroundColor: const Color.fromRGBO(136, 149, 83, 1),

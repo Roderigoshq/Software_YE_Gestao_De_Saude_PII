@@ -1,9 +1,11 @@
-import 'package:fake_cloud_firestore/src/fake_cloud_firestore_instance.dart';
+//import 'package:fake_cloud_firestore/src/fake_cloud_firestore_instance.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sc_ye_gestao_de_saude/pages/exams_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/camera.dart';
 import 'package:sc_ye_gestao_de_saude/pages/chat_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/consult_page.dart';
+import 'package:sc_ye_gestao_de_saude/pages/consultation_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/data_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/medication_page.dart';
 
@@ -19,10 +21,10 @@ class _HomePageState extends State<HomePage> {
 
   static const List<Widget> _pages = <Widget>[
     DadosPage(),
-    Consult(),
+    ConsultationPage(),
     DadosPage(),
     MedicationPage(),
-    DadosPage(),
+    ExamsPage(),
     CameraScreen()
   ];
 

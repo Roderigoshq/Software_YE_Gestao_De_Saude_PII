@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class FormScreen extends StatelessWidget {
-  const FormScreen({Key? key}) : super(key: key);
+class FormScreenConsultation extends StatelessWidget {
+  const FormScreenConsultation({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -11,61 +11,84 @@ class FormScreen extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
       child: SizedBox(
         width: double.infinity,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Data',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-            ),
-            const SizedBox(height: 10),
-            CalendarWidget(),
-            const SizedBox(height: 20),
-            const Text(
-              'Medicamento:',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: '',
-              ),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'Horário:',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-            ),
-            const SizedBox(height: 10),
-            TimePickerWidget(),
-            const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFC6D687),
-                  foregroundColor: Colors.white,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Data:',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
                 ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Salvar'),
               ),
-            ),
-          ],
+              const SizedBox(height: 10),
+              CalendarWidget(),
+              const SizedBox(height: 20),
+              const Text(
+                'Horário:',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+              const SizedBox(height: 10),
+              TimePickerWidget(),
+              const SizedBox(height: 20),
+              const Text(
+                'Lembrete:',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                decoration: InputDecoration(
+                  hintText: 'Digite seu lembrete...',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'Descrição:',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                maxLines: 6,
+                decoration: InputDecoration(
+                  hintText: 'Digite sua descrição...',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFC6D687),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Salvar'),
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
   }
 }
 
@@ -86,7 +109,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey),
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(10),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -133,7 +156,7 @@ class _TimePickerWidgetState extends State<TimePickerWidget> {
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey),
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(10),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

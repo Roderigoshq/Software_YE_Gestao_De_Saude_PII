@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:sc_ye_gestao_de_saude/pages/form_screen_medication.dart';
+import 'package:sc_ye_gestao_de_saude/pages/form_screen_exams.dart';
 
-class MedicationPage extends StatefulWidget {
-  const MedicationPage({super.key});
+class ExamsPage extends StatefulWidget {
+  const ExamsPage({super.key});
 
   @override
-  _MedicationPageState createState() => _MedicationPageState();
+  _ExamsPageState createState() => _ExamsPageState();
 }
 
-class _MedicationPageState extends State<MedicationPage> {
+class _ExamsPageState extends State<ExamsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,12 +20,12 @@ class _MedicationPageState extends State<MedicationPage> {
             padding: const EdgeInsets.fromLTRB(40, 35, 40, 0),
             child: Row(
               children: [
-                const Expanded(
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                    children: const [
                       Text(
-                        "Tome sempre seus ",
+                        "Consulte seus  ",
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.w400,
@@ -33,7 +33,7 @@ class _MedicationPageState extends State<MedicationPage> {
                         ),
                       ),
                       Text(
-                        "medicamentos:",
+                        "exames realizados:",
                         style: TextStyle(
                           fontSize: 30,
                           fontFamily: 'Poppins',
@@ -64,7 +64,7 @@ class _MedicationPageState extends State<MedicationPage> {
             showModalBottomSheet(
               isScrollControlled: false,
               context: context,
-              builder: (ctx) => FormScreenMedication(),
+              builder: (ctx) => FormScreenExams(),
             );
           },
           backgroundColor: const Color.fromRGBO(136, 149, 83, 1),
