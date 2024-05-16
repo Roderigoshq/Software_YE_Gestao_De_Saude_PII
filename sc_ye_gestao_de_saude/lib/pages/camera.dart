@@ -68,28 +68,16 @@ class _CameraScreenState extends State<CameraScreen> {
   // }
 
   Future<void> analyzeImage(Uint8List imageBytes) async {
-    final url = 'URL_DA_SUA_API/analisar_imagem';
+  try {
+    // Simular análise de imagem (resultado fixo)
+    String result = 'Exame médico detectado: Hemograma';
 
-    try {
-      // Codificar a imagem para base64
-      String base64Image = base64Encode(imageBytes);
-
-      final response = await http.post(
-        Uri.parse(url),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'image': base64Image}),
-      );
-
-      if (response.statusCode == 200) {
-        Map<String, dynamic> data = jsonDecode(response.body);
-        print('Resultado da análise: ${data['result']}');
-      } else {
-        print('Erro ao analisar a imagem');
-      }
-    } catch (e) {
-      print('Erro ao conectar à API');
-    }
+    print('Resultado da análise: $result');
+  } catch (e) {
+    print('Erro ao analisar a imagem: $e');
   }
+}
+
 
   @override
   void dispose() {
