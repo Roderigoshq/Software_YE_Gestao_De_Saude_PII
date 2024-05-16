@@ -26,7 +26,6 @@ class _HomePageState extends State<HomePage> {
     MedicationPage(),
     DadosPage(),
     CameraScreen()
-    ExamsPage()
   ];
 
   @override
