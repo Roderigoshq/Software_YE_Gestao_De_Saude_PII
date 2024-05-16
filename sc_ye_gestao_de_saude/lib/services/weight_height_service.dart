@@ -83,43 +83,34 @@ class WeightHeightAdd {
 
   Future<WeightHeightModel?> getLatestWeight() async {
   try {
-    final currentTime = DateTime.now();
     final querySnapshot = await _firestore
         .collection('weightHeight')
         .doc(userId)
         .collection('userWeightHeight')
         .orderBy('date', descending: true)
+        .limit(1)
         .get();
 
     if (querySnapshot.docs.isNotEmpty) {
-      WeightHeightModel? closestWeight;
-      int minDifference = double.maxFinite.toInt();
-
-      for (var doc in querySnapshot.docs) {
-        final weightHeight = WeightHeightModel.fromMap(doc.data());
-        final weightHeightDate = DateTime.parse(weightHeight.date); // Converte a data de String para DateTime
-
-        // Calcula a diferença de tempo em milissegundos
-        final difference = weightHeightDate.millisecondsSinceEpoch - currentTime.millisecondsSinceEpoch;
-
-        // Calcula o valor absoluto da diferença
-        final absoluteDifference = difference.abs();
-
-        if (absoluteDifference < minDifference) {
-          minDifference = absoluteDifference;
-          closestWeight = weightHeight;
-        }
-      }
-
-      return closestWeight;
+      final latestWeightDoc = querySnapshot.docs.first;
+      final latestWeightHeight = WeightHeightModel.fromMap(latestWeightDoc.data());
+      return latestWeightHeight;
     } else {
       return null;
     }
   } catch (error) {
-    print("Erro ao buscar o peso e altura mais próximos da data atual: $error");
+    print("Erro ao buscar o peso e altura mais recentes: $error");
     return null;
   }
-}
+} 
+
+
+
+
+
+
+
+
 
 
 

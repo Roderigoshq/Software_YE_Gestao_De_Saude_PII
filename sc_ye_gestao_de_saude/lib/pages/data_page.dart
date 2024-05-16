@@ -19,9 +19,14 @@ class DadosPage extends StatefulWidget {
 
 class _DadosPageState extends State<DadosPage>
     with SingleTickerProviderStateMixin {
-  PressureModel? latestPressure;
-  GlucoseModel? latestGlucose;
-  WeightHeightModel? latestWeight;
+  WeightHeightModel? latestWeightHeight;
+
+  Future<void> _loadLatestWeight() async {
+    final latestWeight = await WeightHeightAdd().getLatestWeight();
+    setState(() {
+      latestWeightHeight = latestWeight;
+    });
+  }
 
   String calculateIMC(int? weight, int? height) {
     if (weight != null && height != null && height != 0) {
@@ -32,19 +37,6 @@ class _DadosPageState extends State<DadosPage>
       return '-';
     }
   }
-
-  Future<void> _fetchLatestWeight() async {
-  final weightHeightAdd = WeightHeightAdd();
-  final latestWeight = await weightHeightAdd.getLatestWeight();
-  
-  if (latestWeight != null) {
-    setState(() {
-      this.latestWeight = latestWeight;
-    });
-  } else {
-  }
-}
-
 
   late TabController _tabController;
   late DateTime? _selectedDate;
@@ -59,12 +51,12 @@ class _DadosPageState extends State<DadosPage>
   @override
   void initState() {
     super.initState();
-    _fetchLatestWeight();
     _selectedDate = null;
     _tabController = TabController(length: 4, vsync: this);
     _selectedDateController = TextEditingController();
     _selectedDateController.text =
         _selectedDate != null ? _dateFormat.format(_selectedDate!) : '';
+    _loadLatestWeight();
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -125,7 +117,6 @@ class _DadosPageState extends State<DadosPage>
     _selectedDateController.clear();
 
     _pressureAdd.addPressure(pressure);
-    latestPressure = pressure;
   }
 
   final WeightHeightAdd _weightHeightAdd = WeightHeightAdd();
@@ -152,7 +143,7 @@ class _DadosPageState extends State<DadosPage>
     _selectedDateController.clear();
 
     _weightHeightAdd.addWeightHeight(weightHeights);
-    latestWeight = weightHeights;
+    _loadLatestWeight();
   }
 
   final GlucoseAdd _glucoseAdd = GlucoseAdd();
@@ -175,7 +166,6 @@ class _DadosPageState extends State<DadosPage>
     _selectedDateController.clear();
 
     _glucoseAdd.addGlucose(glucoses);
-    latestGlucose = glucoses;
   }
 
   @override
@@ -282,23 +272,18 @@ class _DadosPageState extends State<DadosPage>
                     fontWeight: FontWeight.bold,
                   ),
                   tabs: [
-                    CustomTab(
-                        text: 'Pressão',
-                        subText:
-                            '${latestPressure?.sistolic ?? '-'}x${latestPressure?.diastolic ?? '-'}'),
+                    CustomTab(text: 'Pressão', subText: '1x1'),
                     CustomTab(
                       text: 'Glicemia',
-                      subText: '${latestGlucose?.glucose ?? '-'}mg/Dl',
+                      subText: '1mg/Dl',
                     ),
                     CustomTab(
                       text: 'Peso & Altura',
-                      subText:
-                          '${latestWeight?.weight ?? '-'}kg; ${latestWeight?.height ?? '-'}m',
+                      subText: latestWeightHeight != null
+                          ? '${latestWeightHeight!.weight} kg, ${latestWeightHeight!.height} m'
+                          : 'Não há dados disponíveis',
                     ),
-                    CustomTab(
-                        text: 'IMC',
-                        subText:
-                            '${calculateIMC(latestWeight?.weight, latestWeight?.height)}'),
+                    CustomTab(text: 'IMC', subText: '1'),
                   ],
                 ),
                 Expanded(
@@ -387,8 +372,7 @@ class _DadosPageState extends State<DadosPage>
                                       Expanded(
                                         child: TextField(
                                           controller: _sistolicController,
-                                          onChanged: (value) {
-                                          },
+                                          onChanged: (value) {},
                                           decoration: const InputDecoration(
                                             hintText: 'Pressão sistólica',
                                             focusedBorder: UnderlineInputBorder(
@@ -417,8 +401,7 @@ class _DadosPageState extends State<DadosPage>
                                       Expanded(
                                         child: TextField(
                                           controller: _diastolicController,
-                                          onChanged: (value) {
-                                          },
+                                          onChanged: (value) {},
                                           decoration: const InputDecoration(
                                             hintText: 'Pressão Diastólica',
                                             focusedBorder: UnderlineInputBorder(
@@ -700,8 +683,7 @@ class _DadosPageState extends State<DadosPage>
                                       Expanded(
                                         child: TextField(
                                           controller: _heightController,
-                                          onChanged: (value) {
-                                          },
+                                          onChanged: (value) {},
                                           decoration: const InputDecoration(
                                             hintText: 'Altura',
                                             focusedBorder: UnderlineInputBorder(

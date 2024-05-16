@@ -21,9 +21,11 @@ class _HomePageState extends State<HomePage> {
 
   static const List<Widget> _pages = <Widget>[
     DadosPage(),
-    ConsultationPage(),
+    Consult(),
     DadosPage(),
     MedicationPage(),
+    DadosPage(),
+    CameraScreen()
     ExamsPage()
   ];
 

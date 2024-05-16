@@ -275,13 +275,13 @@ class _ExtensionPanelGlucoseState extends State<ExtensionPanelGlucose> {
                       width: 20,
                     ),
                     Text(
-                  'mg/Dl',
-                  style: TextStyle(
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w600,
-                    color: Color.fromARGB(255, 88, 88, 88),
-                  ),
-                ),
+                      'mg/Dl',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w600,
+                        color: Color.fromARGB(255, 88, 88, 88),
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(

@@ -62,7 +62,7 @@ class ExtensionPanelPressure extends StatefulWidget {
 
 class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
   final PressureAdd pressureService = PressureAdd();
-  final DateFormat _dateFormat = DateFormat('dd/MM/yyyy');
+  final DateFormat _dateFormat = DateFormat('yyyy/MM/dd');
 
   @override
   Widget build(BuildContext context) {
@@ -83,8 +83,8 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
                 final RegExp dateRegExp = RegExp(r'^\d{2}/\d{2}/\d{4}$');
                 if (dateRegExp.hasMatch(a.date) &&
                     dateRegExp.hasMatch(b.date)) {
-                  final DateTime dateA = DateFormat('dd/MM/yyyy').parse(a.date);
-                  final DateTime dateB = DateFormat('dd/MM/yyyy').parse(b.date);
+                  final DateTime dateA = DateFormat('yyyy/MM/dd').parse(a.date);
+                  final DateTime dateB = DateFormat('yyyy/MM/dd').parse(b.date);
                   return dateB.compareTo(dateA);
                 } else {
                   return 0;

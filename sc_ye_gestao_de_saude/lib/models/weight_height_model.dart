@@ -4,7 +4,7 @@ import 'package:sc_ye_gestao_de_saude/services/weight_height_service.dart';
 
 class WeightHeightModel {
   String id;
-  String date;
+  String date; // Stored in 'dd/MM/yyyy' format for display
   int weight;
   int height;
   bool isExpanded;
@@ -18,18 +18,24 @@ class WeightHeightModel {
   });
 
   Map<String, dynamic> toMap() {
+    // Convert 'dd/MM/yyyy' to 'yyyy/MM/dd' before saving
+    final DateTime parsedDate = DateFormat('dd/MM/yyyy').parse(date);
+    final String formattedDate = DateFormat('yyyy/MM/dd').format(parsedDate);
     return {
       "id": id,
-      "date": date,
+      "date": formattedDate,
       "weight": weight,
       "height": height,
     };
   }
 
   factory WeightHeightModel.fromMap(Map<String, dynamic> map) {
+    // Convert 'yyyy/MM/dd' to 'dd/MM/yyyy' after fetching
+    final DateTime parsedDate = DateFormat('yyyy/MM/dd').parse(map["date"]);
+    final String formattedDate = DateFormat('dd/MM/yyyy').format(parsedDate);
     return WeightHeightModel(
       id: map["id"],
-      date: map["date"],
+      date: formattedDate,
       weight: map["weight"],
       height: map["height"],
       isExpanded: false,
@@ -47,9 +53,9 @@ class ExtensionPanelWeightHeight extends StatefulWidget {
 
 class _ExtensionPanelWeightHeightState
     extends State<ExtensionPanelWeightHeight> {
-
   final WeightHeightAdd weightHeightService = WeightHeightAdd();
   final DateFormat _dateFormat = DateFormat('dd/MM/yyyy');
+  WeightHeightModel? latestWeightHeight;
 
   @override
   Widget build(BuildContext context) {
@@ -67,15 +73,9 @@ class _ExtensionPanelWeightHeightState
             if (snapshot.hasData) {
               final weightHeightModels = snapshot.data!;
               weightHeightModels.sort((a, b) {
-                final RegExp dateRegExp = RegExp(r'^\d{2}/\d{2}/\d{4}$');
-                if (dateRegExp.hasMatch(a.date) &&
-                    dateRegExp.hasMatch(b.date)) {
-                  final DateTime dateA = DateFormat('dd/MM/yyyy').parse(a.date);
-                  final DateTime dateB = DateFormat('dd/MM/yyyy').parse(b.date);
-                  return dateB.compareTo(dateA);
-                } else {
-                  return 0;
-                }
+                final DateTime dateA = _dateFormat.parse(a.date);
+                final DateTime dateB = _dateFormat.parse(b.date);
+                return dateB.compareTo(dateA);
               });
               return ListView.builder(
                 itemCount: weightHeightModels.length,
