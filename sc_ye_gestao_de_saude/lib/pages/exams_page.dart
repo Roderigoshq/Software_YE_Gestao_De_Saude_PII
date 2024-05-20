@@ -16,14 +16,13 @@ class _ExamsPageState extends State<ExamsPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            height: 120,
-            padding: const EdgeInsets.fromLTRB(40, 35, 40, 0),
+            padding: const EdgeInsets.fromLTRB(40, 35, 0, 0),
             child: Row(
               children: [
-                Expanded(
+                const Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         "Consulte seus  ",
                         style: TextStyle(
@@ -35,7 +34,7 @@ class _ExamsPageState extends State<ExamsPage> {
                       Text(
                         "exames realizados:",
                         style: TextStyle(
-                          fontSize: 30,
+                          fontSize: 24,
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.bold,
                         ),
@@ -43,17 +42,20 @@ class _ExamsPageState extends State<ExamsPage> {
                     ],
                   ),
                 ),
-                const SizedBox(width: 10),
-                Image.asset(
-                  'lib/assets/pilula.png',
-                  height: 70,
-                  width: 70,
+                SizedBox(width: 20), // Espaçamento adicionado aqui
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Image.asset(
+                    'lib/assets/exame.png',
+                    height: 90,
+                    width: 90,
+                  ),
                 ),
               ],
             ),
           ),
           const Spacer(),
-          const SizedBox(height: 16),
+          const SizedBox(height: 40),
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,

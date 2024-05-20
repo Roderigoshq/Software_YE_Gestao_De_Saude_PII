@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sc_ye_gestao_de_saude/pages/form_screen_medication.dart';
+import 'package:sc_ye_gestao_de_saude/widgets/medication_modal.dart';
 
 class MedicationPage extends StatefulWidget {
   const MedicationPage({super.key});
@@ -16,8 +16,7 @@ class _MedicationPageState extends State<MedicationPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            height: 120,
-            padding: const EdgeInsets.fromLTRB(40, 35, 40, 0),
+            padding: const EdgeInsets.fromLTRB(40, 35, 0, 0),
             child: Row(
               children: [
                 const Expanded(
@@ -43,11 +42,13 @@ class _MedicationPageState extends State<MedicationPage> {
                     ],
                   ),
                 ),
-                const SizedBox(width: 10),
-                Image.asset(
-                  'lib/assets/pilula.png',
-                  height: 70,
-                  width: 70,
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Image.asset(
+                    'lib/assets/pilula.png',
+                    height: 90,
+                    width: 90,
+                  ),
                 ),
               ],
             ),
@@ -56,26 +57,35 @@ class _MedicationPageState extends State<MedicationPage> {
           const SizedBox(height: 16),
         ],
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.all(20),
-        child: FloatingActionButton(
-          onPressed: () {
-            showModalBottomSheet(
-              isScrollControlled: false,
-              context: context,
-              builder: (ctx) => FormScreenMedication(),
-            );
-          },
-          backgroundColor: const Color.fromRGBO(136, 149, 83, 1),
-          child: const Icon(
-            Icons.add,
-            size: 30,
-            color: Colors.white,
-          ),
-          shape: const CircleBorder(),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: (){
+          mostrarModelMedication(context);
+        },
         ),
-      ),
+
+
+        
+      // floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      // floatingActionButton: Padding(
+      //   padding: const EdgeInsets.all(20),
+      //   child: FloatingActionButton(
+      //     onPressed: () {
+      //       showModalBottomSheet(
+      //         isScrollControlled: false,
+      //         context: context,
+      //         builder: (ctx) => FormScreenMedication(),
+      //       );
+      //     },
+      //     backgroundColor: const Color.fromRGBO(136, 149, 83, 1),
+      //     child: const Icon(
+      //       Icons.add,
+      //       size: 30,
+      //       color: Colors.white,
+      //     ),
+      //     shape: const CircleBorder(),
+      //   ),
+      // ),
     );
   }
 }

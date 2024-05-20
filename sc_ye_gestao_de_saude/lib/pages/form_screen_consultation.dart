@@ -2,8 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class FormScreenConsultation extends StatelessWidget {
+class FormScreenConsultation extends StatefulWidget {
   const FormScreenConsultation({Key? key}) : super(key: key);
+
+  @override
+  _FormScreenConsultationState createState() => _FormScreenConsultationState();
+}
+
+class _FormScreenConsultationState extends State<FormScreenConsultation> {
+  String? _selectedSpecialty;
 
   @override
   Widget build(BuildContext context) {
@@ -11,84 +18,116 @@ class FormScreenConsultation extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
       child: SizedBox(
         width: double.infinity,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Data:',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Especialidade:',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+            ),
+            const SizedBox(height: 10),
+            DropdownButton<String>(
+              hint: Text('Selecione uma especialidade'),
+              value: _selectedSpecialty,
+              onChanged: (String? newValue) {
+                setState(() {
+                  _selectedSpecialty = newValue;
+                });
+              },
+              items: <String>[
+                'Clínico Geral',
+                'Oftalmologista',
+                'Pediatra',
+                'Cardiologista',
+                'Dermatologista',
+                'Ortopedista',
+                'Endocrinologia',
+              ].map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Data:',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+            ),
+            const SizedBox(height: 10),
+            CalendarWidget(),
+            const SizedBox(height: 20),
+            const Text(
+              'Horário:',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+            ),
+            const SizedBox(height: 10),
+            TimePickerWidget(),
+            const SizedBox(height: 20),
+            const Text(
+              'Lembrete:',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              decoration: InputDecoration(
+                hintText: 'Digite seu lembrete...',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              const SizedBox(height: 10),
-              CalendarWidget(),
-              const SizedBox(height: 20),
-              const Text(
-                'Horário:',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Descrição:',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              maxLines: 6,
+              decoration: InputDecoration(
+                hintText: 'Digite sua descrição...',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              const SizedBox(height: 10),
-              TimePickerWidget(),
-              const SizedBox(height: 20),
-              const Text(
-                'Lembrete:',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                decoration: InputDecoration(
-                  hintText: 'Digite seu lembrete...',
-                  border: OutlineInputBorder(
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFC6D687),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('Salvar'),
               ),
-              const SizedBox(height: 20),
-              const Text(
-                'Descrição:',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                maxLines: 6,
-                decoration: InputDecoration(
-                  hintText: 'Digite sua descrição...',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFC6D687),
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text('Salvar'),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
-      );
+      ),
+    );
   }
 }
 

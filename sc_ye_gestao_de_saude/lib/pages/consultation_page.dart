@@ -16,26 +16,25 @@ class _ConsultationPageState extends State<ConsultationPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            height: 120,
-            padding: const EdgeInsets.fromLTRB(40, 35, 40, 0),
+            padding: const EdgeInsets.fromLTRB(40, 35, 0, 0),
             child: Row(
               children: [
-                Expanded(
+                const Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
+                    children:  [
+                       Text(
                         "Gerencie suas  ",
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.w400,
-                          fontSize: 22,
+                          fontSize: 24,
                         ),
                       ),
                       Text(
                         "consultas:",
                         style: TextStyle(
-                          fontSize: 30,
+                          fontSize: 32,
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.bold,
                         ),
@@ -45,9 +44,9 @@ class _ConsultationPageState extends State<ConsultationPage> {
                 ),
                 const SizedBox(width: 10),
                 Image.asset(
-                  'lib/assets/pilula.png',
-                  height: 70,
-                  width: 70,
+                  'lib/assets/consulta.png',
+                  height: 120,
+                  width: 120,
                 ),
               ],
             ),
