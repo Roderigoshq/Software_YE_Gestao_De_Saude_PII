@@ -2,12 +2,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sc_ye_gestao_de_saude/pages/exams_page.dart';
-import 'package:sc_ye_gestao_de_saude/pages/camera.dart';
-import 'package:sc_ye_gestao_de_saude/pages/chat_page.dart';
+import 'package:sc_ye_gestao_de_saude/pages/camera_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/consult_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/consultation_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/data_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/medication_page.dart';
+import 'package:sc_ye_gestao_de_saude/pages/settings_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -49,24 +49,15 @@ class _HomePageState extends State<HomePage> {
               Spacer(),
               IconButton(
                 icon: const Icon(
-                  Icons.info,
+                  Icons.settings,
                   color: Color(0xFFC6D687),
                 ),
                 iconSize: 30,
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const ChatPage()),
+                    MaterialPageRoute(builder: (context) => const SettingsPage()),
                   );
-                },
-              ),
-              IconButton(
-                icon: const Icon(
-                  Icons.settings,
-                  color: Color(0xFFC6D687),
-                ),
-                iconSize: 30,
-                onPressed: () {
                 },
               ),
             ],

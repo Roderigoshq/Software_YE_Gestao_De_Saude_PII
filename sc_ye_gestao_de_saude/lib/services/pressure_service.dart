@@ -91,9 +91,10 @@ class PressureAdd {
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
-        final latestPressure = querySnapshot.docs.first;
-        return PressureModel.fromMap(latestPressure.data());
-      } else {
+      final latestPressureDoc = querySnapshot.docs.first;
+      final latestPressure = PressureModel.fromMap(latestPressureDoc.data());
+      return latestPressure;
+    } else {
         return null;
       }
     } catch (error) {

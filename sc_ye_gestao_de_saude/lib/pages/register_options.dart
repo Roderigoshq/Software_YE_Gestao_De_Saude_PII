@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:sc_ye_gestao_de_saude/pages/about_us.dart';
+import 'package:sc_ye_gestao_de_saude/pages/about_us_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/home_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/medication_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/login_page.dart';
@@ -75,6 +75,7 @@ class RegisterOptions extends StatelessWidget {
 
     final double bodyPadding = screenSize.width < 560 ? 25.0 : 100.0;
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Center(
         child: Padding(
           padding: EdgeInsets.fromLTRB(bodyPadding, 0, bodyPadding, 0),

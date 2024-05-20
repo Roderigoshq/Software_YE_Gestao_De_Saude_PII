@@ -16,17 +16,21 @@ class GlucoseModel {
   });
 
   Map<String, dynamic> toMap() {
+    final DateTime parsedDate = DateFormat('dd/MM/yyyy').parse(date);
+    final String formattedDate = DateFormat('yyyy/MM/dd').format(parsedDate);
     return {
       "id": id,
-      "date": date,
+      "date": formattedDate,
       "glucose": glucose,
     };
   }
 
   factory GlucoseModel.fromMap(Map<String, dynamic> map) {
+    final DateTime parsedDate = DateFormat('yyyy/MM/dd').parse(map["date"]);
+    final String formattedDate = DateFormat('dd/MM/yyyy').format(parsedDate);
     return GlucoseModel(
       id: map["id"],
-      date: map["date"],
+      date: formattedDate,
       glucose: map["glucose"],
       isExpanded: false,
     );
@@ -71,6 +75,31 @@ class _ExtensionPanelGlucoseState extends State<ExtensionPanelGlucose> {
           } else {
             if (snapshot.hasData) {
               final glucoseModels = snapshot.data!;
+              if (glucoseModels.isEmpty) {
+                return Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'lib/assets/nenhumitem.png',
+                        width: 100,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "Não há nenhum item",
+                        style: TextStyle(
+                            color: Color.fromRGBO(136, 149, 83, 1),
+                            fontFamily: 'Poppins',
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
+                );
+              }
               glucoseModels.sort((a, b) {
                 final RegExp dateRegExp = RegExp(r'^\d{2}/\d{2}/\d{4}$');
                 if (dateRegExp.hasMatch(a.date) &&

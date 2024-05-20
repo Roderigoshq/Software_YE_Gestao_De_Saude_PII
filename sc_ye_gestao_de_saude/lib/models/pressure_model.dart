@@ -18,18 +18,23 @@ class PressureModel {
   });
 
   Map<String, dynamic> toMap() {
+    final DateTime parsedDate = DateFormat('dd/MM/yyyy').parse(date);
+    final String formattedDate = DateFormat('yyyy/MM/dd').format(parsedDate);
     return {
       "id": id,
-      "date": date,
+      "date": formattedDate,
       "diastolic": diastolic,
       "sistolic": sistolic,
     };
   }
 
   factory PressureModel.fromMap(Map<String, dynamic> map) {
+    // Convert 'yyyy/MM/dd' to 'dd/MM/yyyy' after fetching
+    final DateTime parsedDate = DateFormat('yyyy/MM/dd').parse(map["date"]);
+    final String formattedDate = DateFormat('dd/MM/yyyy').format(parsedDate);
     return PressureModel(
       id: map["id"],
-      date: map["date"],
+      date: formattedDate,
       diastolic: map["diastolic"],
       sistolic: map["sistolic"],
       isExpanded: false,
@@ -79,6 +84,19 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
           } else {
             if (snapshot.hasData) {
               final pressureModels = snapshot.data!;
+              if (pressureModels.isEmpty) {
+            return Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset('lib/assets/nenhumitem.png', width: 100,),
+                SizedBox(height: 20,),
+                Text("Não há nenhum item", style: TextStyle(color: Color.fromRGBO(136, 149, 83, 1), fontFamily: 'Poppins', fontSize: 15, fontWeight: FontWeight.w500),),
+              ],
+            ),
+          );
+          }
               pressureModels.sort((a, b) {
                 final RegExp dateRegExp = RegExp(r'^\d{2}/\d{2}/\d{4}$');
                 if (dateRegExp.hasMatch(a.date) &&

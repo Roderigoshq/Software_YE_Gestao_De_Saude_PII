@@ -19,31 +19,31 @@ class WeightHeightAdd {
         .set(weightHeightModel.toMap());
   }
 
-  Future<void> editWeightHeight(WeightHeightModel updatedWeightHeight) async {
-    try {
-      await _firestore
-          .collection('weightHeight')
-          .doc(userId)
-          .collection('userWeightHeight')
-          .doc(updatedWeightHeight.id)
-          .update(updatedWeightHeight.toMap());
-    } catch (error) {
-      print("Erro ao editar peso e altura: $error");
-    }
-  }
+  // Future<void> editWeightHeight(WeightHeightModel updatedWeightHeight) async {
+  //   try {
+  //     await _firestore
+  //         .collection('weightHeight')
+  //         .doc(userId)
+  //         .collection('userWeightHeight')
+  //         .doc(updatedWeightHeight.id)
+  //         .update(updatedWeightHeight.toMap());
+  //   } catch (error) {
+  //     print("Erro ao editar peso e altura: $error");
+  //   }
+  // }
 
-  Future<void> deleteWeightHeight(String id) async {
-    try {
-      await _firestore
-          .collection('weightHeight')
-          .doc(userId)
-          .collection('userWeightHeight')
-          .doc(id)
-          .delete();
-    } catch (e) {
-      print("Erro ao excluir peso e altura: $e");
-    }
-  }
+  // Future<void> deleteWeightHeight(String id) async {
+  //   try {
+  //     await _firestore
+  //         .collection('weightHeight')
+  //         .doc(userId)
+  //         .collection('userWeightHeight')
+  //         .doc(id)
+  //         .delete();
+  //   } catch (e) {
+  //     print("Erro ao excluir peso e altura: $e");
+  //   }
+  // }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> streamWeightHeight() {
     return _firestore

@@ -91,9 +91,10 @@ class GlucoseAdd {
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
-        final latestGlucose = querySnapshot.docs.first;
-        return GlucoseModel.fromMap(latestGlucose.data());
-      } else {
+      final latestGlucoseDoc = querySnapshot.docs.first;
+      final latestGlucose = GlucoseModel.fromMap(latestGlucoseDoc.data());
+      return latestGlucose;
+    } else {
         return null;
       }
     } catch (error) {

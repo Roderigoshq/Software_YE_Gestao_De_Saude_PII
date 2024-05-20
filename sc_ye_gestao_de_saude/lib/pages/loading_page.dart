@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sc_ye_gestao_de_saude/pages/initial_banner_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/register_options.dart';
 
 class LoadingScreen extends StatefulWidget {
@@ -21,7 +22,7 @@ class _LoadingScreenState extends State<LoadingScreen>
       vsync: this,
       duration: const Duration(seconds: 1),
     )..repeat(reverse: true);
-    _animation = Tween<double>(begin: -10, end: 10).animate(
+    _animation = Tween<double>(begin: -5, end: 5).animate(
       CurvedAnimation(
         parent: _animationController,
         curve: Curves.easeInOut,
@@ -35,7 +36,7 @@ class _LoadingScreenState extends State<LoadingScreen>
       Future.delayed(const Duration(seconds: 2), () {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => RegisterOptions()),
+          MaterialPageRoute(builder: (context) => InitialBanner()),
         );
       });
     });
@@ -44,7 +45,7 @@ class _LoadingScreenState extends State<LoadingScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color.fromRGBO(136, 149, 83, 1),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -55,7 +56,7 @@ class _LoadingScreenState extends State<LoadingScreen>
                 return Transform.translate(
                   offset: Offset(0, _animation.value),
                   child: Image.asset(
-                    'lib/assets/Logo_gestao_de_saude.png',
+                    'lib/assets/Logo_gestao_de_saude_3.png',
                     width: 100,
                     height: 100,
                   ),
@@ -72,8 +73,8 @@ class _LoadingScreenState extends State<LoadingScreen>
                 style: TextStyle(
                   fontFamily: 'Poppins',
                   fontSize: 21,
-                  color: Color.fromRGBO(136, 149, 83, 1),
-                  backgroundColor: Colors.white,
+                  color: Color.fromRGBO(255, 255, 255, 1),
+                  backgroundColor: Color.fromRGBO(136, 149, 83, 1),
                 ),
               ),
             ),

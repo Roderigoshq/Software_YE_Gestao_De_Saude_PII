@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:sc_ye_gestao_de_saude/providers/weight_height_provider.dart';
 import 'package:sc_ye_gestao_de_saude/services/weight_height_service.dart';
 
 class WeightHeightModel {
   String id;
-  String date; // Stored in 'dd/MM/yyyy' format for display
+  String date;
   int weight;
   int height;
   bool isExpanded;
@@ -58,120 +60,151 @@ class _ExtensionPanelWeightHeightState
   WeightHeightModel? latestWeightHeight;
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: FutureBuilder<List<WeightHeightModel>>(
-        future: weightHeightService.fetchWeightHeightModels(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+void initState() {
+  super.initState();
+  Provider.of<WeightHeightProvider>(context, listen: false).addListener(() {
+    if (mounted) {
+      setState(() {});
+    }
+  });
+}
+
+  @override
+Widget build(BuildContext context) {
+  return Scaffold(
+    body: FutureBuilder<List<WeightHeightModel>>(
+      future: Provider.of<WeightHeightProvider>(context, listen: false)
+          .fetchWeightHeightModels(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: CircularProgressIndicator(
+              color: Color.fromRGBO(136, 149, 83, 1),
+            ),
+          );
+        } else if (snapshot.hasData) {
+          final weightHeightModels = snapshot.data!;
+          if (weightHeightModels.isEmpty) {
             return Center(
-              child: CircularProgressIndicator(
-                color: Color.fromRGBO(136, 149, 83, 1),
-              ),
-            );
-          } else {
-            if (snapshot.hasData) {
-              final weightHeightModels = snapshot.data!;
-              weightHeightModels.sort((a, b) {
-                final DateTime dateA = _dateFormat.parse(a.date);
-                final DateTime dateB = _dateFormat.parse(b.date);
-                return dateB.compareTo(dateA);
-              });
-              return ListView.builder(
-                itemCount: weightHeightModels.length,
-                itemBuilder: (context, index) {
-                  final weightHeight = weightHeightModels[index];
-                  return ExpansionTile(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset('lib/assets/nenhumitem.png', width: 100,),
+                SizedBox(height: 20,),
+                Text("Não há nenhum item", style: TextStyle(color: Color.fromRGBO(136, 149, 83, 1), fontFamily: 'Poppins', fontSize: 15, fontWeight: FontWeight.w500),),
+              ],
+            ),
+          );
+          }
+          weightHeightModels.sort((a, b) {
+            final DateTime dateA = _dateFormat.parse(a.date);
+            final DateTime dateB = _dateFormat.parse(b.date);
+            return dateB.compareTo(dateA);
+          });
+          return ListView.builder(
+            itemCount: weightHeightModels.length,
+            itemBuilder: (context, index) {
+              final weightHeight = weightHeightModels[index];
+              return ExpansionTile(
+                title: Row(
+                  children: [
+                    Text(
+                      weightHeight.date,
+                      style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          color: Color.fromRGBO(85, 85, 85, 1)),
+                    ),
+                    Spacer(),
+                    PopupMenuButton(
+                      itemBuilder: (BuildContext context) {
+                        return <PopupMenuEntry>[
+                          PopupMenuItem(
+                            child: Center(
+                                child: Text(
+                              'Editar',
+                              style: TextStyle(
+                                  color: Color.fromRGBO(85, 85, 85, 1),
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 15),
+                            )),
+                            value: 'edit',
+                          ),
+                          PopupMenuItem(
+                            child: Center(
+                                child: Text(
+                              'Deletar',
+                              style: TextStyle(
+                                  color: Color.fromRGBO(85, 85, 85, 1),
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 15),
+                            )),
+                            value: 'delete',
+                          ),
+                        ];
+                      },
+                      onSelected: (value) async {
+                        if (value == 'edit') {
+                          final updatedWeightHeight =
+                              await _showEditWeightHeightDialog(
+                                  context, weightHeight);
+
+                          if (updatedWeightHeight != null) {
+                            await Provider.of<WeightHeightProvider>(context,
+                                    listen: false)
+                                .editWeightHeight(updatedWeightHeight);
+                            setState(() {});
+                          }
+                        } else if (value == 'delete') {
+                          await Provider.of<WeightHeightProvider>(context,
+                                  listen: false)
+                              .deleteWeightHeight(weightHeight.id);
+                          Provider.of<WeightHeightProvider>(context,
+                                  listen: false)
+                              .notifyItemDeleted();
+                        }
+                      },
+                    ),
+                  ],
+                ),
+                trailing: Icon(Icons.expand_more),
+                children: [
+                  ListTile(
                     title: Row(
                       children: [
                         Text(
-                          weightHeight.date,
+                          'Peso: ${weightHeight.weight}kg    Altura: ${weightHeight.height}m',
                           style: TextStyle(
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                              color: Color.fromRGBO(85, 85, 85, 1)),
-                        ),
-                        Spacer(),
-                        PopupMenuButton(
-                          itemBuilder: (BuildContext context) {
-                            return <PopupMenuEntry>[
-                              PopupMenuItem(
-                                child: Center(
-                                    child: Text(
-                                  'Editar',
-                                  style: TextStyle(
-                                      color: Color.fromRGBO(85, 85, 85, 1),
-                                      fontFamily: 'Poppins',
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 15),
-                                )),
-                                value: 'edit',
-                              ),
-                              PopupMenuItem(
-                                child: Center(
-                                    child: Text(
-                                  'Deletar',
-                                  style: TextStyle(
-                                      color: Color.fromRGBO(85, 85, 85, 1),
-                                      fontFamily: 'Poppins',
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 15),
-                                )),
-                                value: 'delete',
-                              ),
-                            ];
-                          },
-                          onSelected: (value) async {
-                            if (value == 'edit') {
-                              final updatedWeightHeight =
-                                  await _showEditWeightHeightDialog(
-                                      context, weightHeight);
-
-                              if (updatedWeightHeight != null) {
-                                await weightHeightService
-                                    .editWeightHeight(updatedWeightHeight);
-                                setState(() {});
-                              }
-                            } else if (value == 'delete') {
-                              await weightHeightService
-                                  .deleteWeightHeight(weightHeight.id);
-                              setState(() {});
-                            }
-                          },
+                              fontSize: 15,
+                              color: Color.fromRGBO(135, 135, 135, 1)),
                         ),
                       ],
                     ),
-                    trailing: Icon(Icons.expand_more),
-                    children: [
-                      ListTile(
-                        title: Row(
-                          children: [
-                            Text(
-                              'Peso: ${weightHeight.weight}kg    Altura: ${weightHeight.height}m',
-                              style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15,
-                                  color: Color.fromRGBO(135, 135, 135, 1)),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  );
-                },
+                  ),
+                ],
               );
-            } else {
-              return Center(
-                child: Text("Não há nenhum item"),
-              );
-            }
-          }
-        },
-      ),
-    );
-  }
+            },
+          );
+        } else {
+          return Center(
+            child: Column(
+              children: [
+                Image.asset('lib/assets/nenhumitem.png'),
+                Text("Não há nenhum item"),
+              ],
+            ),
+          );
+        }
+      },
+    ),
+  );
+}
 
   Future<WeightHeightModel?> _showEditWeightHeightDialog(
       BuildContext context, WeightHeightModel weightHeight) async {

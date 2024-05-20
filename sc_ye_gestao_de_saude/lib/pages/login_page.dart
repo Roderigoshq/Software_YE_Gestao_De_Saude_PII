@@ -5,7 +5,6 @@ import 'package:sc_ye_gestao_de_saude/pages/home_page.dart';
 import 'package:sc_ye_gestao_de_saude/services/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
-
   const LoginPage({super.key});
 
   @override
@@ -111,8 +110,7 @@ class _LoginPageState extends State<LoginPage> {
                       },
                     ),
                   ),
-                  obscureText:
-                      !_senhaVisivel,
+                  obscureText: !_senhaVisivel,
                 ),
                 const SizedBox(height: 50),
                 ElevatedButton(

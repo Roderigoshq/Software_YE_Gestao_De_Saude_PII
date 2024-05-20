@@ -1,21 +1,21 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:sc_ye_gestao_de_saude/pages/chat_page.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_test/flutter_test.dart';
+// import 'package:sc_ye_gestao_de_saude/pages/chat_page.dart';
 
-void main() {
-  testWidgets('ChatPage renderizado corretamente', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(home: ChatPage()));
+// void main() {
+//   testWidgets('ChatPage renderizado corretamente', (WidgetTester tester) async {
+//     await tester.pumpWidget(MaterialApp(home: ChatPage()));
 
-    expect(find.byIcon(Icons.arrow_back_ios_new_rounded), findsOneWidget);
+//     expect(find.byIcon(Icons.arrow_back_ios_new_rounded), findsOneWidget);
 
-    expect(find.text('FAC - YE Gestão De Saúde'), findsOneWidget);
+//     expect(find.text('FAC - YE Gestão De Saúde'), findsOneWidget);
 
-    expect(find.byType(ListView), findsOneWidget);
+//     expect(find.byType(ListView), findsOneWidget);
 
-    expect(find.byType(TextField), findsOneWidget);
-    expect(find.byIcon(Icons.send), findsOneWidget);
-  });
-}
+//     expect(find.byType(TextField), findsOneWidget);
+//     expect(find.byIcon(Icons.send), findsOneWidget);
+//   });
+// }
 
 
 

@@ -58,10 +58,8 @@ class AuthService {
       } else if (!email.contains('@')) {
         return "Por favor, insira um endereço de e-mail válido.";
       }
-      return e
-          .message;
+      return e.message;
     } catch (e) {
-      print("Erro ao cadastrar usuário: $e");
       return "Erro ao cadastrar usuário. Por favor, tente novamente mais tarde.";
     }
   }
@@ -89,13 +87,13 @@ class AuthService {
           return e.message;
       }
     } catch (e) {
-      print("Erro ao fazer login: $e");
       return "Erro ao fazer login. Por favor, tente novamente mais tarde.";
     }
   }
 
-  User? getCurrentUser() {
-    return _firebaseAuth.currentUser;
+  String? getCurrentUserUid() {
+    User? user = _firebaseAuth.currentUser;
+    return user?.uid;
   }
 
   Future<void> signOut() async {
