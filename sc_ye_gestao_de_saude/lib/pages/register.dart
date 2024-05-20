@@ -245,100 +245,102 @@ class _RegisterState extends State<Register> {
                   const SizedBox(height: 30),
                   ElevatedButton(
                     onPressed: () async {
-    // Verifique se todos os campos estão preenchidos
-    if (_nomeController.text.isEmpty ||
-        _sobrenomeController.text.isEmpty ||
-        _emailController.text.isEmpty ||
-        _senhaController.text.isEmpty ||
-        _repetirSenhaController.text.isEmpty) {
-      showSnackBar(
-        context: context,
-        texto: "Há campos não preenchidos",
-      );
-      return;
-    }
+                      // Verifique se todos os campos estão preenchidos
+                      if (_nomeController.text.isEmpty ||
+                          _sobrenomeController.text.isEmpty ||
+                          _emailController.text.isEmpty ||
+                          _senhaController.text.isEmpty ||
+                          _repetirSenhaController.text.isEmpty) {
+                        showSnackBar(
+                          context: context,
+                          texto: "Há campos não preenchidos",
+                        );
+                        return;
+                      }
 
-    // Se os campos estiverem preenchidos, continue com o processo de registro
-    String nome = _nomeController.text;
-    String sobrenome = _sobrenomeController.text;
-    if (nome.isNotEmpty || sobrenome.isNotEmpty) {
-      sobrenome = sobrenome[0].toUpperCase() + sobrenome.substring(1);
-      nome = nome[0].toUpperCase() + nome.substring(1);
-    }
+                      String nome = _nomeController.text;
+                      String sobrenome = _sobrenomeController.text;
+                      if (nome.isNotEmpty || sobrenome.isNotEmpty) {
+                        sobrenome =
+                            sobrenome[0].toUpperCase() + sobrenome.substring(1);
+                        nome = nome[0].toUpperCase() + nome.substring(1);
+                      }
 
-    // Chame o método cadastrarUsuario do AuthService
-    String? mensagemErro = await _autenServico.cadastrarUsuario(
-      nome: nome,
-      sobrenome: sobrenome,
-      email: _emailController.text,
-      senha: _senhaController.text,
-      repetirSenha: _repetirSenhaController.text,
-      context: context,
-    );
+                      String? mensagemErro =
+                          await _autenServico.cadastrarUsuario(
+                        nome: nome,
+                        sobrenome: sobrenome,
+                        email: _emailController.text,
+                        senha: _senhaController.text,
+                        repetirSenha: _repetirSenhaController.text,
+                        context: context,
+                      );
 
-    // Se não houver mensagem de erro, o registro foi bem-sucedido
-    if (mensagemErro == null) {
-      // Mostrar um popup de sucesso
-      showDialog(
-        context: context,
-        builder: (context) {
-          return SuccessPopup(message: 'Cadastro feito com sucesso!',);
-        },
-      );
+                      if (mensagemErro == null) {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return SuccessPopup(
+                              message: 'Cadastro feito com sucesso!',
+                            );
+                          },
+                        );
 
-      // Aguarde 2 segundos antes de fechar o popup
-      await Future.delayed(Duration(seconds: 2));
+                        // Aguarde 2 segundos antes de fechar o popup
+                        await Future.delayed(Duration(seconds: 2));
 
-      // Feche o popup
-      Navigator.pop(context);
+                        // Feche o popup
+                        Navigator.pop(context);
 
-      // Obtém o ID único gerado pelo Firebase Authentication
-      String? userId = _autenServico.getCurrentUserUid();
+                        // Obtém o ID único gerado pelo Firebase Authentication
+                        String? userId = _autenServico.getCurrentUserUid();
 
-      // Verifica se o ID do usuário é válido
-      if (userId != null) {
-        // Salva os dados do usuário no Realtime Database usando o ID gerado pelo Firebase Authentication como chave
-        try {
-          await databaseReference.child(userId).set({
-            'nome': nome,
-            'sobrenome': sobrenome,
-            'email': _emailController.text,
-            'dataNascimento': _selectedDate != null ? _dateFormat.format(_selectedDate!) : '',
-          });
+                        // Verifica se o ID do usuário é válido
+                        if (userId != null) {
+                          // Salva os dados do usuário no Realtime Database usando o ID gerado pelo Firebase Authentication como chave
+                          try {
+                            await databaseReference.child(userId).set({
+                              'nome': nome,
+                              'sobrenome': sobrenome,
+                              'email': _emailController.text,
+                              'dataNascimento': _selectedDate != null
+                                  ? _dateFormat.format(_selectedDate!)
+                                  : '',
+                            });
 
-          // Exibe uma mensagem de sucesso
-          showSnackBar(
-            context: context,
-            texto: "Para fazer login, verifique seu email!",
-            isErro: false,
-          );
+                            // Exibe uma mensagem de sucesso
+                            showSnackBar(
+                              context: context,
+                              texto: "Para fazer login, verifique seu email!",
+                              isErro: false,
+                            );
 
-          // Navegue de volta para a tela de login
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const LoginPage(),
-            ),
-          );
-        } catch (error) {
-          // Se ocorrer um erro ao salvar os dados do usuário, exiba uma mensagem de erro
-          showSnackBar(
-            context: context,
-            texto: "Erro ao cadastrar usuário: $error",
-          );
-        }
-      } else {
-        // Se o ID do usuário for inválido, exiba uma mensagem de erro
-        showSnackBar(
-          context: context,
-          texto: "ID do usuário inválido",
-        );
-      }
-    } else {
-      // Se houver uma mensagem de erro, exiba a mensagem de erro
-      showSnackBar(context: context, texto: mensagemErro);
-    }
-  },
+                            // Navegue de volta para a tela de login
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const LoginPage(),
+                              ),
+                            );
+                          } catch (error) {
+                            // Se ocorrer um erro ao salvar os dados do usuário, exiba uma mensagem de erro
+                            showSnackBar(
+                              context: context,
+                              texto: "Erro ao cadastrar usuário: $error",
+                            );
+                          }
+                        } else {
+                          // Se o ID do usuário for inválido, exiba uma mensagem de erro
+                          showSnackBar(
+                            context: context,
+                            texto: "ID do usuário inválido",
+                          );
+                        }
+                      } else {
+                        // Se houver uma mensagem de erro, exiba a mensagem de erro
+                        showSnackBar(context: context, texto: mensagemErro);
+                      }
+                    },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.fromLTRB(73, 22, 73, 22),
                       backgroundColor: const Color.fromRGBO(136, 149, 83, 1),
@@ -462,8 +464,7 @@ class _RegisterState extends State<Register> {
                               style: TextStyle(fontSize: 8),
                             ),
                             InkWell(
-                              onTap: () {
-                              },
+                              onTap: () {},
                               child: const Text(
                                 "política de privacidade",
                                 style: TextStyle(

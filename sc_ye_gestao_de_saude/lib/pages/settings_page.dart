@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:sc_ye_gestao_de_saude/pages/change_name_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/change_password_page.dart';
+import 'package:sc_ye_gestao_de_saude/pages/change_surname_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/home_page.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -115,16 +116,20 @@ class _ConfigPageState extends State<SettingsPage> {
                             ),
                           ),
                         ),
-                        Text(
-                          nome,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          softWrap: false,
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 17,
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xFF889553),
+                        Expanded(
+                          flex: 2,
+                          child: Text(
+                            nome,
+                            textAlign: TextAlign.end,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            softWrap: false,
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 17,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF889553),
+                            ),
                           ),
                         ),
                         Icon(
@@ -135,7 +140,14 @@ class _ConfigPageState extends State<SettingsPage> {
                     ),
                   ),
                   ListTile(
-                    onTap: () => {},
+                    onTap: () => {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ChangeSurnamePage(),
+                        ),
+                      ),
+                    },
                     title: Row(
                       children: [
                         Expanded(
@@ -149,16 +161,20 @@ class _ConfigPageState extends State<SettingsPage> {
                             ),
                           ),
                         ),
-                        Text(
-                          sobrenome,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          softWrap: false,
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 17,
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xFF889553),
+                        Expanded(
+                          flex: 2,
+                          child: Text(
+                            sobrenome,
+                            textAlign: TextAlign.end,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            softWrap: false,
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 17,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF889553),
+                            ),
                           ),
                         ),
                         Icon(
@@ -199,10 +215,6 @@ class _ConfigPageState extends State<SettingsPage> {
                               color: Color.fromRGBO(85, 85, 85, 1),
                             ),
                           ),
-                        ),
-                        Icon(
-                          Icons.arrow_right,
-                          size: 20,
                         ),
                       ],
                     ),

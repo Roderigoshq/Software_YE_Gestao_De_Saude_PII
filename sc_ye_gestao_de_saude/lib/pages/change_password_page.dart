@@ -5,7 +5,7 @@ import 'package:sc_ye_gestao_de_saude/components/success_popup.dart';
 import 'package:sc_ye_gestao_de_saude/pages/settings_page.dart';
 
 class ChangePasswordPage extends StatelessWidget {
-  const ChangePasswordPage({Key? key}) : super(key: key);
+  const ChangePasswordPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +13,9 @@ class ChangePasswordPage extends StatelessWidget {
 
     void _resetPassword() {
       String email = _emailController.text.trim();
-      FirebaseAuth.instance.sendPasswordResetEmail(email: email).then((value) {
+      FirebaseAuth.instance
+          .sendPasswordResetEmail(email: email)
+          .then((value) async {
         showDialog(
           context: context,
           builder: (context) {
@@ -22,8 +24,16 @@ class ChangePasswordPage extends StatelessWidget {
             );
           },
         );
+        await Future.delayed(const Duration(seconds: 1));
 
-        // Atualiza a senha no Realtime Database
+        Navigator.pop(context);
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const SettingsPage(),
+          ),
+        );
         User? user = FirebaseAuth.instance.currentUser;
         if (user != null) {
           DatabaseReference userRef = FirebaseDatabase.instance
@@ -37,7 +47,6 @@ class ChangePasswordPage extends StatelessWidget {
           });
         }
       }).catchError((error) {
-        // Tratar erros ao enviar o email de redefinição de senha
         showDialog(
           context: context,
           builder: (context) {
