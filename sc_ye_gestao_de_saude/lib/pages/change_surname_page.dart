@@ -52,10 +52,14 @@ class _ChangeSurnamePageState extends State<ChangeSurnamePage> {
     if (surname.isEmpty) {
       return showSnackBar(
         context: context,
-        texto: "O campo não esta preenchido",
+        texto: "O campo não está preenchido",
       );
     } else {
-      String newSurname = surname[0].toUpperCase() + surname.substring(1);
+      String newSurname = surname
+          .split(' ')
+          .map(
+              (word) => word[0].toUpperCase() + word.substring(1).toLowerCase())
+          .join(' ');
 
       if (user != null) {
         DatabaseReference userRef =

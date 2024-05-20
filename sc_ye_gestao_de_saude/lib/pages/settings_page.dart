@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:sc_ye_gestao_de_saude/pages/change_date_birth_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/change_name_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/change_password_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/change_surname_page.dart';
@@ -265,7 +266,13 @@ class _ConfigPageState extends State<SettingsPage> {
                     ),
                   ),
                   ListTile(
-                    onTap: () => {},
+                    onTap: () => {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ChangeBirthdatePage(),
+                          )),
+                    },
                     title: Row(
                       children: [
                         Expanded(
