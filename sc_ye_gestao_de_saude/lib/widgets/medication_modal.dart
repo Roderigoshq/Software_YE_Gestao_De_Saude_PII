@@ -27,6 +27,7 @@ class MedicationModal extends StatefulWidget {
 
 class _MedicationModalState extends State<MedicationModal> {
   final TextEditingController _nomeCtrl = TextEditingController();
+  final TextEditingController _dosagemCtrl = TextEditingController();
 
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = TimeOfDay.now();
@@ -39,7 +40,7 @@ class _MedicationModalState extends State<MedicationModal> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(32),
-      height: MediaQuery.of(context).size.height * 0.9,
+      height: MediaQuery.of(context).size.height * 0.8,
       child: Form(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -110,6 +111,21 @@ class _MedicationModalState extends State<MedicationModal> {
                 ),
                 const SizedBox(height: 20),
                 const Text(
+                  'Dosagem:',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: _dosagemCtrl,
+                  decoration: getAuthenticationInputDecoration(
+                    hintText: 'Digite a dosagem do medicamento em mg',
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const Text(
                   'Horário:',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -129,7 +145,7 @@ class _MedicationModalState extends State<MedicationModal> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '${_selectedTime.hour}:${_selectedTime.minute}',
+                          _selectedTime.format(context),
                           style: const TextStyle(fontSize: 16),
                         ),
                         const Icon(Icons.access_time),
@@ -139,25 +155,19 @@ class _MedicationModalState extends State<MedicationModal> {
                 ),
               ],
             ),
-            ElevatedButton(
-              onPressed: (){
-                enviarClicado();
-              },
-              child: (isCarregando)
-                  ? const SizedBox(
-                      height: 16,
-                      width: 16,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2.0,
+            Column(
+              children: [
+                isCarregando
+                    ? const CircularProgressIndicator()
+                    : ElevatedButton(
+                        onPressed: _adicionarMedicacao,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color.fromRGBO(136, 149, 83, 1),
+                          foregroundColor: Colors.white,
+                        ),
+                        child: const Text('Adicionar'),
                       ),
-                    )
-                  : const Text("Salvar medicação", 
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                    color: Colors.black),
-              ),
+              ],
             ),
           ],
         ),
@@ -165,11 +175,15 @@ class _MedicationModalState extends State<MedicationModal> {
     );
   }
 
-  void enviarClicado() async {
-    if (_nomeCtrl.text.isEmpty) {
-      // Mostrar um alerta ou mensagem informando que o campo nome está vazio.
+  void _adicionarMedicacao() async {
+    if (_nomeCtrl.text.isEmpty ||
+        _dosagemCtrl.text.isEmpty ||
+        _selectedDate == null ||
+        _selectedTime == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Por favor, insira o nome do medicamento')),
+        const SnackBar(
+          content: Text('Preencha todos os campos'),
+        ),
       );
       return;
     }
@@ -178,39 +192,29 @@ class _MedicationModalState extends State<MedicationModal> {
       isCarregando = true;
     });
 
-    String data = DateFormat('yyyy-MM-dd').format(_selectedDate);
-    String nome = _nomeCtrl.text;
-    String horario = _selectedTime.format(context);
-    String id = Uuid().v4(); // Gerar um ID único para o medicamento
-
-    MedicationModel medicamento = MedicationModel(
-      id: id,
-      name: nome,
-      dosage: '', // Adicione o campo de dosagem se necessário
-      time: horario,
-      date: data,
+    final medicationModel = MedicationModel(
+      id: const Uuid().v4(),
+      name: _nomeCtrl.text,
+      dosage: _dosagemCtrl.text,
+      time: _selectedTime.format(context),
+      date: DateFormat('dd/MM/yyyy').format(_selectedDate),
     );
 
-    try {
-      await _medicationService.addMedication(medicamento);
-      Navigator.pop(context);
-    } catch (e) {
-      // Tratar erro
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao salvar medicação: $e')),
-      );
-    } finally {
-      setState(() {
-        isCarregando = false;
-      });
-    }
+    await _medicationService.addMedication(medicationModel);
+
+    setState(() {
+      isCarregando = false;
+    });
+
+    Navigator.pop(context);
+    
   }
 
-  Future<void> _selectDate(BuildContext context) async {
+  void _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: _selectedDate,
-      firstDate: DateTime(1900),
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
       lastDate: DateTime(2101),
     );
     if (picked != null && picked != _selectedDate) {
@@ -220,39 +224,33 @@ class _MedicationModalState extends State<MedicationModal> {
     }
   }
 
-  Future<void> _selectTime(BuildContext context) async {
-    final TimeOfDay? picked = await showTimePicker(
-      context: context,
-      initialTime: _selectedTime,
-    );
+  void _selectTime(BuildContext context) async {
+    final TimeOfDay? picked =
+        await showTimePicker(context: context, initialTime: TimeOfDay.now());
     if (picked != null && picked != _selectedTime) {
       setState(() {
         _selectedTime = picked;
       });
     }
   }
-}
 
-InputDecoration getAuthenticationInputDecoration({
-  required String hintText,
-  String? labelText,
-  Widget? prefixIcon,
-}) {
-  return InputDecoration(
-    hintText: hintText,
-    labelText: labelText,
-    prefixIcon: prefixIcon,
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(10),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(10),
-      borderSide: const BorderSide(color: Colors.blue),
-    ),
-    enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(10),
-      borderSide: const BorderSide(color: Colors.grey),
-    ),
-    contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-  );
+  InputDecoration getAuthenticationInputDecoration({
+    required String hintText,
+  }) {
+    return InputDecoration(
+      hintText: hintText,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: Colors.grey),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: Colors.grey),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: Colors.grey),
+      ),
+    );
+  }
 }

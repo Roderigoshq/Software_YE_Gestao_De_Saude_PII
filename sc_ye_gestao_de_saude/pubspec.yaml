@@ -93,6 +93,9 @@ flutter:
   - lib/assets/pilula.png
   - lib/assets/consulta.png
   - lib/assets/exame.png
+  - lib/assets/Logo_gestao_de_saude_3.png
+  - lib/assets/nenhumitem.png
+  - lib/assets/FirstPage (1).png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

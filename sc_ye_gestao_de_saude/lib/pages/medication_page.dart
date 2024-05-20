@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sc_ye_gestao_de_saude/widgets/medication_modal.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sc_ye_gestao_de_saude/models/medication_model.dart';
+import 'package:sc_ye_gestao_de_saude/services/medication_service.dart';
 
 class MedicationPage extends StatefulWidget {
   const MedicationPage({super.key});
@@ -9,6 +13,8 @@ class MedicationPage extends StatefulWidget {
 }
 
 class _MedicationPageState extends State<MedicationPage> {
+  final MedicationService _medicationService = MedicationService();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,39 +59,18 @@ class _MedicationPageState extends State<MedicationPage> {
               ],
             ),
           ),
-          const Spacer(),
           const SizedBox(height: 16),
+          Expanded(
+            child: ExtensionPanelMedication(),
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
-        onPressed: (){
+        onPressed: () {
           mostrarModelMedication(context);
         },
-        ),
-
-
-        
-      // floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      // floatingActionButton: Padding(
-      //   padding: const EdgeInsets.all(20),
-      //   child: FloatingActionButton(
-      //     onPressed: () {
-      //       showModalBottomSheet(
-      //         isScrollControlled: false,
-      //         context: context,
-      //         builder: (ctx) => FormScreenMedication(),
-      //       );
-      //     },
-      //     backgroundColor: const Color.fromRGBO(136, 149, 83, 1),
-      //     child: const Icon(
-      //       Icons.add,
-      //       size: 30,
-      //       color: Colors.white,
-      //     ),
-      //     shape: const CircleBorder(),
-      //   ),
-      // ),
+      ),
     );
   }
 }
