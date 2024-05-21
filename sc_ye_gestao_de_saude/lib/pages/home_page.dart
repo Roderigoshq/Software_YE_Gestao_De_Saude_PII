@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sc_ye_gestao_de_saude/pages/exams_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/camera_page.dart';
-import 'package:sc_ye_gestao_de_saude/pages/consult_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/consultation_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/data_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/medication_page.dart';

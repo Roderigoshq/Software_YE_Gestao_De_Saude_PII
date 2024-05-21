@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sc_ye_gestao_de_saude/pages/form_screen_exams.dart';
 
 class ExamsPage extends StatefulWidget {
   const ExamsPage({super.key});
@@ -58,26 +57,8 @@ class _ExamsPageState extends State<ExamsPage> {
           const SizedBox(height: 40),
         ],
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.all(20),
-        child: FloatingActionButton(
-          onPressed: () {
-            showModalBottomSheet(
-              isScrollControlled: false,
-              context: context,
-              builder: (ctx) => FormScreenExams(),
-            );
-          },
-          backgroundColor: const Color.fromRGBO(136, 149, 83, 1),
-          child: const Icon(
-            Icons.add,
-            size: 30,
-            color: Colors.white,
-          ),
-          shape: const CircleBorder(),
-        ),
-      ),
-    );
+      
+    
+      );
   }
 }

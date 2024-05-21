@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sc_ye_gestao_de_saude/pages/form_screen_consultation.dart';
 
 class ConsultationPage extends StatefulWidget {
   const ConsultationPage({super.key});
@@ -19,28 +18,26 @@ class _ConsultationPageState extends State<ConsultationPage> {
             padding: const EdgeInsets.fromLTRB(40, 35, 0, 0),
             child: Row(
               children: [
-                const Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children:  [
-                       Text(
-                        "Gerencie suas  ",
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w400,
-                          fontSize: 24,
-                        ),
+                const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children:  [
+                     Text(
+                      "Gerencie suas  ",
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w400,
+                        fontSize: 24,
                       ),
-                      Text(
-                        "consultas:",
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.bold,
-                        ),
+                    ),
+                    Text(
+                      "consultas:",
+                      style: TextStyle(
+                        fontSize: 32,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.bold,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
                 const SizedBox(width: 10),
                 Image.asset(
@@ -55,26 +52,7 @@ class _ConsultationPageState extends State<ConsultationPage> {
           const SizedBox(height: 16),
         ],
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.all(20),
-        child: FloatingActionButton(
-          onPressed: () {
-            showModalBottomSheet(
-              isScrollControlled: true,
-              context: context,
-              builder: (ctx) => FormScreenConsultation(),
-            );
-          },
-          backgroundColor: const Color.fromRGBO(136, 149, 83, 1),
-          child: const Icon(
-            Icons.add,
-            size: 30,
-            color: Colors.white,
-          ),
-          shape: const CircleBorder(),
-        ),
-      ),
-    );
+      
+      );
   }
 }
