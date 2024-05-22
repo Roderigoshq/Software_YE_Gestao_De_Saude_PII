@@ -4,8 +4,8 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sc_ye_gestao_de_saude/pages/about_us_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/home_page.dart';
-import 'package:sc_ye_gestao_de_saude/pages/medication_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/login_page.dart';
+import 'package:sc_ye_gestao_de_saude/pages/medication_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/politica.dart';
 import 'package:sc_ye_gestao_de_saude/pages/register.dart';
 import 'package:sc_ye_gestao_de_saude/services/user_data_service.dart';
@@ -44,30 +44,30 @@ class RegisterOptions extends StatelessWidget {
   // FACEBOOK
 
   Future<void> signInWithFacebook(BuildContext context) async {
-  final LoginResult loginResult = await FacebookAuth.instance
-      .login(permissions: ['email', 'public_profile']);
+    final LoginResult loginResult = await FacebookAuth.instance
+        .login(permissions: ['email', 'public_profile']);
 
-  final userData = await FacebookAuth.instance.getUserData();
+    final userData = await FacebookAuth.instance.getUserData();
 
-  final userEmail = userData['email'];
+    final userEmail = userData['email'];
 
-  final OAuthCredential facebookAuthCredential =
-      FacebookAuthProvider.credential(loginResult.accessToken!.token);
+    final OAuthCredential facebookAuthCredential =
+        FacebookAuthProvider.credential(loginResult.accessToken!.token);
 
-  try {
-    final authResult = await FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+    try {
+      final authResult = await FirebaseAuth.instance
+          .signInWithCredential(facebookAuthCredential);
 
-    if (authResult.user != null) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage()),
-      );
+      if (authResult.user != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+      }
+    } catch (e) {
+      print("Erro ao fazer login com o Facebook: $e");
     }
-  } catch (e) {
-    print("Erro ao fazer login com o Facebook: $e");
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -250,73 +250,73 @@ class RegisterOptions extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Container(
-                      margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.fromLTRB(10, 25, 10, 25),
-                          backgroundColor: Colors.white,
-                          foregroundColor:
-                              const Color.fromRGBO(136, 149, 83, 1),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            side: const BorderSide(
-                              color: Color.fromRGBO(136, 149, 83, 1),
-                              width: 1,
-                            ),
-                          ),
-                        ),
-                        child: SizedBox(
-                          width: 325,
-                          height: 17,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                'lib/assets/Apple_logo_black 1.png',
-                              ),
-                              const SizedBox(width: 5),
-                              const Text(
-                                "Faça login com a ",
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              const Text(
-                                "Apple ",
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const MedicationPage()),
-                          );
-                        },
-                        child: const Text("medicações")),
-                    ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const HomePage(),
-                            ),
-                          );
-                        },
-                        child: const Text("homepage")),
+                    // Container(
+                    //   margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                    //   child: ElevatedButton(
+                    //     onPressed: () {},
+                    //     style: ElevatedButton.styleFrom(
+                    //       padding: const EdgeInsets.fromLTRB(10, 25, 10, 25),
+                    //       backgroundColor: Colors.white,
+                    //       foregroundColor:
+                    //           const Color.fromRGBO(136, 149, 83, 1),
+                    //       shape: RoundedRectangleBorder(
+                    //         borderRadius: BorderRadius.circular(10),
+                    //         side: const BorderSide(
+                    //           color: Color.fromRGBO(136, 149, 83, 1),
+                    //           width: 1,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //     child: SizedBox(
+                    //       width: 325,
+                    //       height: 17,
+                    //       child: Row(
+                    //         mainAxisAlignment: MainAxisAlignment.center,
+                    //         children: [
+                    //           Image.asset(
+                    //             'lib/assets/Apple_logo_black 1.png',
+                    //           ),
+                    //           const SizedBox(width: 5),
+                    //           const Text(
+                    //             "Faça login com a ",
+                    //             style: TextStyle(
+                    //               fontFamily: 'Poppins',
+                    //               fontSize: 13,
+                    //               fontWeight: FontWeight.w500,
+                    //             ),
+                    //           ),
+                    //           const Text(
+                    //             "Apple ",
+                    //             style: TextStyle(
+                    //               fontFamily: 'Poppins',
+                    //               fontSize: 13,
+                    //               fontWeight: FontWeight.w700,
+                    //             ),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    // ElevatedButton(
+                    //     onPressed: () {
+                    //       Navigator.push(
+                    //         context,
+                    //         MaterialPageRoute(
+                    //             builder: (context) => const MedicationPage()),
+                    //       );
+                    //     },
+                    //     child: const Text("medicações")),
+                    // ElevatedButton(
+                    //     onPressed: () {
+                    //       Navigator.push(
+                    //         context,
+                    //         MaterialPageRoute(
+                    //           builder: (context) => const HomePage(),
+                    //         ),
+                    //       );
+                    //     },
+                    //     child: const Text("homepage")),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -355,72 +355,75 @@ class RegisterOptions extends StatelessWidget {
                   ],
                 ),
               ),
-              Container(
-                margin: const EdgeInsets.fromLTRB(0, 80, 0, 7),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          "Veja mais ",
-                          style: TextStyle(
-                            color: Color.fromRGBO(110, 110, 110, 1),
-                            fontFamily: 'Poppins',
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AboutUsPage()),
-                            );
-                          },
-                          child: const Text(
-                            "sobre nós",
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12.0),
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            "Veja mais ",
                             style: TextStyle(
-                              color: Color.fromRGBO(136, 149, 83, 1),
+                              color: Color.fromRGBO(110, 110, 110, 1),
                               fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w700,
                               fontSize: 12,
-                              decoration: TextDecoration.underline,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => TermsOfUsePage()),
-                            );
-                          },
-                          child: const Text(
-                            "Política de privacidade",
-                            style: TextStyle(
-                              color: Color.fromRGBO(136, 149, 83, 1),
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w700,
-                              decoration: TextDecoration.underline,
-                              fontSize: 12,
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AboutUsPage()),
+                              );
+                            },
+                            child: const Text(
+                              "sobre nós",
+                              style: TextStyle(
+                                color: Color.fromRGBO(136, 149, 83, 1),
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w700,
+                                fontSize: 12,
+                                decoration: TextDecoration.underline,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => TermsOfUsePage()),
+                              );
+                            },
+                            child: const Text(
+                              "Política de privacidade",
+                              style: TextStyle(
+                                color: Color.fromRGBO(136, 149, 83, 1),
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w700,
+                                decoration: TextDecoration.underline,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

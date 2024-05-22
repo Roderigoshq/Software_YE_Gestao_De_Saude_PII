@@ -1,8 +1,10 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:sc_ye_gestao_de_saude/components/snackbar.dart';
+import 'package:sc_ye_gestao_de_saude/pages/change_password_page.dart';
+import 'package:sc_ye_gestao_de_saude/pages/forgot_password.dart';
 import 'package:sc_ye_gestao_de_saude/pages/home_page.dart';
 import 'package:sc_ye_gestao_de_saude/services/auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,32 +14,59 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _nomeController = TextEditingController();
-  final TextEditingController _sobrenomeController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _senhaController = TextEditingController();
-  final TextEditingController _repetirSenhaController = TextEditingController();
 
-  final databaseReference =
-      FirebaseDatabase.instance.reference().child('usuarios');
-
-  final AuthService _autenServico = AuthService();
+  final AuthService _authService = AuthService();
   bool _senhaVisivel = false;
+  bool _manterConectado = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPreferences();
+  }
+
+  void _loadPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _manterConectado = prefs.getBool('manterConectado') ?? false;
+      if (_manterConectado) {
+        _emailController.text = prefs.getString('email') ?? '';
+        _senhaController.text = prefs.getString('senha') ?? '';
+      }
+    });
+  }
+
+  void _savePreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('manterConectado', _manterConectado);
+    if (_manterConectado) {
+      prefs.setString('email', _emailController.text);
+      prefs.setString('senha', _senhaController.text);
+    } else {
+      prefs.remove('email');
+      prefs.remove('senha');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
+          icon: Icon(Icons.arrow_back_ios_new_rounded),
+          color: Color.fromARGB(255, 104, 104, 104),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
         ),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            margin: const EdgeInsets.fromLTRB(0, 40, 0, 25),
+            margin: const EdgeInsets.fromLTRB(0, 0, 0, 25),
             color: Colors.white,
             child: const Center(
               child: Text(
@@ -112,16 +141,67 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   obscureText: !_senhaVisivel,
                 ),
-                const SizedBox(height: 50),
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Checkbox(
+                      value: _manterConectado,
+                      onChanged: (value) {
+                        setState(() {
+                          _manterConectado = value!;
+                        });
+                      },
+                      activeColor: const Color.fromRGBO(136, 149, 83, 1),
+                    ),
+                    const Text(
+                      'Mantenha-me conectado',
+                      style: TextStyle(
+                          fontSize: 10,
+                          fontFamily: 'Poppins',
+                          color: Color.fromARGB(255, 48, 48, 48),
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ForgotPasswordPage(),
+                      ),
+                    );
+                  },
+                  child: const Text(
+                    "Esqueci minha senha",
+                    style: TextStyle(
+                      color: Color.fromRGBO(136, 149, 83, 1),
+                      decoration: TextDecoration.underline,
+                      fontWeight: FontWeight.w700,
+                      fontFamily: 'Poppins',
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 40),
                 ElevatedButton(
                   onPressed: () async {
                     String email = _emailController.text;
                     String senha = _senhaController.text;
 
-                    String? errorMessage =
-                        await _autenServico.login(email: email, senha: senha);
+                    String? errorMessage = await _authService.login(
+                      email: email,
+                      senha: senha,
+                    );
 
                     if (errorMessage == null) {
+                      _savePreferences();
                       Navigator.push(
                         context,
                         MaterialPageRoute(

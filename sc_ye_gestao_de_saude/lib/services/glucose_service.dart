@@ -31,13 +31,13 @@ class GlucoseAdd {
     }
   }
 
-  Future<void> deleteGlucose(String id) async {
+  Future<void> deleteGlucose(GlucoseModel glucose) async {
     try {
       await _firestore
           .collection('glucose')
           .doc(userId)
           .collection('userGlucose')
-          .doc(id)
+          .doc(glucose.id)
           .delete();
     } catch (e) {
       print("Erro ao excluir a glicemia: $e");

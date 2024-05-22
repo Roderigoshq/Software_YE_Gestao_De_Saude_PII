@@ -1,9 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:sc_ye_gestao_de_saude/firebase_options.dart';
 import 'package:sc_ye_gestao_de_saude/pages/loading_page.dart';
-import 'package:sc_ye_gestao_de_saude/providers/weight_height_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,14 +11,7 @@ Future<void> main() async {
   );
 
   runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (context) => WeightHeightProvider(),
-        ),
-      ],
-      child: MyApp(),
-    ),
+    MyApp(),
   );
 }
 

@@ -58,8 +58,14 @@ Color getColorForPressure(int sistolic, int diastolic) {
   }
 }
 
+typedef EditCallback = void Function(PressureModel updatedModel);
+typedef DeleteCallback = void Function(PressureModel weightHeight);
+
 class ExtensionPanelPressure extends StatefulWidget {
-  const ExtensionPanelPressure({Key? key}) : super(key: key);
+    final EditCallback editCallback;
+  final DeleteCallback deleteCallback;
+
+  const ExtensionPanelPressure({Key? key, required this.editCallback, required this.deleteCallback}) : super(key: key);
 
   @override
   State<ExtensionPanelPressure> createState() => _ExtensionPanelPressureState();
@@ -155,18 +161,69 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
                           },
                           onSelected: (value) async {
                             if (value == 'edit') {
-                              final updatedPressure =
-                              await _showEditPressureDialog(
-                                  context, pressure);
+                              final updatedWeightHeight =
+                                await _showEditPressureDialog(
+                              context,
+                              pressure,
+                            );
 
-                              if (updatedPressure != null) {
-                                await pressureService
-                                    .editPressure(updatedPressure);
-                                setState(() {});
-                              }
+                            if (updatedWeightHeight != null) {
+                              // Chama a função para editar os dados no serviço
+                              await PressureAdd()
+                                  .editPressure(updatedWeightHeight);
+
+                              // Em seguida, chama a função de retorno de chamada para atualizar a interface do usuário
+                              widget.editCallback(updatedWeightHeight);
+                            }
+                            setState(() {});
                             } else if (value == 'delete') {
-                                await pressureService.deletePressure(pressure.id);
-                                setState(() {});
+                                final confirmed = await showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text(
+                                    'Confirmar Exclusão',
+                                    style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w600,
+                                        color: const Color.fromARGB(
+                                            255, 66, 66, 66)),
+                                  ),
+                                  content: Text(
+                                      'Tem certeza de que deseja excluir este registro?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, false),
+                                      child: Text(
+                                        'Cancelar',
+                                        style: TextStyle(
+                                            fontFamily: 'Poppins',
+                                            color: Color.fromRGBO(
+                                                136, 149, 83, 1)),
+                                      ),
+                                    ),
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, true),
+                                      child: Text('Confirmar',
+                                          style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              color: Color.fromRGBO(
+                                                  136, 149, 83, 1))),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+
+                            if (confirmed == true) {
+                              await pressureService
+                                  .deletePressures(pressure);
+                              widget.deleteCallback(pressure);
+
+                              setState(() {});
+                            }
                             }
                           },
                         ),

@@ -96,7 +96,23 @@ class AuthService {
     return user?.uid;
   }
 
-  Future<void> signOut() async {
+  Future<void> logOut() async {
     await _firebaseAuth.signOut();
   }
+
+  Future<String?> deleteAccount() async {
+  try {
+    User? user = _firebaseAuth.currentUser;
+    if (user != null) {
+      await user.delete();
+      return null; // Conta excluída com sucesso
+    } else {
+      return "Nenhum usuário está atualmente conectado.";
+    }
+  } on FirebaseAuthException catch (e) {
+    return e.message;
+  } catch (e) {
+    return "Erro ao excluir conta. Por favor, tente novamente mais tarde.";
+  }
+}
 }

@@ -49,8 +49,13 @@ Color getColorForGlucose(int glucose) {
   }
 }
 
+typedef EditCallback = void Function(GlucoseModel updatedModel);
+typedef DeleteCallback = void Function(GlucoseModel weightHeight);
+
 class ExtensionPanelGlucose extends StatefulWidget {
-  const ExtensionPanelGlucose({Key? key}) : super(key: key);
+      final EditCallback editCallback;
+  final DeleteCallback deleteCallback;
+  const ExtensionPanelGlucose({Key? key, required this.editCallback, required this.deleteCallback}) : super(key: key);
 
   @override
   State<ExtensionPanelGlucose> createState() => _ExtensionPanelGlucoseState();
@@ -158,20 +163,71 @@ class _ExtensionPanelGlucoseState extends State<ExtensionPanelGlucose> {
                           },
                           onSelected: (value) async {
                             if (value == 'edit') {
-                              final updatedGlucose =
-                                  await _showEditGlucoseDialog(
-                                      context, glucose);
+                              final updatedWeightHeight =
+                                await _showEditGlucoseDialog(
+                              context,
+                              glucose,
+                            );
 
-                              if (updatedGlucose != null) {
-                                await glucoseService
-                                    .editGlucose(updatedGlucose);
-                                setState(() {});
-                              }
+                            if (updatedWeightHeight != null) {
+                              // Chama a função para editar os dados no serviço
+                              await GlucoseAdd()
+                                  .editGlucose(updatedWeightHeight);
+
+                              // Em seguida, chama a função de retorno de chamada para atualizar a interface do usuário
+                              widget.editCallback(updatedWeightHeight);
+                            }
+                            setState(() {});
                             } else if (value == 'delete') {
-                              await glucoseService.deleteGlucose(glucose.id);
+                              final confirmed = await showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text(
+                                    'Confirmar Exclusão',
+                                    style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w600,
+                                        color: const Color.fromARGB(
+                                            255, 66, 66, 66)),
+                                  ),
+                                  content: Text(
+                                      'Tem certeza de que deseja excluir este registro?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, false),
+                                      child: Text(
+                                        'Cancelar',
+                                        style: TextStyle(
+                                            fontFamily: 'Poppins',
+                                            color: Color.fromRGBO(
+                                                136, 149, 83, 1)),
+                                      ),
+                                    ),
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, true),
+                                      child: Text('Confirmar',
+                                          style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              color: Color.fromRGBO(
+                                                  136, 149, 83, 1))),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+
+                            if (confirmed == true) {
+                              await glucoseService
+                                  .deleteGlucose(glucose);
+                              widget.deleteCallback(glucose);
+
                               setState(() {});
                             }
-                          },
+                            }
+                            }
                         ),
                       ],
                     ),

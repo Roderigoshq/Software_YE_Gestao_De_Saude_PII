@@ -6,6 +6,8 @@ import 'package:sc_ye_gestao_de_saude/pages/change_name_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/change_password_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/change_surname_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/home_page.dart';
+import 'package:sc_ye_gestao_de_saude/pages/initial_banner_page.dart';
+import 'package:sc_ye_gestao_de_saude/services/auth_service.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -54,6 +56,8 @@ class _ConfigPageState extends State<SettingsPage> {
     }
   }
 
+  AuthService authService = AuthService();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,7 +96,7 @@ class _ConfigPageState extends State<SettingsPage> {
             ),
             Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 40),
+                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 30),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -186,7 +190,6 @@ class _ConfigPageState extends State<SettingsPage> {
                     ),
                   ),
                   ListTile(
-                    onTap: () => {},
                     title: Row(
                       children: [
                         Expanded(
@@ -308,6 +311,111 @@ class _ConfigPageState extends State<SettingsPage> {
                           size: 20,
                         ),
                       ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 50,
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await authService.logOut();
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const InitialBanner()),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      foregroundColor: Color.fromARGB(255, 241, 65, 65),
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      // Define a largura máxima
+                      minimumSize: Size(double.infinity, 0),
+                    ),
+                    child: const Text(
+                      'Log out',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w600,
+                        color: Color.fromARGB(255, 241, 65, 65),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10,),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final confirmed = await showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text(
+                                    'Confirmar',
+                                    style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w600,
+                                        color: const Color.fromARGB(
+                                            255, 66, 66, 66)),
+                                  ),
+                                  content: Text(
+                                      'Tem certeza de que deseja deletar sua conta?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, false),
+                                      child: Text(
+                                        'Cancelar',
+                                        style: TextStyle(
+                                            fontFamily: 'Poppins',
+                                            color: Color.fromRGBO(85, 85, 85, 1)),
+                                      ),
+                                    ),
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, true),
+                                      child: Text('Deletar',
+                                          style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              color: Color.fromRGBO(255, 41, 41, 1),
+                                              fontWeight: FontWeight.w700)),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+
+                            if (confirmed == true) {
+                              await authService.deleteAccount();
+
+                              Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const InitialBanner()),
+                      );
+                            }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      foregroundColor: Colors.white,
+                      backgroundColor: Color.fromARGB(255, 241, 65, 65),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      // Define a largura máxima
+                      minimumSize: Size(double.infinity, 0),
+                    ),
+                    child: const Text(
+                      'Deletar minha conta',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ],

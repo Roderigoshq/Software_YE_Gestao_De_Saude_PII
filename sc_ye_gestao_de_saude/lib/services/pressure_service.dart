@@ -32,18 +32,19 @@ class PressureAdd {
     }
   }
 
-  Future<void> deletePressure(String id) async {
-    try {
-      await _firestore
-          .collection('pressures')
-          .doc(userId)
-          .collection('userPressures')
-          .doc(id)
-          .delete();
-    } catch (e) {
-      print("Erro ao excluir a pressão: $e");
-    }
+  Future<void> deletePressures(PressureModel pressure) async {
+  try {
+    await _firestore
+        .collection('pressures')
+        .doc(userId)
+        .collection('userPressures')
+        .doc(pressure.id) // Use o ID do objeto WeightHeightModel fornecido
+        .delete();
+  } catch (e) {
+    print("Erro ao excluir peso e altura: $e");
   }
+}
+  
 
   Stream<QuerySnapshot<Map<String, dynamic>>> streamPressure() {
     return _firestore

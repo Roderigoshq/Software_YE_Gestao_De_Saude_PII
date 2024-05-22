@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:intl/intl.dart';
 import 'package:sc_ye_gestao_de_saude/models/weight_height_model.dart';
 
 class WeightHeightAdd {
@@ -19,31 +18,32 @@ class WeightHeightAdd {
         .set(weightHeightModel.toMap());
   }
 
-  // Future<void> editWeightHeight(WeightHeightModel updatedWeightHeight) async {
-  //   try {
-  //     await _firestore
-  //         .collection('weightHeight')
-  //         .doc(userId)
-  //         .collection('userWeightHeight')
-  //         .doc(updatedWeightHeight.id)
-  //         .update(updatedWeightHeight.toMap());
-  //   } catch (error) {
-  //     print("Erro ao editar peso e altura: $error");
-  //   }
-  // }
+  Future<void> editWeightHeight(WeightHeightModel updatedWeightHeight) async {
+    try {
+      await _firestore
+          .collection('weightHeight')
+          .doc(userId)
+          .collection('userWeightHeight')
+          .doc(updatedWeightHeight.id)
+          .update(updatedWeightHeight.toMap());
+    } catch (error) {
+      print("Erro ao editar peso e altura: $error");
+    }
+  }
 
-  // Future<void> deleteWeightHeight(String id) async {
-  //   try {
-  //     await _firestore
-  //         .collection('weightHeight')
-  //         .doc(userId)
-  //         .collection('userWeightHeight')
-  //         .doc(id)
-  //         .delete();
-  //   } catch (e) {
-  //     print("Erro ao excluir peso e altura: $e");
-  //   }
-  // }
+  Future<void> deleteWeightHeight(WeightHeightModel weightHeight) async {
+  try {
+    await _firestore
+        .collection('weightHeight')
+        .doc(userId)
+        .collection('userWeightHeight')
+        .doc(weightHeight.id) // Use o ID do objeto WeightHeightModel fornecido
+        .delete();
+  } catch (e) {
+    print("Erro ao excluir peso e altura: $e");
+  }
+}
+
 
   Stream<QuerySnapshot<Map<String, dynamic>>> streamWeightHeight() {
     return _firestore
@@ -82,37 +82,26 @@ class WeightHeightAdd {
   }
 
   Future<WeightHeightModel?> getLatestWeight() async {
-  try {
-    final querySnapshot = await _firestore
-        .collection('weightHeight')
-        .doc(userId)
-        .collection('userWeightHeight')
-        .orderBy('date', descending: true)
-        .limit(1)
-        .get();
+    try {
+      final querySnapshot = await _firestore
+          .collection('weightHeight')
+          .doc(userId)
+          .collection('userWeightHeight')
+          .orderBy('date', descending: true)
+          .limit(1)
+          .get();
 
-    if (querySnapshot.docs.isNotEmpty) {
-      final latestWeightDoc = querySnapshot.docs.first;
-      final latestWeightHeight = WeightHeightModel.fromMap(latestWeightDoc.data());
-      return latestWeightHeight;
-    } else {
+      if (querySnapshot.docs.isNotEmpty) {
+        final latestWeightDoc = querySnapshot.docs.first;
+        final latestWeightHeight =
+            WeightHeightModel.fromMap(latestWeightDoc.data());
+        return latestWeightHeight;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      print("Erro ao buscar o peso e altura mais recentes: $error");
       return null;
     }
-  } catch (error) {
-    print("Erro ao buscar o peso e altura mais recentes: $error");
-    return null;
   }
-} 
-
-
-
-
-
-
-
-
-
-
-
-
 }

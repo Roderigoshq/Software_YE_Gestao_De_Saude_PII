@@ -67,6 +67,15 @@ class _RegisterState extends State<Register> {
   Widget build(BuildContext context) {
     String nome = _nomeController.text;
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_new_rounded),
+          color: Color.fromARGB(255, 104, 104, 104),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(20, 80, 20, 0),
         child: Column(
@@ -397,90 +406,77 @@ class _RegisterState extends State<Register> {
                       ),
                     ],
                   ),
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(0, 80, 0, 7),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text(
-                              "Veja mais ",
+                  Padding(
+                padding: const EdgeInsets.only(bottom: 12.0, top: 50),
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            "Veja mais ",
+                            style: TextStyle(
+                              color: Color.fromRGBO(110, 110, 110, 1),
+                              fontFamily: 'Poppins',
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AboutUsPage()),
+                              );
+                            },
+                            child: const Text(
+                              "sobre nós",
                               style: TextStyle(
-                                color: Color.fromRGBO(110, 110, 110, 1),
+                                color: Color.fromRGBO(136, 149, 83, 1),
                                 fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w700,
                                 fontSize: 12,
-                                fontWeight: FontWeight.w500,
+                                decoration: TextDecoration.underline,
                               ),
                             ),
-                            InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => AboutUsPage(),
-                                  ),
-                                );
-                              },
-                              child: const Text(
-                                "sobre nós",
-                                style: TextStyle(
-                                  color: Color.fromRGBO(136, 149, 83, 1),
-                                  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 12,
-                                  decoration: TextDecoration.underline,
-                                ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => TermsOfUsePage()),
+                              );
+                            },
+                            child: const Text(
+                              "Política de privacidade",
+                              style: TextStyle(
+                                color: Color.fromRGBO(136, 149, 83, 1),
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w700,
+                                decoration: TextDecoration.underline,
+                                fontSize: 12,
                               ),
                             ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => TermsOfUsePage(),
-                                  ),
-                                );
-                              },
-                              child: const Text(
-                                "Termos e condições",
-                                style: TextStyle(
-                                  color: Color.fromRGBO(136, 149, 83, 1),
-                                  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.w700,
-                                  decoration: TextDecoration.underline,
-                                  fontSize: 8,
-                                ),
-                              ),
-                            ),
-                            const Text(
-                              "      ",
-                              style: TextStyle(fontSize: 8),
-                            ),
-                            InkWell(
-                              onTap: () {},
-                              child: const Text(
-                                "política de privacidade",
-                                style: TextStyle(
-                                  color: Color.fromRGBO(136, 149, 83, 1),
-                                  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.w700,
-                                  decoration: TextDecoration.underline,
-                                  fontSize: 8,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
+                ),
+              ),
                 ],
               ),
             ),

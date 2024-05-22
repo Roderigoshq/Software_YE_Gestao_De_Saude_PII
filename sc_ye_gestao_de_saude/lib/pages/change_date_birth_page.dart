@@ -14,16 +14,14 @@ class ChangeBirthdatePage extends StatefulWidget {
 
 class _ChangeBirthdatePageState extends State<ChangeBirthdatePage> {
   final TextEditingController _dateController = TextEditingController();
-  late DateTime? _selectedDate;
+  DateTime? _selectedDate;
   final DateFormat _dateFormat = DateFormat('dd/MM/yyyy');
   User? user = FirebaseAuth.instance.currentUser;
-  String data = '';
 
   @override
   void initState() {
     super.initState();
     _fetchUserDate();
-    _selectedDate = null;
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -61,13 +59,12 @@ class _ChangeBirthdatePageState extends State<ChangeBirthdatePage> {
         DataSnapshot snapshot = event.snapshot;
 
         if (snapshot.exists) {
-          setState(() {
-            data = snapshot.child('data').value?.toString() ?? 'N/A';
-            if (data != 'N/A') {
+          String? data = snapshot.child('data').value?.toString();
+          if (data != null && data.isNotEmpty) {
+            setState(() {
               _selectedDate = _dateFormat.parse(data);
-              _dateController.text = data;
-            }
-          });
+            });
+          }
         } else {
           print('No data available for the user.');
         }
@@ -85,7 +82,8 @@ class _ChangeBirthdatePageState extends State<ChangeBirthdatePage> {
     if (user != null) {
       DatabaseReference userRef =
           FirebaseDatabase.instance.ref().child('usuarios').child(user!.uid);
-      userRef.update({'data': _dateController.text}).then((_) async {
+      userRef.update({'dataNascimento': _dateController.text}).then((_) async {
+        _dateController.clear(); // Limpa o campo de texto aqui
         showDialog(
           context: context,
           builder: (context) {
