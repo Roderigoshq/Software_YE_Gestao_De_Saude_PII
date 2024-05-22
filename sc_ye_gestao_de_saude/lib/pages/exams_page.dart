@@ -1,64 +1,85 @@
 import 'package:flutter/material.dart';
+import 'package:sc_ye_gestao_de_saude/widgets/exams_modal.dart';
+import 'package:sc_ye_gestao_de_saude/models/exams_model.dart';
 
-class ExamsPage extends StatefulWidget {
-  const ExamsPage({super.key});
+class ExamPage extends StatefulWidget {
+  const ExamPage({Key? key}) : super(key: key);
 
   @override
-  _ExamsPageState createState() => _ExamsPageState();
+  _ExamPageState createState() => _ExamPageState();
 }
 
-class _ExamsPageState extends State<ExamsPage> {
+class _ExamPageState extends State<ExamPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Container(
-            padding: const EdgeInsets.fromLTRB(40, 35, 0, 0),
-            child: Row(
-              children: [
-                const Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Consulte seus  ",
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w400,
-                          fontSize: 22,
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: SizedBox(
+              width: double.infinity,
+              child: Stack(
+                children: [
+                  const Padding(
+                    padding: const EdgeInsets.only(right: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Consulte seus ",
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w400,
+                            fontSize: 30,
+                          ),
                         ),
-                      ),
-                      Text(
-                        "exames realizados:",
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.bold,
+                        Text(
+                          "exames realizados:",
+                          style: TextStyle(
+                            fontSize: 40,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(width: 20), // Espaçamento adicionado aqui
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Image.asset(
-                    'lib/assets/exame.png',
-                    height: 90,
-                    width: 90,
+                  Positioned(
+                    right: 0,
+                    child: Image.asset(
+                      'lib/assets/exame.png',
+                      height: 130,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-          const Spacer(),
-          const SizedBox(height: 40),
+          SizedBox(height: 16),
+          Expanded(
+            child: ExtensionPanelExam(),
+          ),
         ],
       ),
-      
-    
-      );
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          mostrarModelExam(context);
+        },
+        child: Icon(
+          Icons.add,
+          size: 35,
+          color: Colors.white,
+        ),
+        backgroundColor: Color.fromRGBO(136, 149, 83, 1),
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+    );
   }
 }

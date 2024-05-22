@@ -1,58 +1,90 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sc_ye_gestao_de_saude/models/consultation_model.dart';
+import 'package:sc_ye_gestao_de_saude/services/consultation_service.dart';
+import 'package:sc_ye_gestao_de_saude/widgets/consultation_modal.dart';
 
 class ConsultationPage extends StatefulWidget {
-  const ConsultationPage({super.key});
+  const ConsultationPage({Key? key}) : super(key: key);
 
   @override
   _ConsultationPageState createState() => _ConsultationPageState();
 }
 
 class _ConsultationPageState extends State<ConsultationPage> {
+  final ConsultationService _consultationService = ConsultationService();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Container(
-            padding: const EdgeInsets.fromLTRB(40, 35, 0, 0),
-            child: Row(
-              children: [
-                const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children:  [
-                     Text(
-                      "Gerencie suas  ",
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w400,
-                        fontSize: 24,
-                      ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: SizedBox(
+              width: double.infinity,
+              child: Stack(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(right: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Gerencie suas",
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w400,
+                            fontSize: 30,
+                          ),
+                        ),
+                        Text(
+                          "consultas:",
+                          style: TextStyle(
+                            fontSize: 40,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
-                    Text(
-                      "consultas:",
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.bold,
-                      ),
+                  ),
+                  Positioned(
+                    right: 0,
+                    child: Image.asset(
+                      'lib/assets/consulta.png',
+                      height: 130,
                     ),
-                  ],
-                ),
-                const SizedBox(width: 10),
-                Image.asset(
-                  'lib/assets/consulta.png',
-                  height: 120,
-                  width: 120,
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
           ),
-          const Spacer(),
           const SizedBox(height: 16),
+          const Expanded(
+            child: ExtensionPanelConsultation(),
+          ),
         ],
       ),
-      
-      );
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          mostrarModelConsultation(context);
+        },
+        child: const Icon(
+          Icons.add,
+          size: 35,
+          color: Colors.white,
+        ),
+        backgroundColor: const Color.fromRGBO(136, 149, 83, 1),
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+    );
   }
 }

@@ -31,6 +31,7 @@ class _MedicationModalState extends State<MedicationModal> {
 
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = TimeOfDay.now();
+  String _selectedUnit = 'mg';
 
   bool isCarregando = false;
 
@@ -40,27 +41,48 @@ class _MedicationModalState extends State<MedicationModal> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(32),
-      height: MediaQuery.of(context).size.height * 0.8,
+      height: MediaQuery.of(context).size.height * 0.7,
       child: Form(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Column(
-              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      "Adicionar Medicação",
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    ),
-                    IconButton(
-                      onPressed: () {
+                    GestureDetector(
+                      onTap: () {
                         Navigator.pop(context);
                       },
-                      icon: const Icon(Icons.close),
+                      child: Text(
+                        "Cancel",
+                        style: TextStyle(
+                          color: Color.fromRGBO(136, 149, 83, 1),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const Text(
+                      "medicamentos",
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 18,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: _adicionarMedicacao,
+                      child: Text(
+                        "Save",
+                        style: TextStyle(
+                          color: Color.fromRGBO(136, 149, 83, 1),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -80,7 +102,7 @@ class _MedicationModalState extends State<MedicationModal> {
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(15),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -90,6 +112,35 @@ class _MedicationModalState extends State<MedicationModal> {
                           style: const TextStyle(fontSize: 16),
                         ),
                         const Icon(Icons.calendar_today),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'Horário:',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                GestureDetector(
+                  onTap: () => _selectTime(context),
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          _selectedTime.format(context),
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                        const Icon(Icons.access_time),
                       ],
                     ),
                   ),
@@ -118,57 +169,45 @@ class _MedicationModalState extends State<MedicationModal> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                TextFormField(
-                  controller: _dosagemCtrl,
-                  decoration: getAuthenticationInputDecoration(
-                    hintText: 'Digite a dosagem do medicamento em mg',
-                  ),
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  'Horário:',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                GestureDetector(
-                  onTap: () => _selectTime(context),
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          _selectedTime.format(context),
-                          style: const TextStyle(fontSize: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: _dosagemCtrl,
+                        decoration: const InputDecoration(
+                          hintText: 'Digite a dosagem',
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Color.fromRGBO(136, 149, 83, 1),
+                            ),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(15)),
+                          ),
                         ),
-                        const Icon(Icons.access_time),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Column(
-              children: [
-                isCarregando
-                    ? const CircularProgressIndicator()
-                    : ElevatedButton(
-                        onPressed: _adicionarMedicacao,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromRGBO(136, 149, 83, 1),
-                          foregroundColor: Colors.white,
-                        ),
-                        child: const Text('Adicionar'),
                       ),
+                    ),
+                    const SizedBox(width: 20),
+                    DropdownButton<String>(
+                      value: _selectedUnit,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          _selectedUnit = newValue!;
+                        });
+                      },
+                      items: <String>['mg', 'ml', 'g', 'mcg']
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
               ],
             ),
+            if (isCarregando) const CircularProgressIndicator(),
           ],
         ),
       ),
@@ -176,10 +215,7 @@ class _MedicationModalState extends State<MedicationModal> {
   }
 
   void _adicionarMedicacao() async {
-    if (_nomeCtrl.text.isEmpty ||
-        _dosagemCtrl.text.isEmpty ||
-        _selectedDate == null ||
-        _selectedTime == null) {
+    if (_nomeCtrl.text.isEmpty || _dosagemCtrl.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Preencha todos os campos'),
@@ -195,7 +231,7 @@ class _MedicationModalState extends State<MedicationModal> {
     final medicationModel = MedicationModel(
       id: const Uuid().v4(),
       name: _nomeCtrl.text,
-      dosage: _dosagemCtrl.text,
+      dosage: '${_dosagemCtrl.text} $_selectedUnit',
       time: _selectedTime.format(context),
       date: DateFormat('dd/MM/yyyy').format(_selectedDate),
     );
@@ -207,7 +243,6 @@ class _MedicationModalState extends State<MedicationModal> {
     });
 
     Navigator.pop(context);
-    
   }
 
   void _selectDate(BuildContext context) async {
@@ -240,15 +275,15 @@ class _MedicationModalState extends State<MedicationModal> {
     return InputDecoration(
       hintText: hintText,
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(15),
         borderSide: const BorderSide(color: Colors.grey),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(15),
         borderSide: const BorderSide(color: Colors.grey),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(15),
         borderSide: const BorderSide(color: Colors.grey),
       ),
     );

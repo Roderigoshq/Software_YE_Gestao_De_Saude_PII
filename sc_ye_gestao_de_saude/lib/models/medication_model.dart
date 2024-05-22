@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sc_ye_gestao_de_saude/services/medication_service.dart';
+import 'package:sc_ye_gestao_de_saude/models/medication_model.dart';
+import 'package:sc_ye_gestao_de_saude/widgets/consultation_modal.dart'; // Certifique-se de que o caminho está correto
 
 class MedicationModel {
   String id;
