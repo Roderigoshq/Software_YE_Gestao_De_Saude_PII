@@ -1,13 +1,10 @@
-import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
+import 'package:firebase_storage/firebase_storage.dart';
 
 class CameraScreen extends StatefulWidget {
-  const CameraScreen({super.key});
+  const CameraScreen({Key? key}) : super(key: key);
 
   @override
   _CameraScreenState createState() => _CameraScreenState();
@@ -25,9 +22,11 @@ class _CameraScreenState extends State<CameraScreen> {
   }
 
   Future<void> _initializeCamera() async {
+    // Obtém a lista de câmeras disponíveis no dispositivo
     final cameras = await availableCameras();
     final firstCamera = cameras.first;
 
+    // Inicializa o controlador da câmera
     _controller = CameraController(
       firstCamera,
       ResolutionPreset.medium,
@@ -44,43 +43,37 @@ class _CameraScreenState extends State<CameraScreen> {
 
   Future<void> _captureImage() async {
     try {
+      // Captura a imagem
       final imageFile = await _controller.takePicture();
       setState(() {
         _imageFile = imageFile;
       });
 
-      await analyzeImage(File(imageFile.path).readAsBytesSync());
+      // Faz upload da imagem para o Firebase Storage
+      await _uploadImageToFirebase(File(imageFile.path));
     } catch (e) {
       print(e);
     }
   }
 
-  // Future<void> _pickImage() async {
-  //   final pickedFile = await ImagePicker().getImage(source: ImageSource.gallery);
-  //   if (pickedFile != null) {
-  //     setState(() {
-  //       _imageFile = pickedFile;
-  //     });
-
-  //     // Analisar a imagem quando selecionada da galeria
-  //     await analyzeImage(File(pickedFile.path).readAsBytesSync());
-  //   }
-  // }
-
-  Future<void> analyzeImage(Uint8List imageBytes) async {
-  try {
-    // Simular análise de imagem (resultado fixo)
-    String result = 'Exame médico detectado: Hemograma';
-
-    print('Resultado da análise: $result');
-  } catch (e) {
-    print('Erro ao analisar a imagem: $e');
+  Future<void> _uploadImageToFirebase(File imageFile) async {
+    try {
+      // Cria uma referência para o Firebase Storage
+      final storageRef = FirebaseStorage.instance.ref().child('exams/${imageFile.uri.pathSegments.last}');
+      // Faz upload da imagem
+      final uploadTask = storageRef.putFile(imageFile);
+      // Espera o upload ser concluído
+      await uploadTask;
+      final downloadUrl = await storageRef.getDownloadURL();
+      print('Imagem salva com sucesso no Firebase: $downloadUrl');
+    } catch (e) {
+      print('Erro ao fazer upload da imagem: $e');
+    }
   }
-}
-
 
   @override
   void dispose() {
+    // Libera o controlador da câmera quando o widget for descartado
     _controller.dispose();
     super.dispose();
   }
