@@ -27,33 +27,32 @@ class _MedicationPageState extends State<MedicationPage> {
             child: SizedBox(
               width: double.infinity,
               child: Stack(
+                alignment: Alignment.centerLeft,  // Alinhamento para sobrepor texto na imagem
                 children: [
-                  const Padding(
-                    padding: const EdgeInsets.only(right: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Tome sempre seus ",
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                            fontSize: 30,
-                          ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16),  // Espaçamento para o texto
+                    child: Text.rich(
+                      TextSpan(
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 30,
+                          color: Colors.black,
                         ),
-                        Text(
-                          "medicamentos:",
-                          style: TextStyle(
-                            fontSize: 40,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.bold,
+                        children: [
+                          TextSpan(
+                            text: "Tome sempre seus\n",
+                            style: TextStyle(fontWeight: FontWeight.w400),
                           ),
-                        ),
-                      ],
+                          TextSpan(
+                            text: "medicamentos:",
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   Positioned(
-                    right: 0,
+                    right: 0,  // Posicionamento da imagem no lado direito
                     child: Image.asset(
                       'lib/assets/pilula.png',
                       height: 130,

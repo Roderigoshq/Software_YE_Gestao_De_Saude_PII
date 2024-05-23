@@ -11,13 +11,19 @@ class MedicationService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> addMedication(MedicationModel medicationModel) async {
-    return await _firestore
+    try{
+      await _firestore
         .collection('medications')
         .doc(userId)
         .collection('userMedications')
         .doc(medicationModel.id)
         .set(medicationModel.toMap());
+    } catch (e) {
+    print('Erro ao adicionar medicação: $e');
+    throw Exception('Erro ao adicionar medicação: $e');
+     // Para obter mais detalhes sobre o erro
   }
+}
 
   Future<void> editMedication(MedicationModel updatedMedication) async {
     try {

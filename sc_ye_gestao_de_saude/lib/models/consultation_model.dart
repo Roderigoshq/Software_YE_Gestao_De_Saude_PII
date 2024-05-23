@@ -37,7 +37,7 @@ class ConsultationModel {
     );
   }
 }
-
+ 
 class ExtensionPanelConsultation extends StatefulWidget {
   const ExtensionPanelConsultation({Key? key}) : super(key: key);
 

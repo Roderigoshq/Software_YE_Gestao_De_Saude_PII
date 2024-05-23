@@ -8,34 +8,46 @@ class MedicationModel {
   String id;
   String name;
   String dosage;
-  String time;
-  String date;
+  List<String> dates; // Lista de datas em formato string
+  int hour;
+  int minute;
+  String period; // 'AM' ou 'PM'
+  bool reminder;
 
   MedicationModel({
     required this.id,
     required this.name,
     required this.dosage,
-    required this.time,
-    required this.date,
+    required this.dates,
+    required this.hour,
+    required this.minute,
+    required this.period,
+    this.reminder = false,
   });
 
   Map<String, dynamic> toMap() {
     return {
-      "id": id,
-      "name": name,
-      "dosage": dosage,
-      "time": time,
-      "date": date,
+      'id': id,
+      'name': name,
+      'dosage': dosage,
+      'dates': dates,
+      'hour': hour,
+      'minute': minute,
+      'period': period,
+      'reminder': reminder,
     };
   }
 
   factory MedicationModel.fromMap(Map<String, dynamic> map) {
     return MedicationModel(
-      id: map["id"],
-      name: map["name"],
-      dosage: map["dosage"],
-      time: map["time"],
-      date: map["date"],
+      id: map['id'],
+      name: map['name'],
+      dosage: map['dosage'],
+      dates: List<String>.from(map['dates'] as List<dynamic>),
+      hour: map['hour'] as int,
+      minute: map['minute'] as int,
+      period: map['period'] as String,
+      reminder: map['reminder'] as bool? ?? false,
     );
   }
 }
@@ -82,18 +94,18 @@ class _ExtensionPanelMedicationState extends State<ExtensionPanelMedication> {
                       Text(
                         "Não há nenhum item",
                         style: TextStyle(
-                            color: Color.fromRGBO(136, 149, 83, 1),
-                            fontFamily: 'Poppins',
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500),
+                          color: Color.fromRGBO(136, 149, 83, 1),
+                          fontFamily: 'Poppins',
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500),
                       ),
                     ],
                   ),
                 );
               }
               medicationModels.sort((a, b) {
-                final DateTime dateA = DateFormat('dd/MM/yyyy').parse(a.date);
-                final DateTime dateB = DateFormat('dd/MM/yyyy').parse(b.date);
+                final DateTime dateA = DateFormat('yyyy-MM-dd').parse(a.dates[0]);
+                final DateTime dateB = DateFormat('yyyy-MM-dd').parse(b.dates[0]);
                 return dateB.compareTo(dateA);
               });
               return ListView.builder(
@@ -104,12 +116,12 @@ class _ExtensionPanelMedicationState extends State<ExtensionPanelMedication> {
                     title: Row(
                       children: [
                         Text(
-                          medication.date,
+                          _dateFormat.format(DateFormat('yyyy-MM-dd').parse(medication.dates[0])),
                           style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                              color: Color.fromRGBO(85, 85, 85, 1)),
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                            color: Color.fromRGBO(85, 85, 85, 1)),
                         ),
                         Spacer(),
                         PopupMenuButton(
@@ -117,39 +129,36 @@ class _ExtensionPanelMedicationState extends State<ExtensionPanelMedication> {
                             return <PopupMenuEntry>[
                               PopupMenuItem(
                                 child: Center(
-                                    child: Text(
-                                  'Editar',
-                                  style: TextStyle(
+                                  child: Text(
+                                    'Editar',
+                                    style: TextStyle(
                                       color: Color.fromRGBO(85, 85, 85, 1),
                                       fontFamily: 'Poppins',
                                       fontWeight: FontWeight.w500,
                                       fontSize: 15),
-                                )),
+                                  )),
                                 value: 'edit',
                               ),
                               PopupMenuItem(
                                 child: Center(
-                                    child: Text(
-                                  'Deletar',
-                                  style: TextStyle(
+                                  child: Text(
+                                    'Deletar',
+                                    style: TextStyle(
                                       color: Color.fromRGBO(85, 85, 85, 1),
                                       fontFamily: 'Poppins',
                                       fontWeight: FontWeight.w500,
                                       fontSize: 15),
-                                )),
+                                  )),
                                 value: 'delete',
                               ),
                             ];
                           },
                           onSelected: (value) async {
                             if (value == 'edit') {
-                              final updatedMedication =
-                                  await _showEditMedicationDialog(
-                                      context, medication);
+                              final updatedMedication = await _showEditMedicationDialog(context, medication);
 
                               if (updatedMedication != null) {
-                                await medicationService
-                                    .editMedication(updatedMedication);
+                                await medicationService.editMedication(updatedMedication);
                                 setState(() {});
                               }
                             } else if (value == 'delete') {
@@ -168,21 +177,29 @@ class _ExtensionPanelMedicationState extends State<ExtensionPanelMedication> {
                             Text(
                               '${medication.name} - ${medication.dosage}',
                               style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15,
-                                  color: Color.fromRGBO(135, 135, 135, 1)),
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15,
+                                color: Color.fromRGBO(135, 135, 135, 1)),
                             ),
                             Spacer(),
                             Text(
-                              medication.time,
+                              '${medication.hour}:${medication.minute.toString().padLeft(2, '0')} ${medication.period}',
                               style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 15,
-                                  color: Color.fromRGBO(135, 135, 135, 1)),
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w400,
+                                fontSize: 15,
+                                color: Color.fromRGBO(135, 135, 135, 1)),
                             ),
                           ],
+                        ),
+                        subtitle: Text(
+                          "Lembrete: ${medication.reminder ? 'Ativo' : 'Inativo'}",
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w400,
+                            fontSize: 15,
+                            color: Color.fromRGBO(135, 135, 135, 1)),
                         ),
                       ),
                     ],
@@ -200,19 +217,15 @@ class _ExtensionPanelMedicationState extends State<ExtensionPanelMedication> {
     );
   }
 
-  Future<MedicationModel?> _showEditMedicationDialog(
-      BuildContext context, MedicationModel medication) async {
-    final TextEditingController nameController = TextEditingController();
-    final TextEditingController dosageController = TextEditingController();
-    final TextEditingController timeController = TextEditingController();
-    final TextEditingController dateController = TextEditingController();
+  Future<MedicationModel?> _showEditMedicationDialog(BuildContext context, MedicationModel medication) async {
+    final TextEditingController nameController = TextEditingController(text: medication.name);
+    final TextEditingController dosageController = TextEditingController(text: medication.dosage);
+    final TextEditingController hourController = TextEditingController(text: medication.hour.toString());
+    final TextEditingController minuteController = TextEditingController(text: medication.minute.toString());
+    String period = medication.period;
+    bool reminder = medication.reminder;
 
-    nameController.text = medication.name;
-    dosageController.text = medication.dosage;
-    timeController.text = medication.time;
-    dateController.text = medication.date;
-
-    return showDialog<MedicationModel>(
+    bool? result = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -226,8 +239,7 @@ class _ExtensionPanelMedicationState extends State<ExtensionPanelMedication> {
               ),
             ),
           ),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
           content: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -270,9 +282,9 @@ class _ExtensionPanelMedicationState extends State<ExtensionPanelMedication> {
                 ),
                 const SizedBox(height: 15),
                 TextField(
-                  controller: timeController,
+                  controller: hourController,
                   decoration: const InputDecoration(
-                    labelText: 'Horário',
+                    labelText: 'Hora',
                     labelStyle: TextStyle(fontSize: 14),
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(
@@ -288,11 +300,9 @@ class _ExtensionPanelMedicationState extends State<ExtensionPanelMedication> {
                 ),
                 const SizedBox(height: 15),
                 TextField(
-                  readOnly: true,
-                  onTap: () => _selectDate(context, dateController),
-                  controller: dateController,
+                  controller: minuteController,
                   decoration: const InputDecoration(
-                    labelText: 'Data',
+                    labelText: 'Minuto',
                     labelStyle: TextStyle(fontSize: 14),
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(
@@ -306,88 +316,76 @@ class _ExtensionPanelMedicationState extends State<ExtensionPanelMedication> {
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 17,
-                ),
+                const SizedBox(height: 15),
                 Row(
                   children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromARGB(255, 245, 245, 245),
-                          foregroundColor: Color.fromARGB(255, 63, 63, 63),
-                        ),
-                        child: const Text(
-                          'Cancelar',
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
+                    const Text('AM'),
+                    Radio<String>(
+                      value: 'AM',
+                      groupValue: period,
+                      onChanged: (value) {
+                        setState(() {
+                          period = value!;
+                        });
+                      },
                     ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          final updatedMedication = MedicationModel(
-                            id: medication.id,
-                            name: nameController.text,
-                            dosage: dosageController.text,
-                            time: timeController.text,
-                            date: dateController.text,
-                          );
-                          Navigator.of(context).pop(updatedMedication);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromRGBO(136, 149, 83, 1),
-                          foregroundColor: Colors.white,
-                        ),
-                        child: const Text(
-                          'Atualizar',
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
+                    const Text('PM'),
+                    Radio<String>(
+                      value: 'PM',
+                      groupValue: period,
+                      onChanged: (value) {
+                        setState(() {
+                          period = value!;
+                        });
+                      },
                     ),
                   ],
+                ),
+                const SizedBox(height: 15),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: const Text('Ativar Lembrete'),
+                  trailing: Switch(
+                    value: reminder,
+                    onChanged: (bool val) {
+                      setState(() {
+                        reminder = val;
+                      });
+                    },
+                  ),
                 ),
               ],
             ),
           ),
-        );
-      },
-    );
-  }
-
-  void _selectDate(
-      BuildContext context, TextEditingController dateController) async {
-    final DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
-      builder: (BuildContext context, Widget? child) {
-        return Theme(
-          data: ThemeData.light().copyWith(
-            colorScheme: ThemeData.light().colorScheme.copyWith(
-                  primary: const Color.fromRGBO(136, 149, 83, 1),
-                ),
-          ),
-          child: child!,
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancelar'),
+              onPressed: () => Navigator.of(context).pop(false),
+            ),
+            TextButton(
+              child: const Text('Salvar'),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
         );
       },
     );
 
-    if (pickedDate != null) {
-      dateController.text = _dateFormat.format(pickedDate);
+    if (result == true) {
+      MedicationModel updatedMedication = MedicationModel(
+        id: medication.id,
+        name: nameController.text,
+        dosage: dosageController.text,
+        dates: medication.dates,
+        hour: int.parse(hourController.text),
+        minute: int.parse(minuteController.text),
+        period: period,
+        reminder: reminder,
+      );
+      await medicationService.editMedication(updatedMedication);
+      setState(() {});
     }
   }
 }
