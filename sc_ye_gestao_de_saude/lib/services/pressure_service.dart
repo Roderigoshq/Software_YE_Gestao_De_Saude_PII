@@ -4,7 +4,7 @@ import 'package:sc_ye_gestao_de_saude/models/pressure_model.dart';
 
 class PressureAdd {
   String userId;
-  List<PressureModel> pressureList = []; // Lista de pressões
+  List<PressureModel> pressureList = [];
 
   PressureAdd() : userId = FirebaseAuth.instance.currentUser!.uid;
 
