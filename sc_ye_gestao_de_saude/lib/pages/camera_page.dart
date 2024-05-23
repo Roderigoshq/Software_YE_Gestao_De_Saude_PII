@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({Key? key}) : super(key: key);
@@ -50,26 +52,34 @@ class _CameraScreenState extends State<CameraScreen> {
       });
 
       // Faz upload da imagem para o Firebase Storage
-      await _uploadImageToFirebase(File(imageFile.path));
+      await uploadImage(File(imageFile.path));
     } catch (e) {
       print(e);
     }
   }
 
-  Future<void> _uploadImageToFirebase(File imageFile) async {
-    try {
-      // Cria uma referência para o Firebase Storage
-      final storageRef = FirebaseStorage.instance.ref().child('exams/${imageFile.uri.pathSegments.last}');
-      // Faz upload da imagem
-      final uploadTask = storageRef.putFile(imageFile);
-      // Espera o upload ser concluído
-      await uploadTask;
-      final downloadUrl = await storageRef.getDownloadURL();
-      print('Imagem salva com sucesso no Firebase: $downloadUrl');
-    } catch (e) {
-      print('Erro ao fazer upload da imagem: $e');
+  Future<void> uploadImage(File imageFile) async {
+  try {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      throw Exception('Usuário não autenticado');
     }
+
+    String filePath = 'exams/${user.uid}/${DateTime.now().millisecondsSinceEpoch}.jpg';
+    UploadTask uploadTask = FirebaseStorage.instance.ref().child(filePath).putFile(imageFile);
+
+    await uploadTask.whenComplete(() => null);
+    String downloadURL = await FirebaseStorage.instance.ref(filePath).getDownloadURL();
+
+    await FirebaseFirestore.instance.collection('exams').add({
+      'userId': user.uid,
+      'imageUrl': downloadURL,
+      'timestamp': FieldValue.serverTimestamp(),
+    });
+  } catch (e) {
+    print('Erro ao fazer upload da imagem: $e');
   }
+}
 
   @override
   void dispose() {
