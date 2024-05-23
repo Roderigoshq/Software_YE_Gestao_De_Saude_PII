@@ -123,7 +123,7 @@ class _MedicationModalState extends State<MedicationModal> {
           },
           calendarStyle: const CalendarStyle(
             selectedDecoration: BoxDecoration(
-              color: Colors.deepPurple,
+              color: Color.fromRGBO(136, 149, 83, 1),
               shape: BoxShape.circle,
             ),
             todayDecoration: BoxDecoration(
@@ -208,7 +208,6 @@ class _MedicationModalState extends State<MedicationModal> {
               child: TextFormField(
                 controller: _dosagemCtrl,
                 decoration: InputDecoration(
-                  labelText: 'Dosagem',
                   hintText: 'Digite a dosagem',
                   border: _borderStyle,
                   focusedBorder: _borderStyle,
@@ -281,53 +280,55 @@ class _MedicationModalState extends State<MedicationModal> {
       ],
     );
   }
-
-  Widget _buildPeriodSelector() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Período:',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
+Widget _buildPeriodSelector() {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text(
+        'Período:',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+        ),
+      ),
+      const SizedBox(height: 10),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            child: RadioListTile<String>(
+              title: const Text('AM'),
+              value: 'AM',
+              groupValue: _selectedPeriod,
+              onChanged: (String? value) {
+                setState(() {
+                  _selectedPeriod = value!;
+                });
+              },
+              activeColor: Color.fromRGBO(136, 149, 83, 1),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            ),
           ),
-        ),
-        const SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: RadioListTile<String>(
-                title: const Text('AM'),
-                value: 'AM',
-                groupValue: _selectedPeriod,
-                onChanged: (String? value) {
-                  setState(() {
-                    _selectedPeriod = value!;
-                  });
-                },
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-              ),
+          Expanded(
+            child: RadioListTile<String>(
+              title: const Text('PM'),
+              value: 'PM',
+              groupValue: _selectedPeriod,
+              onChanged: (String? value) {
+                setState(() {
+                  _selectedPeriod = value!;
+                });
+              },
+              activeColor: Color.fromRGBO(136, 149, 83, 1),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
             ),
-            Expanded(
-              child: RadioListTile<String>(
-                title: const Text('PM'),
-                value: 'PM',
-                groupValue: _selectedPeriod,
-                onChanged: (String? value) {
-                  setState(() {
-                    _selectedPeriod = value!;
-                  });
-                },
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
+          ),
+        ],
+      ),
+    ],
+  );
+}
+
 
   Widget _buildReminderSwitch() {
     return SwitchListTile(
