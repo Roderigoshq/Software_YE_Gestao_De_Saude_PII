@@ -27,12 +27,12 @@ class ConsultationModal extends StatefulWidget {
 
 class _ConsultationModalState extends State<ConsultationModal> {
   final TextEditingController _nomeCtrl = TextEditingController();
+  final TextEditingController _descricaoCtrl = TextEditingController();
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = TimeOfDay.now();
   String? _selectedSpecialty;
-
+  bool _reminder = false;
   bool isCarregando = false;
-
   final ConsultationService _consultationService = ConsultationService();
 
   final List<String> specialties = [
@@ -53,7 +53,7 @@ class _ConsultationModalState extends State<ConsultationModal> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(32),
-      height: MediaQuery.of(context).size.height * 0.8,
+      height: MediaQuery.of(context).size.height * 0.9,
       child: Form(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -64,18 +64,26 @@ class _ConsultationModalState extends State<ConsultationModal> {
               children: [
                 _buildHeader(context),
                 const Divider(),
+                const SizedBox(height: 20),
+                _buildDropdownField(),
+                const SizedBox(height: 20),
+                _buildTextField(
+                  controller: _nomeCtrl,
+                  label: 'Nome do Médico:',
+                  hintText: 'Digite o nome do médico',
+                ),
                 const SizedBox(height: 16),
                 _buildDateField(context),
                 const SizedBox(height: 20),
                 _buildTimeField(context),
                 const SizedBox(height: 20),
-                _buildTextField(
-                  controller: _nomeCtrl,
-                  label: 'Médico:',
-                  hintText: 'Digite o nome do médico',
+                _buildLargeTextField(
+                  controller: _descricaoCtrl,
+                  label: 'Descrição:',
+                  hintText: 'Digite a descrição',
                 ),
                 const SizedBox(height: 20),
-                _buildDropdownField(),
+                _buildReminderSwitch(),
               ],
             ),
             if (isCarregando) const CircularProgressIndicator(),
@@ -118,6 +126,39 @@ class _ConsultationModalState extends State<ConsultationModal> {
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Column _buildDropdownField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Especialidade:',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
+        ),
+        const SizedBox(height: 10),
+        DropdownButtonFormField<String>(
+          value: _selectedSpecialty,
+          items: specialties.map((String specialty) {
+            return DropdownMenuItem<String>(
+              value: specialty,
+              child: Text(specialty),
+            );
+          }).toList(),
+          onChanged: (String? newValue) {
+            setState(() {
+              _selectedSpecialty = newValue;
+            });
+          },
+          decoration: getAuthenticationInputDecoration(
+            hintText: 'Selecione a especialidade',
           ),
         ),
       ],
@@ -220,36 +261,48 @@ class _ConsultationModalState extends State<ConsultationModal> {
     );
   }
 
-  Column _buildDropdownField() {
+  Column _buildLargeTextField({
+    required TextEditingController controller,
+    required String label,
+    required String hintText,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Especialidade:',
-          style: TextStyle(
+        Text(
+          label,
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 20,
           ),
         ),
         const SizedBox(height: 10),
-        DropdownButtonFormField<String>(
-          value: _selectedSpecialty,
-          items: specialties.map((String specialty) {
-            return DropdownMenuItem<String>(
-              value: specialty,
-              child: Text(specialty),
-            );
-          }).toList(),
-          onChanged: (String? newValue) {
-            setState(() {
-              _selectedSpecialty = newValue;
-            });
-          },
-          decoration: getAuthenticationInputDecoration(
-            hintText: 'Selecione a especialidade',
-          ),
+        TextFormField(
+          controller: controller,
+          maxLines: 5,
+          decoration: getAuthenticationInputDecoration(hintText: hintText),
         ),
       ],
+    );
+  }
+
+  Widget _buildReminderSwitch() {
+    return SwitchListTile(
+      title: const Text(
+        'Ativar lembrete',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+        ),
+      ),
+      value: _reminder,
+      onChanged: (bool value) {
+        setState(() {
+          _reminder = value;
+        });
+      },
+      activeColor: const Color.fromRGBO(136, 149, 83, 1),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
     );
   }
 
@@ -273,6 +326,7 @@ class _ConsultationModalState extends State<ConsultationModal> {
       specialty: _selectedSpecialty!,
       time: _selectedTime.format(context),
       date: DateFormat('dd/MM/yyyy').format(_selectedDate),
+      description: _descricaoCtrl.text,
     );
 
     await _consultationService.addConsultation(consultationModel);

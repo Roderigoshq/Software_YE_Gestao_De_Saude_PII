@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sc_ye_gestao_de_saude/models/consultation_model.dart';
 import 'package:sc_ye_gestao_de_saude/models/medication_model.dart';
 import 'package:sc_ye_gestao_de_saude/services/medication_service.dart';
+import 'package:sc_ye_gestao_de_saude/widgets/consultation_modal.dart';
 import 'package:sc_ye_gestao_de_saude/widgets/medication_modal.dart';
 
 class ConsultationPage extends StatefulWidget {
@@ -30,7 +32,7 @@ class _ConsultationPageState extends State<ConsultationPage> {
                 alignment: Alignment.centerLeft,  // Alinhamento para sobrepor texto na imagem
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(left: 16),  // Espaçamento para o texto
+                    padding: const EdgeInsets.only(left: 50),  // Espaçamento para o texto
                     child: Text.rich(
                       TextSpan(
                         style: TextStyle(
@@ -41,7 +43,7 @@ class _ConsultationPageState extends State<ConsultationPage> {
                         children: [
                           TextSpan(
                             text: "Gerencie suas\n",
-                            style: TextStyle(fontWeight: FontWeight.w400),
+                            style: TextStyle(fontWeight: FontWeight.w400,fontSize: 32),
                           ),
                           TextSpan(
                             text: "consultas:",
@@ -64,13 +66,13 @@ class _ConsultationPageState extends State<ConsultationPage> {
           ),
           SizedBox(height: 16),
           Expanded(
-            child: ExtensionPanelMedication(),
+            child: ExtensionPanelConsultation(),
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          mostrarModelMedication(context);
+          mostrarModelConsultation(context);
         },
         child: Icon(
           Icons.add,

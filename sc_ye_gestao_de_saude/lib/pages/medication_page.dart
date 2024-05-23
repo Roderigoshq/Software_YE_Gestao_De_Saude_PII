@@ -30,7 +30,7 @@ class _MedicationPageState extends State<MedicationPage> {
                 alignment: Alignment.centerLeft,  // Alinhamento para sobrepor texto na imagem
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(left: 16),  // Espaçamento para o texto
+                    padding: const EdgeInsets.only(left: 50),  // Espaçamento para o texto
                     child: Text.rich(
                       TextSpan(
                         style: TextStyle(

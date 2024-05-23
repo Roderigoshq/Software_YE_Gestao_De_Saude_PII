@@ -8,6 +8,7 @@ class ConsultationModel {
   final String specialty;
   final String time;
   final String date;
+  final String description;
 
   ConsultationModel({
     required this.id,
@@ -15,6 +16,7 @@ class ConsultationModel {
     required this.specialty,
     required this.time,
     required this.date,
+    required this.description,
   });
 
   Map<String, dynamic> toMap() {
@@ -24,6 +26,7 @@ class ConsultationModel {
       'specialty': specialty,
       'time': time,
       'date': date,
+      'description': description,
     };
   }
 
@@ -34,10 +37,11 @@ class ConsultationModel {
       specialty: map['specialty'],
       time: map['time'],
       date: map['date'],
+      description: map['description'],
     );
   }
 }
- 
+
 class ExtensionPanelConsultation extends StatefulWidget {
   const ExtensionPanelConsultation({Key? key}) : super(key: key);
 
@@ -161,7 +165,8 @@ class _ExtensionPanelConsultationState extends State<ExtensionPanelConsultation>
                     trailing: Icon(Icons.expand_more),
                     children: [
                       ListTile(
-                        title: Row(
+                        title: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               '${consultation.doctorName} - ${consultation.specialty}',
@@ -171,9 +176,18 @@ class _ExtensionPanelConsultationState extends State<ExtensionPanelConsultation>
                                   fontSize: 15,
                                   color: Color.fromRGBO(135, 135, 135, 1)),
                             ),
-                            Spacer(),
+                            const SizedBox(height: 5),
                             Text(
                               consultation.time,
+                              style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 15,
+                                  color: Color.fromRGBO(135, 135, 135, 1)),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              consultation.description,
                               style: TextStyle(
                                   fontFamily: 'Poppins',
                                   fontWeight: FontWeight.w400,
@@ -204,11 +218,13 @@ class _ExtensionPanelConsultationState extends State<ExtensionPanelConsultation>
     final TextEditingController specialtyController = TextEditingController();
     final TextEditingController timeController = TextEditingController();
     final TextEditingController dateController = TextEditingController();
+    final TextEditingController descriptionController = TextEditingController();
 
     nameController.text = consultation.doctorName;
     specialtyController.text = consultation.specialty;
     timeController.text = consultation.time;
     dateController.text = consultation.date;
+    descriptionController.text = consultation.description;
 
     return showDialog<ConsultationModel>(
       context: context,
@@ -304,6 +320,25 @@ class _ExtensionPanelConsultationState extends State<ExtensionPanelConsultation>
                     ),
                   ),
                 ),
+                const SizedBox(height: 15),
+                TextField(
+                  controller: descriptionController,
+                  maxLines: 5,
+                  decoration: const InputDecoration(
+                    labelText: 'Descrição',
+                    labelStyle: TextStyle(fontSize: 14),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color.fromRGBO(196, 196, 196, 1),
+                      ),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color.fromRGBO(136, 149, 83, 1),
+                      ),
+                    ),
+                  ),
+                ),
                 const SizedBox(
                   height: 17,
                 ),
@@ -339,6 +374,7 @@ class _ExtensionPanelConsultationState extends State<ExtensionPanelConsultation>
                             specialty: specialtyController.text,
                             time: timeController.text,
                             date: dateController.text,
+                            description: descriptionController.text,
                           );
                           Navigator.of(context).pop(updatedConsultation);
                         },
