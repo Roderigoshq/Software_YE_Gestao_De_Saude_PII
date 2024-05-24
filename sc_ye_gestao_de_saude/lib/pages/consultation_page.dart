@@ -17,9 +17,7 @@ class _ConsultationPageState extends State<ConsultationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: 
-      
-      Column(
+      body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
@@ -28,10 +26,12 @@ class _ConsultationPageState extends State<ConsultationPage> {
             child: SizedBox(
               width: double.infinity,
               child: Stack(
-                alignment: Alignment.centerLeft,  // Alinhamento para sobrepor texto na imagem
+                alignment: Alignment
+                    .centerLeft, // Alinhamento para sobrepor texto na imagem
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(left: 30),  // Espaçamento para o texto
+                    padding: const EdgeInsets.only(
+                        left: 30), // Espaçamento para o texto
                     child: Text.rich(
                       TextSpan(
                         style: TextStyle(
@@ -42,18 +42,24 @@ class _ConsultationPageState extends State<ConsultationPage> {
                         children: [
                           TextSpan(
                             text: "Gerencie suas\n",
-                            style: TextStyle(fontWeight: FontWeight.w400,fontSize: 29, color: Color.fromRGBO(123, 123, 123, 1)),
+                            style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 29,
+                                color: Color.fromRGBO(123, 123, 123, 1)),
                           ),
                           TextSpan(
                             text: "consultas:",
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40, color: Color.fromRGBO(65, 65, 65, 1)),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 40,
+                                color: Color.fromRGBO(65, 65, 65, 1)),
                           ),
                         ],
                       ),
                     ),
                   ),
                   Positioned(
-                    right: 0,  // Posicionamento da imagem no lado direito
+                    right: 0, // Posicionamento da imagem no lado direito
                     child: Image.asset(
                       'lib/assets/consulta.png',
                       height: 130,
@@ -65,7 +71,7 @@ class _ConsultationPageState extends State<ConsultationPage> {
           ),
           Expanded(
             child: StreamBuilder(
-              stream: dbService.consultasCollection.snapshots(),
+              stream: dbService.consultationsCollection.snapshots(),
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (!snapshot.hasData) {
                   return Center(child: CircularProgressIndicator());
@@ -89,7 +95,10 @@ class _ConsultationPageState extends State<ConsultationPage> {
                                 color: Color.fromRGBO(85, 85, 85, 1)),
                           ),
                           Spacer(),
-                          Icon(Icons.arrow_right, color: Color.fromRGBO(85, 85, 85, 1),)
+                          Icon(
+                            Icons.arrow_right,
+                            color: Color.fromRGBO(85, 85, 85, 1),
+                          )
                         ],
                       ),
                       subtitle: Text(consulta.date),
@@ -97,8 +106,8 @@ class _ConsultationPageState extends State<ConsultationPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  ConsultationDetails(consultationModel: consulta)),
+                              builder: (context) => ConsultationDetails(
+                                  consultationModel: consulta)),
                         );
                       },
                     );
@@ -111,21 +120,31 @@ class _ConsultationPageState extends State<ConsultationPage> {
       ),
       floatingActionButton: Padding(
         padding: const EdgeInsets.fromLTRB(0, 0, 5, 40),
-        child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Color.fromRGBO(136, 149, 83, 1), width: 8),
-                  color: Color.fromRGBO(136, 149, 83, 1),
-                  shape: BoxShape.circle,
-                ),
-          child: Icon(
-            Icons.add,
-            size: 36,
-            color: Colors.white,
+        child: GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ConsultationModal(),
+              ),
+            );
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              border:
+                  Border.all(color: Color.fromRGBO(136, 149, 83, 1), width: 8),
+              color: Color.fromRGBO(136, 149, 83, 1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.add,
+              size: 36,
+              color: Colors.white,
+            ),
           ),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
-  }
-
+}

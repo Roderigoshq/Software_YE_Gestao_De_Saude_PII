@@ -19,10 +19,15 @@ class ConsultationService {
         .set(consultationModel.toMap());
   }
 
-  final CollectionReference consultasCollection = FirebaseFirestore.instance.collection('consultations');
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final CollectionReference consultationsCollection = FirebaseFirestore.instance.collection('consultations');
 
   Future<void> adicionarConsulta(ConsultationModel consultationModel) async {
-    await consultasCollection.add(consultationModel.toFirestore());
+    User? user = _auth.currentUser;
+    if (user != null) {
+      DocumentReference userDoc = consultationsCollection.doc(user.uid).collection('consultationsUsuario').doc();
+      await userDoc.set(consultationModel.toFirestore());
+    }
   }
 
   Future<void> editConsultation(ConsultationModel updatedConsultation) async {
