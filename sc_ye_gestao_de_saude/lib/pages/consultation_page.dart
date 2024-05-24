@@ -4,6 +4,7 @@ import 'package:sc_ye_gestao_de_saude/models/consultation_model.dart';
 import 'package:sc_ye_gestao_de_saude/pages/consultation_details.dart';
 import 'package:sc_ye_gestao_de_saude/services/consultation_service.dart';
 import 'package:sc_ye_gestao_de_saude/widgets/consultation_modal.dart';
+import 'package:intl/intl.dart'; // Import to format dates
 
 class ConsultationPage extends StatefulWidget {
   const ConsultationPage({Key? key}) : super(key: key);
@@ -84,6 +85,8 @@ class _ConsultationPageState extends State<ConsultationPage> {
                     var specialty = groupedConsultas.keys.elementAt(index);
                     var consultasBySpecialty = groupedConsultas[specialty]!;
 
+                    var nextConsultationDate = _getNextConsultationDate(consultasBySpecialty);
+
                     return ListTile(
                       title: Row(
                         children: [
@@ -103,6 +106,9 @@ class _ConsultationPageState extends State<ConsultationPage> {
                           ),
                         ],
                       ),
+                      subtitle: nextConsultationDate != null
+                          ? Text('Próxima consulta: ${DateFormat('dd/MM/yyyy').format(nextConsultationDate)}')
+                          : Text('Nenhuma consulta futura'),
                       onTap: () {
                         Navigator.push(
                           context,
@@ -159,5 +165,21 @@ class _ConsultationPageState extends State<ConsultationPage> {
       groupedConsultas[consulta.specialty]!.add(consulta);
     }
     return groupedConsultas;
+  }
+
+  DateTime? _getNextConsultationDate(List<ConsultationModel> consultas) {
+    DateTime now = DateTime.now();
+    DateTime? nextDate;
+
+    for (var consulta in consultas) {
+      DateTime consultationDate = DateFormat('dd/MM/yyyy').parse(consulta.date);
+      if (consultationDate.isAfter(now)) {
+        if (nextDate == null || consultationDate.isBefore(nextDate)) {
+          nextDate = consultationDate;
+        }
+      }
+    }
+
+    return nextDate;
   }
 }
