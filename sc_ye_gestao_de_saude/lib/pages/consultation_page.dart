@@ -14,6 +14,7 @@ class ConsultationPage extends StatefulWidget {
 
 class _ConsultationPageState extends State<ConsultationPage> {
   final ConsultationService dbService = ConsultationService();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,12 +27,10 @@ class _ConsultationPageState extends State<ConsultationPage> {
             child: SizedBox(
               width: double.infinity,
               child: Stack(
-                alignment: Alignment
-                    .centerLeft, // Alinhamento para sobrepor texto na imagem
+                alignment: Alignment.centerLeft,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(
-                        left: 30), // Espaçamento para o texto
+                    padding: const EdgeInsets.only(left: 30),
                     child: Text.rich(
                       TextSpan(
                         style: TextStyle(
@@ -59,7 +58,7 @@ class _ConsultationPageState extends State<ConsultationPage> {
                     ),
                   ),
                   Positioned(
-                    right: 0, // Posicionamento da imagem no lado direito
+                    right: 0,
                     child: Image.asset(
                       'lib/assets/consulta.png',
                       height: 130,
@@ -70,44 +69,49 @@ class _ConsultationPageState extends State<ConsultationPage> {
             ),
           ),
           Expanded(
-            child: StreamBuilder(
-              stream: dbService.consultationsCollection.snapshots(),
-              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            child: StreamBuilder<List<ConsultationModel>>(
+              stream: dbService.getConsultations(),
+              builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return Center(child: CircularProgressIndicator());
                 }
-                var consultas = snapshot.data!.docs
-                    .map((doc) => ConsultationModel.fromFirestore(doc))
-                    .toList();
+                var consultas = snapshot.data!;
+                var groupedConsultas = _groupConsultasBySpecialty(consultas);
+
                 return ListView.builder(
-                  itemCount: consultas.length,
+                  itemCount: groupedConsultas.keys.length,
                   itemBuilder: (context, index) {
-                    var consulta = consultas[index];
+                    var specialty = groupedConsultas.keys.elementAt(index);
+                    var consultasBySpecialty = groupedConsultas[specialty]!;
+
                     return ListTile(
                       title: Row(
                         children: [
                           Text(
-                            consulta.specialty,
+                            specialty,
                             style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 27,
-                                fontWeight: FontWeight.w600,
-                                color: Color.fromRGBO(85, 85, 85, 1)),
+                              fontFamily: 'Poppins',
+                              fontSize: 27,
+                              fontWeight: FontWeight.w600,
+                              color: Color.fromRGBO(85, 85, 85, 1),
+                            ),
                           ),
                           Spacer(),
                           Icon(
                             Icons.arrow_right,
                             color: Color.fromRGBO(85, 85, 85, 1),
-                          )
+                          ),
                         ],
                       ),
-                      subtitle: Text(consulta.date),
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ConsultationDetails(
-                                  consultationModel: consulta)),
+                            builder: (context) => ConsultationDetails(
+                              specialty: specialty,
+                              consultations: consultasBySpecialty,
+                            ),
+                          ),
                         );
                       },
                     );
@@ -122,17 +126,15 @@ class _ConsultationPageState extends State<ConsultationPage> {
         padding: const EdgeInsets.fromLTRB(0, 0, 5, 40),
         child: GestureDetector(
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ConsultationModal(),
-              ),
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              builder: (context) => ConsultationModal(),
             );
           },
           child: Container(
             decoration: BoxDecoration(
-              border:
-                  Border.all(color: Color.fromRGBO(136, 149, 83, 1), width: 8),
+              border: Border.all(color: Color.fromRGBO(136, 149, 83, 1), width: 8),
               color: Color.fromRGBO(136, 149, 83, 1),
               shape: BoxShape.circle,
             ),
@@ -146,5 +148,16 @@ class _ConsultationPageState extends State<ConsultationPage> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
+  }
+
+  Map<String, List<ConsultationModel>> _groupConsultasBySpecialty(List<ConsultationModel> consultas) {
+    Map<String, List<ConsultationModel>> groupedConsultas = {};
+    for (var consulta in consultas) {
+      if (!groupedConsultas.containsKey(consulta.specialty)) {
+        groupedConsultas[consulta.specialty] = [];
+      }
+      groupedConsultas[consulta.specialty]!.add(consulta);
+    }
+    return groupedConsultas;
   }
 }

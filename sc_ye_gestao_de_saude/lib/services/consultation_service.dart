@@ -30,6 +30,22 @@ class ConsultationService {
     }
   }
 
+
+  Stream<List<ConsultationModel>> getConsultations() {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      return consultationsCollection
+          .doc(user.uid)
+          .collection('consultationsUsuario')
+          .snapshots()
+          .map((snapshot) => snapshot.docs
+              .map((doc) => ConsultationModel.fromFirestore(doc))
+              .toList());
+    } else {
+      return Stream.empty();
+    }
+  }
+
   Future<void> editConsultation(ConsultationModel updatedConsultation) async {
     try {
       await _firestore
