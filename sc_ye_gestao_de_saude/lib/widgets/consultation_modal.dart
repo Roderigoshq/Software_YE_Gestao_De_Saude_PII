@@ -54,40 +54,42 @@ class _ConsultationModalState extends State<ConsultationModal> {
     return Container(
       padding: const EdgeInsets.all(32),
       height: MediaQuery.of(context).size.height * 0.9,
-      child: Form(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _buildHeader(context),
-                const Divider(),
-                const SizedBox(height: 20),
-                _buildDropdownField(),
-                const SizedBox(height: 20),
-                _buildTextField(
-                  controller: _nomeCtrl,
-                  label: 'Nome do Médico:',
-                  hintText: 'Digite o nome do médico',
-                ),
-                const SizedBox(height: 16),
-                _buildDateField(context),
-                const SizedBox(height: 20),
-                _buildTimeField(context),
-                const SizedBox(height: 20),
-                _buildLargeTextField(
-                  controller: _descricaoCtrl,
-                  label: 'Descrição:',
-                  hintText: 'Digite a descrição',
-                ),
-                const SizedBox(height: 20),
-                _buildReminderSwitch(),
-              ],
-            ),
-            if (isCarregando) const CircularProgressIndicator(),
-          ],
+      child: SingleChildScrollView(
+        child: Form(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildHeader(context),
+                  const Divider(),
+                  const SizedBox(height: 20),
+                  _buildDropdownField(),
+                  const SizedBox(height: 20),
+                  _buildTextField(
+                    controller: _nomeCtrl,
+                    label: 'Nome do Médico:',
+                    hintText: 'Digite o nome do médico',
+                  ),
+                  const SizedBox(height: 16),
+                  _buildDateField(context),
+                  const SizedBox(height: 20),
+                  _buildTimeField(context),
+                  const SizedBox(height: 20),
+                  _buildLargeTextField(
+                    controller: _descricaoCtrl,
+                    label: 'Descrição:',
+                    hintText: 'Digite a descrição',
+                  ),
+                  const SizedBox(height: 20),
+                  _buildReminderSwitch(),
+                ],
+              ),
+              if (isCarregando) const CircularProgressIndicator(),
+            ],
+          ),
         ),
       ),
     );
@@ -118,7 +120,30 @@ class _ConsultationModalState extends State<ConsultationModal> {
           ),
         ),
         GestureDetector(
-          onTap: _adicionarConsulta,
+          onTap: () {
+            final doctorName = _nomeCtrl.text;
+            final specialty = _selectedSpecialty!;
+            final time = _selectedTime.format(context);
+            final date = DateFormat('dd/MM/yyyy').format(_selectedDate);
+            final description = _descricaoCtrl.text;
+
+            if (doctorName.isNotEmpty &&
+                specialty.isNotEmpty &&
+                time.isNotEmpty &&
+                date.isNotEmpty &&
+                description.isNotEmpty) {
+              final consulta = ConsultationModel(
+                id: '',
+                doctorName: doctorName,
+                specialty: specialty,
+                time: time,
+                date: date,
+                description: description,
+              );
+              _consultationService.adicionarConsulta(consulta);
+              Navigator.of(context).pop();
+            }
+          },
           child: Text(
             "Salvar",
             style: TextStyle(

@@ -19,6 +19,12 @@ class ConsultationService {
         .set(consultationModel.toMap());
   }
 
+  final CollectionReference consultasCollection = FirebaseFirestore.instance.collection('consultations');
+
+  Future<void> adicionarConsulta(ConsultationModel consultationModel) async {
+    await consultasCollection.add(consultationModel.toFirestore());
+  }
+
   Future<void> editConsultation(ConsultationModel updatedConsultation) async {
     try {
       await _firestore
@@ -53,24 +59,24 @@ class ConsultationService {
         .snapshots();
   }
 
-  Future<List<ConsultationModel>> fetchConsultationModels() async {
-    try {
-      final querySnapshot = await _firestore
-          .collection('consultations')
-          .doc(userId)
-          .collection('userConsultations')
-          .get();
+  // Future<List<ConsultationModel>> fetchConsultationModels() async {
+  //   try {
+  //     final querySnapshot = await _firestore
+  //         .collection('consultations')
+  //         .doc(userId)
+  //         .collection('userConsultations')
+  //         .get();
 
-      final consultationModels = querySnapshot.docs.map((doc) {
-        return ConsultationModel.fromMap(doc.data());
-      }).toList();
+  //     final consultationModels = querySnapshot.docs.map((doc) {
+  //       return ConsultationModel.fromMap(doc.data());
+  //     }).toList();
 
-      return consultationModels;
-    } catch (error) {
-      print("Erro ao buscar modelos de consulta: $error");
-      return [];
-    }
-  }
+  //     return consultationModels;
+  //   } catch (error) {
+  //     print("Erro ao buscar modelos de consulta: $error");
+  //     return [];
+  //   }
+  // }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> streamConsultationsByUser(String userId) {
     return _firestore
@@ -80,25 +86,25 @@ class ConsultationService {
         .snapshots();
   }
 
-  Future<ConsultationModel?> getLatestConsultation() async {
-    try {
-      final querySnapshot = await _firestore
-          .collection('consultations')
-          .doc(userId)
-          .collection('userConsultations')
-          .orderBy('date', descending: true)
-          .limit(1)
-          .get();
+  // Future<ConsultationModel?> getLatestConsultation() async {
+  //   try {
+  //     final querySnapshot = await _firestore
+  //         .collection('consultations')
+  //         .doc(userId)
+  //         .collection('userConsultations')
+  //         .orderBy('date', descending: true)
+  //         .limit(1)
+  //         .get();
 
-      if (querySnapshot.docs.isNotEmpty) {
-        final latestConsultation = querySnapshot.docs.first;
-        return ConsultationModel.fromMap(latestConsultation.data());
-      } else {
-        return null;
-      }
-    } catch (error) {
-      print("Erro ao buscar a consulta mais recente: $error");
-      return null;
-    }
-  }
+  //     if (querySnapshot.docs.isNotEmpty) {
+  //       final latestConsultation = querySnapshot.docs.first;
+  //       return ConsultationModel.fromMap(latestConsultation.data());
+  //     } else {
+  //       return null;
+  //     }
+  //   } catch (error) {
+  //     print("Erro ao buscar a consulta mais recente: $error");
+  //     return null;
+  //   }
+  // }
 }
