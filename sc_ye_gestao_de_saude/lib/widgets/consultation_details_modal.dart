@@ -1,36 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:sc_ye_gestao_de_saude/services/consultation_service.dart';
 import 'package:sc_ye_gestao_de_saude/models/consultation_model.dart';
+import 'package:sc_ye_gestao_de_saude/services/consultation_service.dart';
 import 'package:uuid/uuid.dart';
 
-void mostrarModelConsultation(BuildContext context) {
-  showModalBottomSheet(
-    context: context,
-    isDismissible: false,
-    isScrollControlled: true,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
-    ),
-    builder: (context) {
-      return const ConsultationModal();
-    },
-  );
-}
+class ConsultationsDetailsModal extends StatefulWidget {
+  final String specialty;
+  final String doctorName;
+  final String date;
+  final String time;
+  final String description;
+  final bool reminder;
 
-class ConsultationModal extends StatefulWidget {
-  const ConsultationModal({Key? key}) : super(key: key);
+  const ConsultationsDetailsModal({
+    super.key,
+    required this.specialty,
+    required this.doctorName,
+    required this.date,
+    required this.time,
+    required this.description,
+    required this.reminder,
+  });
 
   @override
-  State<ConsultationModal> createState() => _ConsultationModalState();
+  State<ConsultationsDetailsModal> createState() =>
+      _ConsultationsDatailsModalState();
 }
 
-class _ConsultationModalState extends State<ConsultationModal> {
-  final TextEditingController _nomeCtrl = TextEditingController();
-  final TextEditingController _descricaoCtrl = TextEditingController();
-  DateTime _selectedDate = DateTime.now();
-  TimeOfDay _selectedTime = TimeOfDay.now();
-  String? _selectedSpecialty;
+class _ConsultationsDatailsModalState extends State<ConsultationsDetailsModal> {
+  late TextEditingController _nomeCtrl;
+  late TextEditingController _descricaoCtrl;
+  late DateTime _selectedDate;
+  late TimeOfDay _selectedTime;
+  late String? _selectedSpecialty;
   bool _reminder = false;
   bool isCarregando = false;
   final ConsultationService _consultationService = ConsultationService();
@@ -48,6 +50,36 @@ class _ConsultationModalState extends State<ConsultationModal> {
     'Pediatria',
     'Psiquiatria',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    _nomeCtrl = TextEditingController(text: widget.doctorName);
+    _descricaoCtrl = TextEditingController(text: widget.description);
+    _selectedDate = DateFormat('dd/MM/yyyy').parse(widget.date);
+    _reminder = widget.reminder;
+final timeParts = widget.time.split(":");
+    if (timeParts.length == 2) {
+      final minutePart = timeParts[1];
+      final period = minutePart.contains('AM') ? 'AM' : 'PM';
+      final hour = int.tryParse(timeParts[0]) ?? 0;
+      final minute = int.tryParse(minutePart.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
+
+      int adjustedHour = hour;
+      if (period == 'PM' && hour < 12) {
+        adjustedHour = hour + 12;
+      } else if (period == 'AM' && hour == 12) {
+        adjustedHour = 0;
+      }
+
+      _selectedTime = TimeOfDay(hour: adjustedHour, minute: minute);
+    } else {
+      _selectedTime = TimeOfDay.now(); // Valor padrão caso haja falha
+    }
+
+    _selectedSpecialty = widget.specialty;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -120,30 +152,7 @@ class _ConsultationModalState extends State<ConsultationModal> {
           ),
         ),
         GestureDetector(
-          onTap: () {
-            final doctorName = _nomeCtrl.text;
-            final specialty = _selectedSpecialty!;
-            final time = _selectedTime.format(context);
-            final date = DateFormat('dd/MM/yyyy').format(_selectedDate);
-            final description = _descricaoCtrl.text;
-
-            if (doctorName.isNotEmpty &&
-                specialty.isNotEmpty &&
-                time.isNotEmpty &&
-                date.isNotEmpty &&
-                description.isNotEmpty) {
-              final consulta = ConsultationModel(
-                id: '',
-                doctorName: doctorName,
-                specialty: specialty,
-                time: time,
-                date: date,
-                description: description, reminder: _reminder,
-              );
-              _consultationService.adicionarConsulta(consulta);
-              Navigator.of(context).pop();
-            }
-          },
+          onTap: _adicionarConsulta,
           child: Text(
             "Salvar",
             style: TextStyle(
@@ -226,42 +235,39 @@ class _ConsultationModalState extends State<ConsultationModal> {
     );
   }
 
-
-  Widget _buildTimeField(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Horário:',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
+  GestureDetector _buildTimeField(BuildContext context) {
+    return GestureDetector(
+      onTap: () => _selectTime(context),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Horário:',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
           ),
-        ),
-        const SizedBox(height: 10),
-        InkWell(
-          onTap: () => _selectTime(context),
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+          const SizedBox(height: 10),
+          Container(
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
               border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(5),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   _selectedTime.format(context),
-                  style: const TextStyle(
-                    fontSize: 16,
-                  ),
+                  style: const TextStyle(fontSize: 16),
                 ),
                 const Icon(Icons.access_time),
               ],
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -354,7 +360,8 @@ class _ConsultationModalState extends State<ConsultationModal> {
       specialty: _selectedSpecialty!,
       time: _selectedTime.format(context),
       date: DateFormat('dd/MM/yyyy').format(_selectedDate),
-      description: _descricaoCtrl.text, reminder: _reminder,
+      description: _descricaoCtrl.text,
+      reminder: widget.reminder,
     );
 
     await _consultationService.addConsultation(consultationModel);
@@ -369,7 +376,7 @@ class _ConsultationModalState extends State<ConsultationModal> {
   void _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: _selectedDate,
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
     );
@@ -383,7 +390,7 @@ class _ConsultationModalState extends State<ConsultationModal> {
   void _selectTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      initialTime: _selectedTime,
     );
     if (picked != null && picked != _selectedTime) {
       setState(() {

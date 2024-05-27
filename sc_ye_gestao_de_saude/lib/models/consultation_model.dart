@@ -11,6 +11,7 @@ class ConsultationModel {
   final String time;
   final String date;
   final String description;
+  final bool reminder;
 
   ConsultationModel({
     required this.id,
@@ -19,6 +20,7 @@ class ConsultationModel {
     required this.time,
     required this.date,
     required this.description,
+    required this.reminder,
   });
 
   Map<String, dynamic> toMap() {
@@ -29,6 +31,7 @@ class ConsultationModel {
       'time': time,
       'date': date,
       'description': description,
+      'reminder': reminder, // Adicionando o campo reminder
     };
   }
 
@@ -41,6 +44,7 @@ class ConsultationModel {
       time: data['time'] ?? '',
       date: data['date'] ?? '',
       description: data['description'] ?? '',
+      reminder: data['reminder'] ?? false, // Adicionando o campo reminder
     );
   }
 
@@ -51,9 +55,9 @@ class ConsultationModel {
       'time': time,
       'date': date,
       'description': description,
+      'reminder': reminder, // Adicionando o campo reminder
     };
   }
-
 }
 
 // class ExtensionPanelConsultation extends StatefulWidget {

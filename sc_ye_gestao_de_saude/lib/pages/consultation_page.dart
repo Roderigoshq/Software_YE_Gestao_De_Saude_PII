@@ -1,13 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sc_ye_gestao_de_saude/models/consultation_model.dart';
 import 'package:sc_ye_gestao_de_saude/pages/consultation_details.dart';
 import 'package:sc_ye_gestao_de_saude/services/consultation_service.dart';
 import 'package:sc_ye_gestao_de_saude/widgets/consultation_modal.dart';
-import 'package:intl/intl.dart'; // Import to format dates
 
 class ConsultationPage extends StatefulWidget {
-  const ConsultationPage({Key? key}) : super(key: key);
+  ConsultationPage({Key? key}) : super(key: key);
 
   @override
   _ConsultationPageState createState() => _ConsultationPageState();
@@ -85,30 +84,43 @@ class _ConsultationPageState extends State<ConsultationPage> {
                     var specialty = groupedConsultas.keys.elementAt(index);
                     var consultasBySpecialty = groupedConsultas[specialty]!;
 
-                    var nextConsultationDate = _getNextConsultationDate(consultasBySpecialty);
+                    var nextConsultationDate =
+                        _getNextConsultationDate(consultasBySpecialty);
 
                     return ListTile(
-                      title: Row(
-                        children: [
-                          Text(
-                            specialty,
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 27,
-                              fontWeight: FontWeight.w600,
-                              color: Color.fromRGBO(85, 85, 85, 1),
+                      title: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10.0, horizontal: 16),
+                        child: Row(
+                          children: [
+                            Text(
+                              specialty,
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 27,
+                                fontWeight: FontWeight.w600,
+                                color: Color.fromRGBO(85, 85, 85, 1),
+                              ),
                             ),
-                          ),
-                          Spacer(),
-                          Icon(
-                            Icons.arrow_right,
-                            color: Color.fromRGBO(85, 85, 85, 1),
-                          ),
-                        ],
+                            Spacer(),
+                            Icon(
+                              Icons.arrow_right,
+                              color: Color.fromRGBO(85, 85, 85, 1),
+                              size: 35,
+                            ),
+                          ],
+                        ),
                       ),
                       subtitle: nextConsultationDate != null
-                          ? Text('Próxima consulta: ${DateFormat('dd/MM/yyyy').format(nextConsultationDate)}')
-                          : Text('Nenhuma consulta futura'),
+                          ? Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Text(
+                                'Próxima consulta: ${DateFormat('dd/MM/yyyy').format(nextConsultationDate)}'),
+                          )
+                          : Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Text('Não há consulta marcada'),
+                          ),
                       onTap: () {
                         Navigator.push(
                           context,
@@ -140,7 +152,8 @@ class _ConsultationPageState extends State<ConsultationPage> {
           },
           child: Container(
             decoration: BoxDecoration(
-              border: Border.all(color: Color.fromRGBO(136, 149, 83, 1), width: 8),
+              border:
+                  Border.all(color: Color.fromRGBO(136, 149, 83, 1), width: 8),
               color: Color.fromRGBO(136, 149, 83, 1),
               shape: BoxShape.circle,
             ),
@@ -156,7 +169,8 @@ class _ConsultationPageState extends State<ConsultationPage> {
     );
   }
 
-  Map<String, List<ConsultationModel>> _groupConsultasBySpecialty(List<ConsultationModel> consultas) {
+  Map<String, List<ConsultationModel>> _groupConsultasBySpecialty(
+      List<ConsultationModel> consultas) {
     Map<String, List<ConsultationModel>> groupedConsultas = {};
     for (var consulta in consultas) {
       if (!groupedConsultas.containsKey(consulta.specialty)) {
