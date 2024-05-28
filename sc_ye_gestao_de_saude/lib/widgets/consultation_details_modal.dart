@@ -59,12 +59,13 @@ class _ConsultationsDatailsModalState extends State<ConsultationsDetailsModal> {
     _descricaoCtrl = TextEditingController(text: widget.description);
     _selectedDate = DateFormat('dd/MM/yyyy').parse(widget.date);
     _reminder = widget.reminder;
-final timeParts = widget.time.split(":");
+    final timeParts = widget.time.split(":");
     if (timeParts.length == 2) {
       final minutePart = timeParts[1];
       final period = minutePart.contains('AM') ? 'AM' : 'PM';
       final hour = int.tryParse(timeParts[0]) ?? 0;
-      final minute = int.tryParse(minutePart.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
+      final minute =
+          int.tryParse(minutePart.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
 
       int adjustedHour = hour;
       if (period == 'PM' && hour < 12) {
@@ -86,18 +87,14 @@ final timeParts = widget.time.split(":");
     return Container(
       padding: const EdgeInsets.all(32),
       height: MediaQuery.of(context).size.height * 0.9,
-      child: SingleChildScrollView(
-        child: Form(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Column(
-                mainAxisSize: MainAxisSize.min,
+      child: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Form(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _buildHeader(context),
-                  const Divider(),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 50),
                   _buildDropdownField(),
                   const SizedBox(height: 20),
                   _buildTextField(
@@ -119,50 +116,55 @@ final timeParts = widget.time.split(":");
                   _buildReminderSwitch(),
                 ],
               ),
-              if (isCarregando) const CircularProgressIndicator(),
-            ],
+            ),
           ),
-        ),
+          _buildHeader(context),
+          if (isCarregando) const Center(child: CircularProgressIndicator()),
+        ],
       ),
     );
   }
 
-  Row _buildHeader(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        GestureDetector(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Text(
-            "Cancelar",
-            style: TextStyle(
-              color: Color.fromRGBO(136, 149, 83, 1),
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+  Widget _buildHeader(BuildContext context) {
+    return Container(
+      color: const Color.fromRGBO(247, 242, 250, 1), // Adicionando o fundo branco
+      padding: const EdgeInsets.all(16), // Ajuste o padding conforme necessário
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: const Text(
+              "Cancelar",
+              style: TextStyle(
+                color: Color.fromRGBO(136, 149, 83, 1),
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-        const Text(
-          "Consultas",
-          style: TextStyle(
-            color: Colors.grey,
-            fontSize: 18,
-          ),
-        ),
-        GestureDetector(
-          onTap: _adicionarConsulta,
-          child: Text(
-            "Salvar",
+          const Text(
+            "Consultas",
             style: TextStyle(
-              color: Color.fromRGBO(136, 149, 83, 1),
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+              color: Colors.grey,
+              fontSize: 18,
             ),
           ),
-        ),
-      ],
+          GestureDetector(
+            onTap: _adicionarConsulta,
+            child: const Text(
+              "Salvar",
+              style: TextStyle(
+                color: Color.fromRGBO(136, 149, 83, 1),
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -223,7 +225,7 @@ final timeParts = widget.time.split(":");
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  DateFormat('yyyy-MM-dd').format(_selectedDate),
+                  DateFormat('dd/MM/yyyy').format(_selectedDate),
                   style: const TextStyle(fontSize: 16),
                 ),
                 const Icon(Icons.calendar_today),

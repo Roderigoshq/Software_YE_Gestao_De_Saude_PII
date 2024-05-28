@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:sc_ye_gestao_de_saude/pages/initial_banner_page.dart';
-import 'package:sc_ye_gestao_de_saude/pages/register_options.dart';
 
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({super.key});
 
   @override
-  _LoadingScreenState createState() => _LoadingScreenState();
+  LoadingScreenState createState() => LoadingScreenState();
 }
 
-class _LoadingScreenState extends State<LoadingScreen>
+class LoadingScreenState extends State<LoadingScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _animation;
@@ -36,7 +35,7 @@ class _LoadingScreenState extends State<LoadingScreen>
       Future.delayed(const Duration(seconds: 2), () {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => InitialBanner()),
+          MaterialPageRoute(builder: (context) => const InitialBanner()),
         );
       });
     });
@@ -45,7 +44,7 @@ class _LoadingScreenState extends State<LoadingScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(136, 149, 83, 1),
+      backgroundColor: const Color.fromRGBO(136, 149, 83, 1),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

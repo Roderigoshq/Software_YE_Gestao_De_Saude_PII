@@ -42,7 +42,7 @@ class ConsultationService {
               .map((doc) => ConsultationModel.fromFirestore(doc))
               .toList());
     } else {
-      return Stream.empty();
+      return const Stream.empty();
     }
   }
 

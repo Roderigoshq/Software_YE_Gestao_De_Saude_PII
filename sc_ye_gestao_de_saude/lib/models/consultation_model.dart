@@ -1,8 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:sc_ye_gestao_de_saude/services/consultation_service.dart';
-import 'package:sc_ye_gestao_de_saude/widgets/consultation_modal.dart';
 
 class ConsultationModel {
   final String id;

@@ -10,7 +10,7 @@ import 'package:sc_ye_gestao_de_saude/pages/initial_banner_page.dart';
 import 'package:sc_ye_gestao_de_saude/services/auth_service.dart';
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({Key? key}) : super(key: key);
+  const SettingsPage({super.key});
 
   @override
   State<SettingsPage> createState() => _ConfigPageState();
@@ -63,8 +63,8 @@ class _ConfigPageState extends State<SettingsPage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded),
-          color: Color.fromARGB(255, 104, 104, 104),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          color: const Color.fromARGB(255, 104, 104, 104),
           onPressed: () {
             Navigator.push(
               context,
@@ -72,7 +72,7 @@ class _ConfigPageState extends State<SettingsPage> {
             );
           },
         ),
-        title: Center(
+        title: const Center(
           child: Text(
             "Account Settings",
             style: TextStyle(
@@ -84,7 +84,7 @@ class _ConfigPageState extends State<SettingsPage> {
           ),
         ),
         actions: [
-          SizedBox(width: 45),
+          const SizedBox(width: 45),
         ],
       ),
       body: SingleChildScrollView(
@@ -92,7 +92,7 @@ class _ConfigPageState extends State<SettingsPage> {
           children: [
             Container(
               height: 200,
-              color: Color.fromARGB(255, 252, 252, 252),
+              color: const Color.fromARGB(255, 252, 252, 252),
             ),
             Padding(
               padding:
@@ -105,12 +105,12 @@ class _ConfigPageState extends State<SettingsPage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ChangeNamePage(),
+                            builder: (context) => const ChangeNamePage(),
                           )),
                     },
                     title: Row(
                       children: [
-                        Expanded(
+                        const Expanded(
                           child: Text(
                             "Nome",
                             style: TextStyle(
@@ -129,7 +129,7 @@ class _ConfigPageState extends State<SettingsPage> {
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
                             softWrap: false,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontFamily: 'Poppins',
                               fontSize: 17,
                               fontWeight: FontWeight.w500,
@@ -137,7 +137,7 @@ class _ConfigPageState extends State<SettingsPage> {
                             ),
                           ),
                         ),
-                        Icon(
+                        const Icon(
                           Icons.arrow_right,
                           size: 20,
                         ),
@@ -155,7 +155,7 @@ class _ConfigPageState extends State<SettingsPage> {
                     },
                     title: Row(
                       children: [
-                        Expanded(
+                        const Expanded(
                           child: Text(
                             "Sobrenome",
                             style: TextStyle(
@@ -174,7 +174,7 @@ class _ConfigPageState extends State<SettingsPage> {
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
                             softWrap: false,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontFamily: 'Poppins',
                               fontSize: 17,
                               fontWeight: FontWeight.w500,
@@ -182,7 +182,7 @@ class _ConfigPageState extends State<SettingsPage> {
                             ),
                           ),
                         ),
-                        Icon(
+                        const Icon(
                           Icons.arrow_right,
                           size: 20,
                         ),
@@ -192,7 +192,7 @@ class _ConfigPageState extends State<SettingsPage> {
                   ListTile(
                     title: Row(
                       children: [
-                        Expanded(
+                        const Expanded(
                           child: Text(
                             "Email",
                             style: TextStyle(
@@ -203,7 +203,7 @@ class _ConfigPageState extends State<SettingsPage> {
                             ),
                           ),
                         ),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Expanded(
                           flex: 2,
                           child: Text(
@@ -212,7 +212,7 @@ class _ConfigPageState extends State<SettingsPage> {
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
                             softWrap: false,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontFamily: 'Poppins',
                               fontSize: 17,
                               fontWeight: FontWeight.w500,
@@ -228,10 +228,10 @@ class _ConfigPageState extends State<SettingsPage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ChangePasswordPage(),
+                            builder: (context) => const ChangePasswordPage(),
                           )),
                     },
-                    title: Row(
+                    title: const Row(
                       children: [
                         Expanded(
                           child: Text(
@@ -273,12 +273,12 @@ class _ConfigPageState extends State<SettingsPage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ChangeBirthdatePage(),
+                            builder: (context) => const ChangeBirthdatePage(),
                           )),
                     },
                     title: Row(
                       children: [
-                        Expanded(
+                        const Expanded(
                           child: Text(
                             "Data de nascimento",
                             style: TextStyle(
@@ -289,7 +289,7 @@ class _ConfigPageState extends State<SettingsPage> {
                             ),
                           ),
                         ),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Expanded(
                           flex: 2,
                           child: Text(
@@ -298,7 +298,7 @@ class _ConfigPageState extends State<SettingsPage> {
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
                             softWrap: false,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontFamily: 'Poppins',
                               fontSize: 17,
                               fontWeight: FontWeight.w500,
@@ -306,14 +306,14 @@ class _ConfigPageState extends State<SettingsPage> {
                             ),
                           ),
                         ),
-                        Icon(
+                        const Icon(
                           Icons.arrow_right,
                           size: 20,
                         ),
                       ],
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 50,
                   ),
                   ElevatedButton(
@@ -328,13 +328,13 @@ class _ConfigPageState extends State<SettingsPage> {
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 20),
-                      foregroundColor: Color.fromARGB(255, 241, 65, 65),
+                      foregroundColor: const Color.fromARGB(255, 241, 65, 65),
                       backgroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
                       // Define a largura máxima
-                      minimumSize: Size(double.infinity, 0),
+                      minimumSize: const Size(double.infinity, 0),
                     ),
                     child: const Text(
                       'Log out',
@@ -346,28 +346,28 @@ class _ConfigPageState extends State<SettingsPage> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 10,),
+                  const SizedBox(height: 10,),
                   ElevatedButton(
                     onPressed: () async {
                       final confirmed = await showDialog(
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  title: Text(
+                                  title: const Text(
                                     'Confirmar',
                                     style: TextStyle(
                                         fontFamily: 'Poppins',
                                         fontWeight: FontWeight.w600,
-                                        color: const Color.fromARGB(
+                                        color: Color.fromARGB(
                                             255, 66, 66, 66)),
                                   ),
-                                  content: Text(
+                                  content: const Text(
                                       'Tem certeza de que deseja deletar sua conta?'),
                                   actions: [
                                     TextButton(
                                       onPressed: () =>
                                           Navigator.pop(context, false),
-                                      child: Text(
+                                      child: const Text(
                                         'Cancelar',
                                         style: TextStyle(
                                             fontFamily: 'Poppins',
@@ -377,7 +377,7 @@ class _ConfigPageState extends State<SettingsPage> {
                                     TextButton(
                                       onPressed: () =>
                                           Navigator.pop(context, true),
-                                      child: Text('Deletar',
+                                      child: const Text('Deletar',
                                           style: TextStyle(
                                               fontFamily: 'Poppins',
                                               color: Color.fromRGBO(255, 41, 41, 1),
@@ -401,12 +401,12 @@ class _ConfigPageState extends State<SettingsPage> {
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 20),
                       foregroundColor: Colors.white,
-                      backgroundColor: Color.fromARGB(255, 241, 65, 65),
+                      backgroundColor: const Color.fromARGB(255, 241, 65, 65),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
                       // Define a largura máxima
-                      minimumSize: Size(double.infinity, 0),
+                      minimumSize: const Size(double.infinity, 0),
                     ),
                     child: const Text(
                       'Deletar minha conta',

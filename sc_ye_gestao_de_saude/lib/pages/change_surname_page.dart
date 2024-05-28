@@ -6,13 +6,13 @@ import 'package:sc_ye_gestao_de_saude/components/success_popup.dart';
 import 'package:sc_ye_gestao_de_saude/pages/settings_page.dart';
 
 class ChangeSurnamePage extends StatefulWidget {
-  const ChangeSurnamePage({Key? key}) : super(key: key);
+  const ChangeSurnamePage({super.key});
 
   @override
-  _ChangeSurnamePageState createState() => _ChangeSurnamePageState();
+  ChangeSurnamePageState createState() => ChangeSurnamePageState();
 }
 
-class _ChangeSurnamePageState extends State<ChangeSurnamePage> {
+class ChangeSurnamePageState extends State<ChangeSurnamePage> {
   final TextEditingController _surnameController = TextEditingController();
   String sobrenome = '';
 
@@ -47,7 +47,7 @@ class _ChangeSurnamePageState extends State<ChangeSurnamePage> {
     }
   }
 
-  void _updateSurname() {
+  _updateSurname() {
     String surname = _surnameController.text.trim();
     if (surname.isEmpty) {
       return showSnackBar(
@@ -71,13 +71,13 @@ class _ChangeSurnamePageState extends State<ChangeSurnamePage> {
           showDialog(
             context: context,
             builder: (context) {
-              return SuccessPopup(
+              return const SuccessPopup(
                 message: 'Sobrenome atualizado!',
               );
             },
           );
 
-          await Future.delayed(Duration(seconds: 1));
+          await Future.delayed(const Duration(seconds: 1));
 
           Navigator.pop(context);
 
@@ -99,7 +99,7 @@ class _ChangeSurnamePageState extends State<ChangeSurnamePage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
           color: const Color.fromARGB(255, 104, 104, 104),
           onPressed: () {
             Navigator.push(
@@ -108,7 +108,7 @@ class _ChangeSurnamePageState extends State<ChangeSurnamePage> {
             );
           },
         ),
-        title: Center(
+        title: const Center(
           child: Text(
             "Mudar seu sobrenome",
             style: TextStyle(
@@ -130,20 +130,20 @@ class _ChangeSurnamePageState extends State<ChangeSurnamePage> {
           children: [
             Row(
               children: [
-                Text(
+                const Text(
                   'Sobrenome atual: ',
                   style: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontFamily: 'Poppins',
-                      color: const Color.fromARGB(255, 104, 104, 104),
+                      color: Color.fromARGB(255, 104, 104, 104),
                       fontSize: 15),
                 ),
                 Text(
                   sobrenome,
-                  style: TextStyle(
+                  style: const TextStyle(
                       fontWeight: FontWeight.w600,
                       fontFamily: 'Poppins',
-                      color: const Color.fromARGB(255, 104, 104, 104),
+                      color: Color.fromARGB(255, 104, 104, 104),
                       fontSize: 15),
                 ),
               ],

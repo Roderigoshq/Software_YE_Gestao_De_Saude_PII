@@ -5,15 +5,11 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sc_ye_gestao_de_saude/pages/about_us_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/home_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/login_page.dart';
-import 'package:sc_ye_gestao_de_saude/pages/medication_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/politica.dart';
 import 'package:sc_ye_gestao_de_saude/pages/register.dart';
-import 'package:sc_ye_gestao_de_saude/services/user_data_service.dart';
 
 class RegisterOptions extends StatelessWidget {
-  RegisterOptions({super.key});
-  final UserDataService _userDataService = UserDataService();
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  const RegisterOptions({super.key});
 
   // GOOGLE
 
@@ -33,11 +29,11 @@ class RegisterOptions extends StatelessWidget {
       if (authResult.user != null) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => HomePage()),
+          MaterialPageRoute(builder: (context) => const HomePage()),
         );
       }
     } catch (error) {
-      print('Erro ao fazer login com o Google: $error');
+      return('Erro ao fazer login com o Google: $error');
     }
   }
 
@@ -47,9 +43,7 @@ class RegisterOptions extends StatelessWidget {
     final LoginResult loginResult = await FacebookAuth.instance
         .login(permissions: ['email', 'public_profile']);
 
-    final userData = await FacebookAuth.instance.getUserData();
 
-    final userEmail = userData['email'];
 
     final OAuthCredential facebookAuthCredential =
         FacebookAuthProvider.credential(loginResult.accessToken!.token);
@@ -61,7 +55,7 @@ class RegisterOptions extends StatelessWidget {
       if (authResult.user != null) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => HomePage()),
+          MaterialPageRoute(builder: (context) => const HomePage()),
         );
       }
     } catch (e) {
@@ -379,7 +373,7 @@ class RegisterOptions extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => AboutUsPage()),
+                                    builder: (context) => const AboutUsPage()),
                               );
                             },
                             child: const Text(

@@ -6,16 +6,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CameraScreen extends StatefulWidget {
-  const CameraScreen({Key? key}) : super(key: key);
+  const CameraScreen({super.key});
 
   @override
-  _CameraScreenState createState() => _CameraScreenState();
+  CameraScreenState createState() => CameraScreenState();
 }
 
-class _CameraScreenState extends State<CameraScreen> {
+class CameraScreenState extends State<CameraScreen> {
   late CameraController _controller;
   bool _isCameraReady = false;
-  late XFile _imageFile;
+  bool _isUploading = false;
 
   @override
   void initState() {
@@ -24,66 +24,87 @@ class _CameraScreenState extends State<CameraScreen> {
   }
 
   Future<void> _initializeCamera() async {
-    // Obtém a lista de câmeras disponíveis no dispositivo
-    final cameras = await availableCameras();
-    final firstCamera = cameras.first;
+    try {
+      final cameras = await availableCameras();
+      final firstCamera = cameras.first;
 
-    // Inicializa o controlador da câmera
-    _controller = CameraController(
-      firstCamera,
-      ResolutionPreset.medium,
-    );
+      _controller = CameraController(
+        firstCamera,
+        ResolutionPreset.medium,
+      );
 
-    await _controller.initialize();
+      await _controller.initialize();
 
-    if (!mounted) return;
+      if (!mounted) return;
 
-    setState(() {
-      _isCameraReady = true;
-    });
+      setState(() {
+        _isCameraReady = true;
+      });
+    } catch (e) {
+      setState(() {
+        _isCameraReady = false;
+      });
+    }
   }
 
   Future<void> _captureImage() async {
     try {
-      // Captura a imagem
+      if (!_controller.value.isInitialized) {
+        return;
+      }
+
       final imageFile = await _controller.takePicture();
+      setState(() {});
+
+      await _uploadImage(File(imageFile.path));
+    } catch (e) {
+      ("erro");
+    }
+  }
+
+  Future<void> _uploadImage(File imageFile) async {
+    try {
       setState(() {
-        _imageFile = imageFile;
+        _isUploading = true;
       });
 
-      // Faz upload da imagem para o Firebase Storage
-      await uploadImage(File(imageFile.path));
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        throw Exception('User is not authenticated.');
+      }
+
+      String filePath =
+          'exams/${user.uid}/${DateTime.now().millisecondsSinceEpoch}.jpg';
+      UploadTask uploadTask =
+          FirebaseStorage.instance.ref().child(filePath).putFile(imageFile);
+
+      await uploadTask.whenComplete(() => null);
+      String downloadURL =
+          await FirebaseStorage.instance.ref(filePath).getDownloadURL();
+
+      await FirebaseFirestore.instance.collection('exams').add({
+        'userId': user.uid,
+        'imageUrl': downloadURL,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
+      setState(() {
+        _isUploading = false;
+      });
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Upload successful!')));
     } catch (e) {
-      print(e);
+      setState(() {
+        _isUploading = false;
+      });
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error uploading image: $e')));
     }
   }
-
-  Future<void> uploadImage(File imageFile) async {
-  try {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      throw Exception('Usuário não autenticado');
-    }
-
-    String filePath = 'exams/${user.uid}/${DateTime.now().millisecondsSinceEpoch}.jpg';
-    UploadTask uploadTask = FirebaseStorage.instance.ref().child(filePath).putFile(imageFile);
-
-    await uploadTask.whenComplete(() => null);
-    String downloadURL = await FirebaseStorage.instance.ref(filePath).getDownloadURL();
-
-    await FirebaseFirestore.instance.collection('exams').add({
-      'userId': user.uid,
-      'imageUrl': downloadURL,
-      'timestamp': FieldValue.serverTimestamp(),
-    });
-  } catch (e) {
-    print('Erro ao fazer upload da imagem: $e');
-  }
-}
 
   @override
   void dispose() {
-    // Libera o controlador da câmera quando o widget for descartado
     _controller.dispose();
     super.dispose();
   }
@@ -91,13 +112,18 @@ class _CameraScreenState extends State<CameraScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Camera')),
+      appBar: AppBar(title: const Text('Camera')),
       body: _isCameraReady
-          ? CameraPreview(_controller)
-          : Center(child: CircularProgressIndicator()),
+          ? Stack(
+              children: [
+                CameraPreview(_controller),
+                if (_isUploading) const Center(child: CircularProgressIndicator()),
+              ],
+            )
+          : const Center(child: CircularProgressIndicator()),
       floatingActionButton: FloatingActionButton(
         onPressed: _captureImage,
-        child: Icon(Icons.camera),
+        child: const Icon(Icons.camera),
       ),
     );
   }

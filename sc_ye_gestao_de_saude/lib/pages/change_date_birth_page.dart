@@ -6,13 +6,13 @@ import 'package:sc_ye_gestao_de_saude/components/success_popup.dart';
 import 'package:sc_ye_gestao_de_saude/pages/settings_page.dart';
 
 class ChangeBirthdatePage extends StatefulWidget {
-  const ChangeBirthdatePage({Key? key}) : super(key: key);
+  const ChangeBirthdatePage({super.key});
 
   @override
-  _ChangeBirthdatePageState createState() => _ChangeBirthdatePageState();
+  ChangeBirthdatePageState createState() => ChangeBirthdatePageState();
 }
 
-class _ChangeBirthdatePageState extends State<ChangeBirthdatePage> {
+class ChangeBirthdatePageState extends State<ChangeBirthdatePage> {
   final TextEditingController _dateController = TextEditingController();
   DateTime? _selectedDate;
   final DateFormat _dateFormat = DateFormat('dd/MM/yyyy');
@@ -93,7 +93,7 @@ class _ChangeBirthdatePageState extends State<ChangeBirthdatePage> {
           },
         );
 
-        await Future.delayed(Duration(seconds: 1));
+        await Future.delayed(const Duration(seconds: 1));
 
         Navigator.pop(context);
 
@@ -115,7 +115,7 @@ class _ChangeBirthdatePageState extends State<ChangeBirthdatePage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
           color: const Color.fromARGB(255, 104, 104, 104),
           onPressed: () {
             Navigator.push(
@@ -124,7 +124,7 @@ class _ChangeBirthdatePageState extends State<ChangeBirthdatePage> {
             );
           },
         ),
-        title: Center(
+        title: const Center(
           child: Text(
             "Mudar data de nascimento",
             style: TextStyle(

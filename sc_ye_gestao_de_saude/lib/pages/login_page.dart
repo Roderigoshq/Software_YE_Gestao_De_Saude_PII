@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sc_ye_gestao_de_saude/components/snackbar.dart';
-import 'package:sc_ye_gestao_de_saude/pages/change_password_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/forgot_password.dart';
 import 'package:sc_ye_gestao_de_saude/pages/home_page.dart';
 import 'package:sc_ye_gestao_de_saude/services/auth_service.dart';
@@ -55,8 +54,8 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded),
-          color: Color.fromARGB(255, 104, 104, 104),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          color: const Color.fromARGB(255, 104, 104, 104),
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -174,7 +173,7 @@ class _LoginPageState extends State<LoginPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ForgotPasswordPage(),
+                        builder: (context) => const ForgotPasswordPage(),
                       ),
                     );
                   },

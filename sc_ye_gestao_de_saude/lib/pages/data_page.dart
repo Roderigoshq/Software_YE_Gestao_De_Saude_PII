@@ -15,10 +15,10 @@ class DadosPage extends StatefulWidget {
   const DadosPage({super.key});
 
   @override
-  _DadosPageState createState() => _DadosPageState();
+  DadosPageState createState() => DadosPageState();
 }
 
-class _DadosPageState extends State<DadosPage>
+class DadosPageState extends State<DadosPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late DateTime? _selectedDate;
@@ -94,7 +94,7 @@ class _DadosPageState extends State<DadosPage>
   void initState() {
     super.initState();
     _selectedDate = null;
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     _selectedDateController = TextEditingController();
     _selectedDateController.text =
         _selectedDate != null ? _dateFormat.format(_selectedDate!) : '';
@@ -218,7 +218,7 @@ class _DadosPageState extends State<DadosPage>
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 4,
+      length: 3,
       initialIndex: 0,
       child: Scaffold(
         body: Stack(
@@ -332,14 +332,8 @@ class _DadosPageState extends State<DadosPage>
                     CustomTab(
                       text: 'Peso & Altura',
                       subText: latestWeightHeight != null
-                          ? '${latestWeightHeight!.weight} kg, ${latestWeightHeight!.height} m'
-                          : '-kg, -m',
-                    ),
-                    CustomTab(
-                      text: 'IMC',
-                      subText: latestWeightHeight != null
-                          ? '${calculateIMC(latestWeightHeight!.weight, latestWeightHeight!.height)}kg/m²'
-                          : '-kg/m²',
+                          ? '${latestWeightHeight!.weight} kg, ${latestWeightHeight!.height} m, ${calculateIMC(latestWeightHeight!.weight, latestWeightHeight!.height)}kg/m²'
+                          : '-kg, -m, -kg/m²',
                     ),
                   ],
                 ),
@@ -390,13 +384,6 @@ class _DadosPageState extends State<DadosPage>
                             latestWeightHeight = latestWeightHeightAux;
                           });
                         },
-                      ),
-                      // Conteúdo da aba IMC
-                      Center(
-                        child: Container(
-                          color: const Color.fromRGBO(248, 248, 248, 1),
-                          child: const Text('Conteúdo da aba IMC'),
-                        ),
                       ),
                     ],
                   ),
@@ -534,10 +521,10 @@ class _DadosPageState extends State<DadosPage>
                                             Navigator.pop(context);
                                           },
                                           style: ElevatedButton.styleFrom(
-                                            backgroundColor: Color.fromARGB(
+                                            backgroundColor: const Color.fromARGB(
                                                 255, 245, 245, 245),
                                             foregroundColor:
-                                                Color.fromARGB(255, 63, 63, 63),
+                                                const Color.fromARGB(255, 63, 63, 63),
                                           ),
                                           child: const Text(
                                             'Cancelar',
@@ -559,7 +546,7 @@ class _DadosPageState extends State<DadosPage>
                                           },
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor:
-                                                Color.fromRGBO(136, 149, 83, 1),
+                                                const Color.fromRGBO(136, 149, 83, 1),
                                             foregroundColor: Colors.white,
                                           ),
                                           child: const Text(
@@ -641,10 +628,10 @@ class _DadosPageState extends State<DadosPage>
                                           ),
                                         ),
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         width: 20,
                                       ),
-                                      Text(
+                                      const Text(
                                         'mg/Dl',
                                         style: TextStyle(
                                           fontFamily: 'Poppins',
@@ -666,10 +653,10 @@ class _DadosPageState extends State<DadosPage>
                                             Navigator.pop(context);
                                           },
                                           style: ElevatedButton.styleFrom(
-                                            backgroundColor: Color.fromARGB(
+                                            backgroundColor: const Color.fromARGB(
                                                 255, 245, 245, 245),
                                             foregroundColor:
-                                                Color.fromARGB(255, 63, 63, 63),
+                                                const Color.fromARGB(255, 63, 63, 63),
                                           ),
                                           child: const Text(
                                             'Cancelar',
@@ -691,7 +678,7 @@ class _DadosPageState extends State<DadosPage>
                                           },
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor:
-                                                Color.fromRGBO(136, 149, 83, 1),
+                                                const Color.fromRGBO(136, 149, 83, 1),
                                             foregroundColor: Colors.white,
                                           ),
                                           child: const Text(
@@ -773,7 +760,7 @@ class _DadosPageState extends State<DadosPage>
                                           ),
                                         ),
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         width: 20,
                                       ),
                                       Expanded(
@@ -792,7 +779,7 @@ class _DadosPageState extends State<DadosPage>
                                       ),
                                     ],
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 10,
                                   ),
                                   Row(
@@ -803,10 +790,10 @@ class _DadosPageState extends State<DadosPage>
                                             Navigator.pop(context);
                                           },
                                           style: ElevatedButton.styleFrom(
-                                            backgroundColor: Color.fromARGB(
+                                            backgroundColor: const Color.fromARGB(
                                                 255, 245, 245, 245),
                                             foregroundColor:
-                                                Color.fromARGB(255, 63, 63, 63),
+                                                const Color.fromARGB(255, 63, 63, 63),
                                           ),
                                           child: const Text(
                                             'Cancelar',
@@ -828,7 +815,7 @@ class _DadosPageState extends State<DadosPage>
                                           },
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor:
-                                                Color.fromRGBO(136, 149, 83, 1),
+                                                const Color.fromRGBO(136, 149, 83, 1),
                                             foregroundColor: Colors.white,
                                           ),
                                           child: const Text(

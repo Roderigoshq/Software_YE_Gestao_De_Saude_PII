@@ -9,17 +9,17 @@ class ForgotPasswordPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController _emailController = TextEditingController();
+    final TextEditingController emailController = TextEditingController();
 
-    void _resetPassword() {
-      String email = _emailController.text.trim();
+    void resetPassword() {
+      String email = emailController.text.trim();
       FirebaseAuth.instance
           .sendPasswordResetEmail(email: email)
           .then((value) async {
         showDialog(
           context: context,
           builder: (context) {
-            return SuccessPopup(
+            return const SuccessPopup(
               message: 'Email para redefinição de senha enviado!',
             );
           },
@@ -47,15 +47,15 @@ class ForgotPasswordPage extends StatelessWidget {
           context: context,
           builder: (context) {
             return AlertDialog(
-              title: Text('Erro'),
-              content: Text(
+              title: const Text('Erro'),
+              content: const Text(
                   'Não foi possível enviar o email de redefinição de senha. Por favor, verifique o endereço de email e tente novamente.'),
               actions: [
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('OK'),
+                  child: const Text('OK'),
                 ),
               ],
             );
@@ -67,8 +67,8 @@ class ForgotPasswordPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded),
-          color: Color.fromARGB(255, 104, 104, 104),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          color: const Color.fromARGB(255, 104, 104, 104),
           onPressed: () {
             Navigator.push(
               context,
@@ -76,7 +76,7 @@ class ForgotPasswordPage extends StatelessWidget {
             );
           },
         ),
-        title: Center(
+        title: const Center(
           child: Text(
             "Mudar sua senha",
             style: TextStyle(
@@ -87,7 +87,7 @@ class ForgotPasswordPage extends StatelessWidget {
             ),
           ),
         ),
-        actions: [
+        actions: const [
           SizedBox(width: 45),
         ],
       ),
@@ -96,7 +96,7 @@ class ForgotPasswordPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
+            const Text(
               'Altere sua senha:',
               style: TextStyle(
                 fontFamily: 'Poppins',
@@ -105,9 +105,9 @@ class ForgotPasswordPage extends StatelessWidget {
                 color: Color.fromARGB(255, 104, 104, 104),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextField(
-              controller: _emailController,
+              controller: emailController,
               decoration: const InputDecoration(
                 labelText: 'Email',
                 labelStyle: TextStyle(fontSize: 14),
@@ -123,28 +123,28 @@ class ForgotPasswordPage extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 5,
             ),
-            Text(
+            const Text(
               "Através do seu e-mail, você redefinirá sua senha",
               style: TextStyle(
-                  color: const Color.fromARGB(255, 146, 146, 146),
+                  color: Color.fromARGB(255, 146, 146, 146),
                   fontFamily: 'Poppins',
                   fontWeight: FontWeight.w400),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 5),
               child: ElevatedButton(
-                onPressed: _resetPassword,
+                onPressed: resetPassword,
                 style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 20),
+                    padding: const EdgeInsets.symmetric(vertical: 20),
                     foregroundColor: Colors.white,
-                    backgroundColor: Color.fromRGBO(136, 149, 83, 1),
+                    backgroundColor: const Color.fromRGBO(136, 149, 83, 1),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10))),
-                child: Text(
+                child: const Text(
                   'Redefinir Senha',
                   style: TextStyle(
                     fontSize: 15,

@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sc_ye_gestao_de_saude/models/consultation_model.dart';
-import 'package:sc_ye_gestao_de_saude/pages/consultation_details.dart';
 import 'package:sc_ye_gestao_de_saude/services/consultation_service.dart';
 import 'package:sc_ye_gestao_de_saude/widgets/consultation_modal.dart';
+import 'consultation_details.dart';
 
 class ConsultationPage extends StatefulWidget {
-  ConsultationPage({Key? key}) : super(key: key);
+  const ConsultationPage({super.key});
 
   @override
-  _ConsultationPageState createState() => _ConsultationPageState();
+  ConsultationPageState createState() => ConsultationPageState();
 }
 
-class _ConsultationPageState extends State<ConsultationPage> {
+class ConsultationPageState extends State<ConsultationPage> {
   final ConsultationService dbService = ConsultationService();
 
   @override
@@ -23,14 +23,14 @@ class _ConsultationPageState extends State<ConsultationPage> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 20),
+            padding: const EdgeInsets.symmetric(vertical: 20),
             child: SizedBox(
               width: double.infinity,
               child: Stack(
                 alignment: Alignment.centerLeft,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 30),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 30),
                     child: Text.rich(
                       TextSpan(
                         style: TextStyle(
@@ -73,7 +73,7 @@ class _ConsultationPageState extends State<ConsultationPage> {
               stream: dbService.getConsultations(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
                 var consultas = snapshot.data!;
                 var groupedConsultas = _groupConsultasBySpecialty(consultas);
@@ -95,15 +95,15 @@ class _ConsultationPageState extends State<ConsultationPage> {
                           children: [
                             Text(
                               specialty,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontFamily: 'Poppins',
                                 fontSize: 27,
                                 fontWeight: FontWeight.w600,
                                 color: Color.fromRGBO(85, 85, 85, 1),
                               ),
                             ),
-                            Spacer(),
-                            Icon(
+                            const Spacer(),
+                            const Icon(
                               Icons.arrow_right,
                               color: Color.fromRGBO(85, 85, 85, 1),
                               size: 35,
@@ -117,8 +117,8 @@ class _ConsultationPageState extends State<ConsultationPage> {
                             child: Text(
                                 'Próxima consulta: ${DateFormat('dd/MM/yyyy').format(nextConsultationDate)}'),
                           )
-                          : Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                          : const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
                             child: Text('Não há consulta marcada'),
                           ),
                       onTap: () {
@@ -147,17 +147,17 @@ class _ConsultationPageState extends State<ConsultationPage> {
             showModalBottomSheet(
               context: context,
               isScrollControlled: true,
-              builder: (context) => ConsultationModal(),
+              builder: (context) => const ConsultationModal(),
             );
           },
           child: Container(
             decoration: BoxDecoration(
               border:
-                  Border.all(color: Color.fromRGBO(136, 149, 83, 1), width: 8),
-              color: Color.fromRGBO(136, 149, 83, 1),
+                  Border.all(color: const Color.fromRGBO(136, 149, 83, 1), width: 8),
+              color: const Color.fromRGBO(136, 149, 83, 1),
               shape: BoxShape.circle,
             ),
-            child: Icon(
+            child: const Icon(
               Icons.add,
               size: 36,
               color: Colors.white,

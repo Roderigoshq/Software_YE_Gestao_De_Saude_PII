@@ -2,5 +2,6 @@
     "commentTranslate.targetLanguage": "pt",
     "cSpell.words": [
         "Novals"
-    ]
+    ],
+    "java.compile.nullAnalysis.mode": "automatic"
 }

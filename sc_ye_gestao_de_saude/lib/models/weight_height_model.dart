@@ -50,10 +50,10 @@ class ExtensionPanelWeightHeight extends StatefulWidget {
   final EditCallback editCallback;
   final DeleteCallback deleteCallback;
   const ExtensionPanelWeightHeight({
-    Key? key,
+    super.key,
     required this.editCallback,
     required this.deleteCallback,
-  }) : super(key: key);
+  });
 
   @override
   State<ExtensionPanelWeightHeight> createState() =>
@@ -65,6 +65,16 @@ class _ExtensionPanelWeightHeightState
   final WeightHeightAdd weightHeightService = WeightHeightAdd();
   final DateFormat _dateFormat = DateFormat('dd/MM/yyyy');
   WeightHeightModel? latestWeightHeight;
+
+  String calculateIMC(int? weight, int? height) {
+    if (weight != null && height != null && height != 0) {
+      double heightInMeters = height / 100;
+      double bmi = weight / (heightInMeters * heightInMeters);
+      return bmi.toStringAsFixed(1);
+    } else {
+      return '-';
+    }
+  }
 
   @override
   void initState() {
@@ -78,7 +88,7 @@ class _ExtensionPanelWeightHeightState
         future: weightHeightService.fetchWeightHeightModels(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(
                 color: Color.fromRGBO(136, 149, 83, 1),
               ),
@@ -95,10 +105,10 @@ class _ExtensionPanelWeightHeightState
                       'lib/assets/nenhumitem.png',
                       width: 100,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
-                    Text(
+                    const Text(
                       "Não há nenhum item",
                       style: TextStyle(
                           color: Color.fromRGBO(136, 149, 83, 1),
@@ -124,17 +134,18 @@ class _ExtensionPanelWeightHeightState
                     children: [
                       Text(
                         weightHeight.date,
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontFamily: 'Poppins',
                             fontWeight: FontWeight.w600,
                             fontSize: 16,
                             color: Color.fromRGBO(85, 85, 85, 1)),
                       ),
-                      Spacer(),
+                      const Spacer(),
                       PopupMenuButton(
                         itemBuilder: (BuildContext context) {
                           return <PopupMenuEntry>[
-                            PopupMenuItem(
+                            const PopupMenuItem(
+                              value: 'edit',
                               child: Center(
                                   child: Text(
                                 'Editar',
@@ -144,9 +155,9 @@ class _ExtensionPanelWeightHeightState
                                     fontWeight: FontWeight.w500,
                                     fontSize: 15),
                               )),
-                              value: 'edit',
                             ),
-                            PopupMenuItem(
+                            const PopupMenuItem(
+                              value: 'delete',
                               child: Center(
                                   child: Text(
                                 'Deletar',
@@ -156,7 +167,6 @@ class _ExtensionPanelWeightHeightState
                                     fontWeight: FontWeight.w500,
                                     fontSize: 15),
                               )),
-                              value: 'delete',
                             ),
                           ];
                         },
@@ -182,21 +192,20 @@ class _ExtensionPanelWeightHeightState
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  title: Text(
+                                  title: const Text(
                                     'Confirmar Exclusão',
                                     style: TextStyle(
                                         fontFamily: 'Poppins',
                                         fontWeight: FontWeight.w600,
-                                        color: const Color.fromARGB(
-                                            255, 66, 66, 66)),
+                                        color: Color.fromARGB(255, 66, 66, 66)),
                                   ),
-                                  content: Text(
+                                  content: const Text(
                                       'Tem certeza de que deseja excluir este registro?'),
                                   actions: [
                                     TextButton(
                                       onPressed: () =>
                                           Navigator.pop(context, false),
-                                      child: Text(
+                                      child: const Text(
                                         'Cancelar',
                                         style: TextStyle(
                                             fontFamily: 'Poppins',
@@ -207,7 +216,7 @@ class _ExtensionPanelWeightHeightState
                                     TextButton(
                                       onPressed: () =>
                                           Navigator.pop(context, true),
-                                      child: Text('Confirmar',
+                                      child: const Text('Confirmar',
                                           style: TextStyle(
                                               fontFamily: 'Poppins',
                                               color: Color.fromRGBO(
@@ -230,14 +239,14 @@ class _ExtensionPanelWeightHeightState
                       ),
                     ],
                   ),
-                  trailing: Icon(Icons.expand_more),
+                  trailing: const Icon(Icons.expand_more),
                   children: [
                     ListTile(
                       title: Row(
                         children: [
                           Text(
-                            'Peso: ${weightHeight.weight}kg    Altura: ${weightHeight.height}m',
-                            style: TextStyle(
+                            'Peso: ${weightHeight.weight}kg    Altura: ${weightHeight.height}m, IMC: ${calculateIMC(weightHeight.weight, weightHeight.height)}kg/m²',
+                            style: const TextStyle(
                                 fontFamily: 'Poppins',
                                 fontWeight: FontWeight.w600,
                                 fontSize: 15,
@@ -255,7 +264,7 @@ class _ExtensionPanelWeightHeightState
               child: Column(
                 children: [
                   Image.asset('lib/assets/nenhumitem.png'),
-                  Text("Não há nenhum item"),
+                  const Text("Não há nenhum item"),
                 ],
               ),
             );
@@ -331,7 +340,7 @@ class _ExtensionPanelWeightHeightState
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 20,
                     ),
                     Expanded(
@@ -349,7 +358,7 @@ class _ExtensionPanelWeightHeightState
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Row(
@@ -360,8 +369,10 @@ class _ExtensionPanelWeightHeightState
                           Navigator.pop(context);
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromARGB(255, 245, 245, 245),
-                          foregroundColor: Color.fromARGB(255, 63, 63, 63),
+                          backgroundColor:
+                              const Color.fromARGB(255, 245, 245, 245),
+                          foregroundColor:
+                              const Color.fromARGB(255, 63, 63, 63),
                         ),
                         child: const Text(
                           'Cancelar',
@@ -390,7 +401,8 @@ class _ExtensionPanelWeightHeightState
                           Navigator.of(context).pop(updatedWeightHeight);
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromRGBO(136, 149, 83, 1),
+                          backgroundColor:
+                              const Color.fromRGBO(136, 149, 83, 1),
                           foregroundColor: Colors.white,
                         ),
                         child: const Text(

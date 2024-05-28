@@ -46,15 +46,15 @@ Color getColorForPressure(int sistolic, int diastolic) {
   if (sistolic < 90 && diastolic < 60) {
     return const Color.fromRGBO(210, 223, 149, 1);
   } else if (sistolic < 120 && diastolic < 80) {
-    return Color.fromRGBO(136, 149, 83, 1);
+    return const Color.fromRGBO(136, 149, 83, 1);
   } else if ((sistolic >= 120 && sistolic < 140) ||
       (diastolic >= 80 && diastolic < 90)) {
     return Colors.orange;
   } else if ((sistolic >= 140 && sistolic < 160) ||
       (diastolic >= 90 && diastolic < 100)) {
-    return Color.fromRGBO(244, 94, 94, 1);
+    return const Color.fromRGBO(244, 94, 94, 1);
   } else {
-    return Color.fromRGBO(253, 64, 64, 1);
+    return const Color.fromRGBO(253, 64, 64, 1);
   }
 }
 
@@ -65,7 +65,7 @@ class ExtensionPanelPressure extends StatefulWidget {
     final EditCallback editCallback;
   final DeleteCallback deleteCallback;
 
-  const ExtensionPanelPressure({Key? key, required this.editCallback, required this.deleteCallback}) : super(key: key);
+  const ExtensionPanelPressure({super.key, required this.editCallback, required this.deleteCallback});
 
   @override
   State<ExtensionPanelPressure> createState() => _ExtensionPanelPressureState();
@@ -82,7 +82,7 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
         future: pressureService.fetchPressureModels(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(
                 color: Color.fromRGBO(136, 149, 83, 1),
               ),
@@ -97,8 +97,8 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset('lib/assets/nenhumitem.png', width: 100,),
-                SizedBox(height: 20,),
-                Text("Não há nenhum item", style: TextStyle(color: Color.fromRGBO(136, 149, 83, 1), fontFamily: 'Poppins', fontSize: 15, fontWeight: FontWeight.w500),),
+                const SizedBox(height: 20,),
+                const Text("Não há nenhum item", style: TextStyle(color: Color.fromRGBO(136, 149, 83, 1), fontFamily: 'Poppins', fontSize: 15, fontWeight: FontWeight.w500),),
               ],
             ),
           );
@@ -123,17 +123,18 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
                       children: [
                         Text(
                           pressure.date,
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w600,
                               fontSize: 16,
                               color: Color.fromRGBO(85, 85, 85, 1)),
                         ),
-                        Spacer(),
+                        const Spacer(),
                         PopupMenuButton(
                           itemBuilder: (BuildContext context) {
                             return <PopupMenuEntry>[
-                              PopupMenuItem(
+                              const PopupMenuItem(
+                                value: 'edit',
                                 child: Center(
                                     child: Text(
                                       'Editar',
@@ -143,9 +144,9 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
                                           fontWeight: FontWeight.w500,
                                           fontSize: 15),
                                     )),
-                                value: 'edit',
                               ),
-                              PopupMenuItem(
+                              const PopupMenuItem(
+                                value: 'delete',
                                 child: Center(
                                     child: Text(
                                       'Deletar',
@@ -155,7 +156,6 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
                                           fontWeight: FontWeight.w500,
                                           fontSize: 15),
                                     )),
-                                value: 'delete',
                               ),
                             ];
                           },
@@ -181,21 +181,21 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  title: Text(
+                                  title: const Text(
                                     'Confirmar Exclusão',
                                     style: TextStyle(
                                         fontFamily: 'Poppins',
                                         fontWeight: FontWeight.w600,
-                                        color: const Color.fromARGB(
+                                        color: Color.fromARGB(
                                             255, 66, 66, 66)),
                                   ),
-                                  content: Text(
+                                  content: const Text(
                                       'Tem certeza de que deseja excluir este registro?'),
                                   actions: [
                                     TextButton(
                                       onPressed: () =>
                                           Navigator.pop(context, false),
-                                      child: Text(
+                                      child: const Text(
                                         'Cancelar',
                                         style: TextStyle(
                                             fontFamily: 'Poppins',
@@ -206,7 +206,7 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
                                     TextButton(
                                       onPressed: () =>
                                           Navigator.pop(context, true),
-                                      child: Text('Confirmar',
+                                      child: const Text('Confirmar',
                                           style: TextStyle(
                                               fontFamily: 'Poppins',
                                               color: Color.fromRGBO(
@@ -229,7 +229,7 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
                         ),
                       ],
                     ),
-                    trailing: Icon(Icons.expand_more),
+                    trailing: const Icon(Icons.expand_more),
                     children: [
                       ListTile(
                         title: Row(
@@ -240,18 +240,18 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
                               color: getColorForPressure(
                                   pressure.sistolic, pressure.diastolic),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 20,
                             ),
                             Text(
                               '${pressure.sistolic}X${pressure.diastolic} ',
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontFamily: 'Poppins',
                                   fontWeight: FontWeight.w600,
                                   fontSize: 15,
                                   color: Color.fromRGBO(135, 135, 135, 1)),
                             ),
-                            Text(
+                            const Text(
                               'mmHg',
                               style: TextStyle(
                                   fontFamily: 'Poppins',
@@ -259,10 +259,10 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
                                   fontSize: 15,
                                   color: Color.fromRGBO(135, 135, 135, 1)),
                             ),
-                            Spacer(),
+                            const Spacer(),
                             Column(
                               children: [
-                                Text(
+                                const Text(
                                   'Sua pressão está',
                                   style: TextStyle(
                                       fontFamily: 'Poppins',
@@ -282,7 +282,7 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
                 },
               );
             } else {
-              return Center(
+              return const Center(
                 child: Text("Não há nenhum item"),
               );
             }
@@ -411,8 +411,8 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
                           Navigator.pop(context);
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromARGB(255, 245, 245, 245),
-                          foregroundColor: Color.fromARGB(255, 63, 63, 63),
+                          backgroundColor: const Color.fromARGB(255, 245, 245, 245),
+                          foregroundColor: const Color.fromARGB(255, 63, 63, 63),
                         ),
                         child: const Text(
                           'Cancelar',
@@ -443,7 +443,7 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor:
-                          Color.fromRGBO(136, 149, 83, 1),
+                          const Color.fromRGBO(136, 149, 83, 1),
                           foregroundColor:
                           Colors.white,
                         ),
@@ -492,7 +492,7 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
 
   Text getStatusForPressure(int sistolic, int diastolic) {
     if (sistolic < 90 && diastolic < 60) {
-      return Text(
+      return const Text(
         'Baixa',
         style: TextStyle(
             fontFamily: 'Poppins',
@@ -501,7 +501,7 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
             color: Color.fromRGBO(85, 85, 85, 1)),
       );
     } else if (sistolic < 120 && diastolic < 80) {
-      return Text(
+      return const Text(
         'Normal',
         style: TextStyle(
             fontFamily: 'Poppins',
@@ -511,7 +511,7 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
       );
     } else if ((sistolic >= 120 && sistolic < 140) ||
         (diastolic >= 80 && diastolic < 90)) {
-      return Text(
+      return const Text(
         'Elevada',
         style: TextStyle(
             fontFamily: 'Poppins',
@@ -521,7 +521,7 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
       );
     } else if ((sistolic >= 140 && sistolic < 160) ||
         (diastolic >= 90 && diastolic < 100)) {
-      return Text(
+      return const Text(
         'Alta',
         style: TextStyle(
             fontFamily: 'Poppins',
@@ -530,7 +530,7 @@ class _ExtensionPanelPressureState extends State<ExtensionPanelPressure> {
             color: Color.fromRGBO(85, 85, 85, 1)),
       );
     } else {
-      return Text(
+      return const Text(
         'Muito alta',
         style: TextStyle(
             fontFamily: 'Poppins',

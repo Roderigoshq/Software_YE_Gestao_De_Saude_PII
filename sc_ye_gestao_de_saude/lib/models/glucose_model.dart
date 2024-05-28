@@ -41,11 +41,11 @@ Color getColorForGlucose(int glucose) {
   if (glucose < 70) {
     return const Color.fromRGBO(210, 223, 149, 1);
   } else if (glucose >= 70 && glucose < 100) {
-    return Color.fromRGBO(136, 149, 83, 1);
+    return const Color.fromRGBO(136, 149, 83, 1);
   } else if ((glucose >= 100 && glucose < 120)) {
-    return Color.fromRGBO(244, 94, 94, 1);
+    return const Color.fromRGBO(244, 94, 94, 1);
   } else {
-    return Color.fromRGBO(253, 64, 64, 1);
+    return const Color.fromRGBO(253, 64, 64, 1);
   }
 }
 
@@ -55,7 +55,7 @@ typedef DeleteCallback = void Function(GlucoseModel weightHeight);
 class ExtensionPanelGlucose extends StatefulWidget {
       final EditCallback editCallback;
   final DeleteCallback deleteCallback;
-  const ExtensionPanelGlucose({Key? key, required this.editCallback, required this.deleteCallback}) : super(key: key);
+  const ExtensionPanelGlucose({super.key, required this.editCallback, required this.deleteCallback});
 
   @override
   State<ExtensionPanelGlucose> createState() => _ExtensionPanelGlucoseState();
@@ -72,7 +72,7 @@ class _ExtensionPanelGlucoseState extends State<ExtensionPanelGlucose> {
         future: glucoseService.fetchGlucoseModels(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(
                 color: Color.fromRGBO(136, 149, 83, 1),
               ),
@@ -90,10 +90,10 @@ class _ExtensionPanelGlucoseState extends State<ExtensionPanelGlucose> {
                         'lib/assets/nenhumitem.png',
                         width: 100,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
-                      Text(
+                      const Text(
                         "Não há nenhum item",
                         style: TextStyle(
                             color: Color.fromRGBO(136, 149, 83, 1),
@@ -125,17 +125,18 @@ class _ExtensionPanelGlucoseState extends State<ExtensionPanelGlucose> {
                       children: [
                         Text(
                           glucose.date,
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w600,
                               fontSize: 16,
                               color: Color.fromRGBO(85, 85, 85, 1)),
                         ),
-                        Spacer(),
+                        const Spacer(),
                         PopupMenuButton(
                           itemBuilder: (BuildContext context) {
                             return <PopupMenuEntry>[
-                              PopupMenuItem(
+                              const PopupMenuItem(
+                                value: 'edit',
                                 child: Center(
                                     child: Text(
                                   'Editar',
@@ -145,9 +146,9 @@ class _ExtensionPanelGlucoseState extends State<ExtensionPanelGlucose> {
                                       fontWeight: FontWeight.w500,
                                       fontSize: 15),
                                 )),
-                                value: 'edit',
                               ),
-                              PopupMenuItem(
+                              const PopupMenuItem(
+                                value: 'delete',
                                 child: Center(
                                     child: Text(
                                   'Deletar',
@@ -157,7 +158,6 @@ class _ExtensionPanelGlucoseState extends State<ExtensionPanelGlucose> {
                                       fontWeight: FontWeight.w500,
                                       fontSize: 15),
                                 )),
-                                value: 'delete',
                               ),
                             ];
                           },
@@ -183,21 +183,21 @@ class _ExtensionPanelGlucoseState extends State<ExtensionPanelGlucose> {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  title: Text(
+                                  title: const Text(
                                     'Confirmar Exclusão',
                                     style: TextStyle(
                                         fontFamily: 'Poppins',
                                         fontWeight: FontWeight.w600,
-                                        color: const Color.fromARGB(
+                                        color: Color.fromARGB(
                                             255, 66, 66, 66)),
                                   ),
-                                  content: Text(
+                                  content: const Text(
                                       'Tem certeza de que deseja excluir este registro?'),
                                   actions: [
                                     TextButton(
                                       onPressed: () =>
                                           Navigator.pop(context, false),
-                                      child: Text(
+                                      child: const Text(
                                         'Cancelar',
                                         style: TextStyle(
                                             fontFamily: 'Poppins',
@@ -208,7 +208,7 @@ class _ExtensionPanelGlucoseState extends State<ExtensionPanelGlucose> {
                                     TextButton(
                                       onPressed: () =>
                                           Navigator.pop(context, true),
-                                      child: Text('Confirmar',
+                                      child: const Text('Confirmar',
                                           style: TextStyle(
                                               fontFamily: 'Poppins',
                                               color: Color.fromRGBO(
@@ -231,7 +231,7 @@ class _ExtensionPanelGlucoseState extends State<ExtensionPanelGlucose> {
                         ),
                       ],
                     ),
-                    trailing: Icon(Icons.expand_more),
+                    trailing: const Icon(Icons.expand_more),
                     children: [
                       ListTile(
                         title: Row(
@@ -241,18 +241,18 @@ class _ExtensionPanelGlucoseState extends State<ExtensionPanelGlucose> {
                               width: 4,
                               color: getColorForGlucose(glucose.glucose),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 20,
                             ),
                             Text(
                               '${glucose.glucose} ',
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontFamily: 'Poppins',
                                   fontWeight: FontWeight.w600,
                                   fontSize: 15,
                                   color: Color.fromRGBO(135, 135, 135, 1)),
                             ),
-                            Text(
+                            const Text(
                               'mg/Dl',
                               style: TextStyle(
                                   fontFamily: 'Poppins',
@@ -260,10 +260,10 @@ class _ExtensionPanelGlucoseState extends State<ExtensionPanelGlucose> {
                                   fontSize: 15,
                                   color: Color.fromRGBO(135, 135, 135, 1)),
                             ),
-                            Spacer(),
+                            const Spacer(),
                             Column(
                               children: [
-                                Text(
+                                const Text(
                                   'Sua glicemia está',
                                   style: TextStyle(
                                       fontFamily: 'Poppins',
@@ -282,7 +282,7 @@ class _ExtensionPanelGlucoseState extends State<ExtensionPanelGlucose> {
                 },
               );
             } else {
-              return Center(
+              return const Center(
                 child: Text("Não há nenhum item"),
               );
             }
@@ -356,10 +356,10 @@ class _ExtensionPanelGlucoseState extends State<ExtensionPanelGlucose> {
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 20,
                     ),
-                    Text(
+                    const Text(
                       'mg/Dl',
                       style: TextStyle(
                         fontFamily: 'Poppins',
@@ -380,8 +380,8 @@ class _ExtensionPanelGlucoseState extends State<ExtensionPanelGlucose> {
                           Navigator.pop(context);
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromARGB(255, 245, 245, 245),
-                          foregroundColor: Color.fromARGB(255, 63, 63, 63),
+                          backgroundColor: const Color.fromARGB(255, 245, 245, 245),
+                          foregroundColor: const Color.fromARGB(255, 63, 63, 63),
                         ),
                         child: const Text(
                           'Cancelar',
@@ -408,7 +408,7 @@ class _ExtensionPanelGlucoseState extends State<ExtensionPanelGlucose> {
                           Navigator.of(context).pop(updatedGlucose);
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromRGBO(136, 149, 83, 1),
+                          backgroundColor: const Color.fromRGBO(136, 149, 83, 1),
                           foregroundColor: Colors.white,
                         ),
                         child: const Text(
@@ -456,7 +456,7 @@ class _ExtensionPanelGlucoseState extends State<ExtensionPanelGlucose> {
 
   Text getStatusForGlucose(int glucose) {
     if (glucose < 70) {
-      return Text(
+      return const Text(
         'Baixa',
         style: TextStyle(
             fontFamily: 'Poppins',
@@ -465,7 +465,7 @@ class _ExtensionPanelGlucoseState extends State<ExtensionPanelGlucose> {
             color: Color.fromRGBO(85, 85, 85, 1)),
       );
     } else if (glucose >= 70 && glucose < 100) {
-      return Text(
+      return const Text(
         'Normal',
         style: TextStyle(
             fontFamily: 'Poppins',
@@ -475,7 +475,7 @@ class _ExtensionPanelGlucoseState extends State<ExtensionPanelGlucose> {
       );
     } else if ((glucose >= 100 && glucose < 120) ||
         (glucose >= 80 && glucose < 90)) {
-      return Text(
+      return const Text(
         'Alta',
         style: TextStyle(
             fontFamily: 'Poppins',
@@ -484,7 +484,7 @@ class _ExtensionPanelGlucoseState extends State<ExtensionPanelGlucose> {
             color: Color.fromRGBO(85, 85, 85, 1)),
       );
     } else {
-      return Text(
+      return const Text(
         'Muito alta',
         style: TextStyle(
             fontFamily: 'Poppins',

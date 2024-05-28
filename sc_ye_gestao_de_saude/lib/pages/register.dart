@@ -30,7 +30,6 @@ class _RegisterState extends State<Register> {
   bool _repetirSenhaVisivel = false;
   late DateTime? _selectedDate;
   final DateFormat _dateFormat = DateFormat('dd/MM/yyyy');
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -65,12 +64,11 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
-    String nome = _nomeController.text;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded),
-          color: Color.fromARGB(255, 104, 104, 104),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          color: const Color.fromARGB(255, 104, 104, 104),
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -289,14 +287,14 @@ class _RegisterState extends State<Register> {
                         showDialog(
                           context: context,
                           builder: (context) {
-                            return SuccessPopup(
+                            return const SuccessPopup(
                               message: 'Cadastro feito com sucesso!',
                             );
                           },
                         );
 
                         // Aguarde 2 segundos antes de fechar o popup
-                        await Future.delayed(Duration(seconds: 2));
+                        await Future.delayed(const Duration(seconds: 2));
 
                         // Feche o popup
                         Navigator.pop(context);
@@ -388,7 +386,7 @@ class _RegisterState extends State<Register> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => LoginPage(),
+                                builder: (context) => const LoginPage(),
                               ),
                             );
                           },
@@ -430,7 +428,7 @@ class _RegisterState extends State<Register> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => AboutUsPage()),
+                                    builder: (context) => const AboutUsPage()),
                               );
                             },
                             child: const Text(
@@ -457,7 +455,7 @@ class _RegisterState extends State<Register> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => TermsOfUsePage()),
+                                    builder: (context) => const TermsOfUsePage()),
                               );
                             },
                             child: const Text(

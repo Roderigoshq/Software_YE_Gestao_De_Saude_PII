@@ -1,6 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:sc_ye_gestao_de_saude/components/custom_tab.dart';
 
 class NavigationDestination {
   final Icon icon;
@@ -12,7 +10,7 @@ class NavigationDestination {
 class NavigationBar extends StatelessWidget {
   final List<NavigationDestination> destinations;
 
-  NavigationBar({required this.destinations});
+  const NavigationBar({super.key, required this.destinations});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +29,7 @@ class NavigationBar extends StatelessWidget {
                     ),
                     Text(
                       destination.label,
-                      style: TextStyle(fontSize: 12),
+                      style: const TextStyle(fontSize: 12),
                     ),
                   ],
                 ))

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:sc_ye_gestao_de_saude/services/consultation_service.dart';
+import 'package:sc_ye_gestao_de_saude/components/snackbar.dart';
 import 'package:sc_ye_gestao_de_saude/models/consultation_model.dart';
+import 'package:sc_ye_gestao_de_saude/services/consultation_service.dart';
 import 'package:uuid/uuid.dart';
 
 void mostrarModelConsultation(BuildContext context) {
@@ -19,7 +20,7 @@ void mostrarModelConsultation(BuildContext context) {
 }
 
 class ConsultationModal extends StatefulWidget {
-  const ConsultationModal({Key? key}) : super(key: key);
+  const ConsultationModal({super.key});
 
   @override
   State<ConsultationModal> createState() => _ConsultationModalState();
@@ -28,8 +29,8 @@ class ConsultationModal extends StatefulWidget {
 class _ConsultationModalState extends State<ConsultationModal> {
   final TextEditingController _nomeCtrl = TextEditingController();
   final TextEditingController _descricaoCtrl = TextEditingController();
-  DateTime _selectedDate = DateTime.now();
-  TimeOfDay _selectedTime = TimeOfDay.now();
+  DateTime? _selectedDate;
+  TimeOfDay? _selectedTime;
   String? _selectedSpecialty;
   bool _reminder = false;
   bool isCarregando = false;
@@ -54,18 +55,15 @@ class _ConsultationModalState extends State<ConsultationModal> {
     return Container(
       padding: const EdgeInsets.all(32),
       height: MediaQuery.of(context).size.height * 0.9,
-      child: SingleChildScrollView(
-        child: Form(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Column(
-                mainAxisSize: MainAxisSize.min,
+      child: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Form(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _buildHeader(context),
-                  const Divider(),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 50),
                   _buildDropdownField(),
                   const SizedBox(height: 20),
                   _buildTextField(
@@ -87,73 +85,55 @@ class _ConsultationModalState extends State<ConsultationModal> {
                   _buildReminderSwitch(),
                 ],
               ),
-              if (isCarregando) const CircularProgressIndicator(),
-            ],
+            ),
           ),
-        ),
+          _buildHeader(context),
+          if (isCarregando) const CircularProgressIndicator(),
+        ],
       ),
     );
   }
 
-  Row _buildHeader(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        GestureDetector(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Text(
-            "Cancelar",
-            style: TextStyle(
-              color: Color.fromRGBO(136, 149, 83, 1),
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+  Widget _buildHeader(BuildContext context) {
+    return Container(
+      color: const Color.fromRGBO(247, 242, 250, 1),
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: const Text(
+              "Cancelar",
+              style: TextStyle(
+                color: Color.fromRGBO(136, 149, 83, 1),
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-        const Text(
-          "Consultas",
-          style: TextStyle(
-            color: Colors.grey,
-            fontSize: 18,
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            final doctorName = _nomeCtrl.text;
-            final specialty = _selectedSpecialty!;
-            final time = _selectedTime.format(context);
-            final date = DateFormat('dd/MM/yyyy').format(_selectedDate);
-            final description = _descricaoCtrl.text;
-
-            if (doctorName.isNotEmpty &&
-                specialty.isNotEmpty &&
-                time.isNotEmpty &&
-                date.isNotEmpty &&
-                description.isNotEmpty) {
-              final consulta = ConsultationModel(
-                id: '',
-                doctorName: doctorName,
-                specialty: specialty,
-                time: time,
-                date: date,
-                description: description, reminder: _reminder,
-              );
-              _consultationService.adicionarConsulta(consulta);
-              Navigator.of(context).pop();
-            }
-          },
-          child: Text(
-            "Salvar",
+          const Text(
+            "Consultas",
             style: TextStyle(
-              color: Color.fromRGBO(136, 149, 83, 1),
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+              color: Colors.grey,
+              fontSize: 18,
             ),
           ),
-        ),
-      ],
+          GestureDetector(
+            onTap: _adicionarConsulta,
+            child: const Text(
+              "Salvar",
+              style: TextStyle(
+                color: Color.fromRGBO(136, 149, 83, 1),
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -164,9 +144,9 @@ class _ConsultationModalState extends State<ConsultationModal> {
         const Text(
           'Especialidade:',
           style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              color: Color.fromRGBO(81, 81, 81, 1)),
         ),
         const SizedBox(height: 10),
         DropdownButtonFormField<String>(
@@ -199,9 +179,9 @@ class _ConsultationModalState extends State<ConsultationModal> {
           const Text(
             'Data:',
             style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-            ),
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                color: Color.fromRGBO(81, 81, 81, 1)),
           ),
           const SizedBox(height: 10),
           Container(
@@ -214,8 +194,10 @@ class _ConsultationModalState extends State<ConsultationModal> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  DateFormat('yyyy-MM-dd').format(_selectedDate),
-                  style: const TextStyle(fontSize: 16),
+                  _selectedDate != null
+                      ? DateFormat('dd/MM/yyyy').format(_selectedDate!)
+                      : 'Escolha uma data',
+                  style: const TextStyle(fontSize: 16, color: Color.fromARGB(255, 94, 94, 94)),
                 ),
                 const Icon(Icons.calendar_today),
               ],
@@ -226,7 +208,6 @@ class _ConsultationModalState extends State<ConsultationModal> {
     );
   }
 
-
   Widget _buildTimeField(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -234,15 +215,17 @@ class _ConsultationModalState extends State<ConsultationModal> {
         const Text(
           'Horário:',
           style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              color: Color.fromRGBO(81, 81, 81, 1)),
         ),
+        const SizedBox(height: 10),
         const SizedBox(height: 10),
         InkWell(
           onTap: () => _selectTime(context),
           child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+            padding: const EdgeInsets.symmetric(vertical: 15, horizontal:
+10),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               border: Border.all(color: Colors.grey),
@@ -251,9 +234,12 @@ class _ConsultationModalState extends State<ConsultationModal> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  _selectedTime.format(context),
+                  _selectedTime != null
+                      ? _selectedTime!.format(context)
+                      : 'Escolha um horário',
                   style: const TextStyle(
                     fontSize: 16,
+                    color: Color.fromARGB(255, 94, 94, 94)
                   ),
                 ),
                 const Icon(Icons.access_time),
@@ -276,9 +262,9 @@ class _ConsultationModalState extends State<ConsultationModal> {
         Text(
           label,
           style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              color: Color.fromRGBO(81, 81, 81, 1)),
         ),
         const SizedBox(height: 10),
         TextFormField(
@@ -300,9 +286,9 @@ class _ConsultationModalState extends State<ConsultationModal> {
         Text(
           label,
           style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              color: Color.fromRGBO(81, 81, 81, 1)),
         ),
         const SizedBox(height: 10),
         TextFormField(
@@ -334,36 +320,37 @@ class _ConsultationModalState extends State<ConsultationModal> {
     );
   }
 
-  void _adicionarConsulta() async {
-    if (_nomeCtrl.text.isEmpty || _selectedSpecialty == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Preencha todos os campos'),
-        ),
+  void _adicionarConsulta() {
+    if (_formIsValid()) {
+      final consultationModel = ConsultationModel(
+        id: const Uuid().v4(),
+        doctorName: _nomeCtrl.text,
+        specialty: _selectedSpecialty!,
+        time: _selectedTime != null ? _selectedTime!.format(context) : '',
+        date: _selectedDate != null
+            ? DateFormat('dd/MM/yyyy').format(_selectedDate!)
+            : '',
+        description: _descricaoCtrl.text,
+        reminder: _reminder,
       );
-      return;
+
+      _consultationService.adicionarConsulta(consultationModel);
+      Navigator.of(context).pop();
+    } else {
+      showSnackBar(
+        context: context,
+        texto: 'Há campos não preenchidos',
+        isErro: true,
+      );
     }
+  }
 
-    setState(() {
-      isCarregando = true;
-    });
-
-    final consultationModel = ConsultationModel(
-      id: const Uuid().v4(),
-      doctorName: _nomeCtrl.text,
-      specialty: _selectedSpecialty!,
-      time: _selectedTime.format(context),
-      date: DateFormat('dd/MM/yyyy').format(_selectedDate),
-      description: _descricaoCtrl.text, reminder: _reminder,
-    );
-
-    await _consultationService.addConsultation(consultationModel);
-
-    setState(() {
-      isCarregando = false;
-    });
-
-    Navigator.pop(context);
+  bool _formIsValid() {
+    return _nomeCtrl.text.isNotEmpty &&
+        _selectedSpecialty != null &&
+        _selectedTime != null &&
+        _selectedDate != null &&
+        _descricaoCtrl.text.isNotEmpty;
   }
 
   void _selectDate(BuildContext context) async {

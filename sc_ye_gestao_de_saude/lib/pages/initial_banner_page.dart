@@ -14,7 +14,7 @@ class InitialBanner extends StatelessWidget {
           Container(
             width: double.infinity,
             height: double.infinity,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('lib/assets/FirstPage (1).png'),
                 fit: BoxFit.cover,
@@ -22,50 +22,48 @@ class InitialBanner extends StatelessWidget {
             ),
           ),
           // Positioned text
-          Positioned(
+          const Positioned(
             top: 20,
             left: 20,
-            child: Container(
-              child: const Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Escaneie seus",
-                    style: TextStyle(
-                      fontSize: 30,
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w400,
-                      color: Color.fromRGBO(44, 45, 36, 1),
-                    ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Escaneie seus",
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w400,
+                    color: Color.fromRGBO(44, 45, 36, 1),
                   ),
-                  Row(
-                    children: [
-                      Text(
-                        "próprios ",
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w600,
-                          color: Color.fromRGBO(44, 45, 36, 1),
-                        ),
+                ),
+                Row(
+                  children: [
+                    Text(
+                      "próprios ",
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w600,
+                        color: Color.fromRGBO(44, 45, 36, 1),
                       ),
-                      SizedBox(
-                        width: 0,
+                    ),
+                    SizedBox(
+                      width: 0,
+                    ),
+                    Text(
+                      "exames",
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w400,
+                        color: Color.fromRGBO(44, 45, 36, 1),
                       ),
-                      Text(
-                        "exames",
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w400,
-                          color: Color.fromRGBO(44, 45, 36, 1),
-                        ),
-                      ),
-                    ],
-                  )
-                ],
-              ),
+                    ),
+                  ],
+                )
+              ],
             ),
           ),
           // Positioned buttons
@@ -75,7 +73,7 @@ class InitialBanner extends StatelessWidget {
             right: 0,
             child: Row(
               children: [
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
@@ -86,17 +84,17 @@ class InitialBanner extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => RegisterOptions(),
+                            builder: (context) => const RegisterOptions(),
                           ),
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(vertical: 20),
-                          foregroundColor: Color.fromRGBO(96, 105, 60, 1),
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          foregroundColor: const Color.fromRGBO(96, 105, 60, 1),
                           backgroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10))),
-                      child: Text(
+                      child: const Text(
                         'Criar conta',
                         style: TextStyle(
                           fontSize: 15,
@@ -108,7 +106,7 @@ class InitialBanner extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(width: 5), // Add a SizedBox for spacing
+                const SizedBox(width: 5), // Add a SizedBox for spacing
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -122,12 +120,12 @@ class InitialBanner extends StatelessWidget {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(vertical: 20),
+                          padding: const EdgeInsets.symmetric(vertical: 20),
                           foregroundColor: Colors.white,
-                          backgroundColor: Color.fromRGBO(96, 105, 60, 1),
+                          backgroundColor: const Color.fromRGBO(96, 105, 60, 1),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10))),
-                      child: Text(
+                      child: const Text(
                         'Entrar',
                         style: TextStyle(
                           fontSize: 15,
@@ -139,7 +137,7 @@ class InitialBanner extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
               ],
