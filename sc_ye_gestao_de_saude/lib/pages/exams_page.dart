@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:sc_ye_gestao_de_saude/widgets/exams_modal.dart';
-import 'package:sc_ye_gestao_de_saude/models/exams_model.dart';
 
 class ExamPage extends StatefulWidget {
   const ExamPage({Key? key}) : super(key: key);
@@ -22,16 +22,16 @@ class _ExamPageState extends State<ExamPage> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20),
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
             child: SizedBox(
               width: double.infinity,
               child: Stack(
                 children: [
-                  const Padding(
+                  Padding(
                     padding: const EdgeInsets.only(right: 20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      children: const [
                         Text(
                           "Consulte seus ",
                           style: TextStyle(
@@ -62,9 +62,11 @@ class _ExamPageState extends State<ExamPage> {
               ),
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Expanded(
-            child: user == null ? Center(child: Text("Usuário não autenticado")) : _buildExamList(user.uid),
+            child: user == null
+                ? const Center(child: Text("Usuário não autenticado"))
+                : _buildExamList(user.uid),
           ),
         ],
       ),
@@ -72,12 +74,12 @@ class _ExamPageState extends State<ExamPage> {
         onPressed: () {
           mostrarModelExam(context);
         },
-        child: Icon(
+        child: const Icon(
           Icons.add,
           size: 35,
           color: Colors.white,
         ),
-        backgroundColor: Color.fromRGBO(136, 149, 83, 1),
+        backgroundColor: const Color.fromRGBO(136, 149, 83, 1),
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
@@ -92,11 +94,15 @@ class _ExamPageState extends State<ExamPage> {
       stream: FirebaseFirestore.instance.collection('exams').where('userId', isEqualTo: userId).snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (snapshot.hasError) {
+          return const Center(child: Text("Erro ao carregar exames."));
         }
 
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return Center(child: Text("Nenhum exame encontrado."));
+          return const Center(child: Text("Nenhum exame encontrado."));
         }
 
         var exams = snapshot.data!.docs;
@@ -108,8 +114,17 @@ class _ExamPageState extends State<ExamPage> {
             return Card(
               child: ListTile(
                 leading: Image.network(exam['imageUrl']),
-                title: Text('Exame ${index + 1}'),
+                title: Text(exam['imageName']),
                 subtitle: Text('Data: ${exam['timestamp'].toDate().toString()}'),
+                trailing: IconButton(
+                  icon: const Icon(Icons.delete, color: Colors.red),
+                  onPressed: () async {
+                    await _deleteExam(exam);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Exame deletado com sucesso!')),
+                    );
+                  },
+                ),
                 onTap: () => _showImageDialog(context, exam['imageUrl']),
               ),
             );
@@ -117,6 +132,22 @@ class _ExamPageState extends State<ExamPage> {
         );
       },
     );
+  }
+
+  Future<void> _deleteExam(QueryDocumentSnapshot exam) async {
+    try {
+      // Delete the image from Firebase Storage
+      String imageUrl = exam['imageUrl'];
+      Reference imageRef = FirebaseStorage.instance.refFromURL(imageUrl);
+      await imageRef.delete();
+
+      // Delete the document from Firestore
+      await exam.reference.delete();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao deletar exame: $e')),
+      );
+    }
   }
 
   void _showImageDialog(BuildContext context, String imageUrl) {
@@ -128,10 +159,10 @@ class _ExamPageState extends State<ExamPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Image.network(imageUrl),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: Text("Fechar"),
+                child: const Text("Fechar"),
               ),
             ],
           ),
