@@ -90,25 +90,25 @@ class HomePageState extends State<HomePage> {
           );
         }).values.toList(),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: SizedBox(
-        width: 75,
-        height: 75,
-        child: FloatingActionButton(
-          onPressed: () {
-            _navigatorKeys[_selectedIndex].currentState!.push(
-              MaterialPageRoute(builder: (context) => const CameraScreen()),
-            );
-          },
-          backgroundColor: const Color(0xFF8F8F8F),
-          shape: const CircleBorder(),
-          child: const Icon(
-            Icons.document_scanner_rounded,
-            size: 35,
-            color: Colors.white,
-          ),
-        ),
-      ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      // floatingActionButton: SizedBox(
+      //   width: 75,
+      //   height: 75,
+      //   child: FloatingActionButton(
+      //     onPressed: () {
+      //       _navigatorKeys[_selectedIndex].currentState!.push(
+      //         MaterialPageRoute(builder: (context) => const CameraScreen()),
+      //       );
+      //     },
+      //     backgroundColor: const Color(0xFF8F8F8F),
+      //     shape: const CircleBorder(),
+      //     child: const Icon(
+      //       Icons.document_scanner_rounded,
+      //       size: 35,
+      //       color: Colors.white,
+      //     ),
+      //   ),
+      // ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
         onTap: _onItemTapped,
@@ -129,8 +129,8 @@ class HomePageState extends State<HomePage> {
             label: 'Consultas',
           ),
           BottomNavigationBarItem(
-            icon: Icon(null),
-            label: '',
+            icon: Icon(Icons.camera_alt_rounded),
+            label: 'Câmera',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.medication_rounded),
