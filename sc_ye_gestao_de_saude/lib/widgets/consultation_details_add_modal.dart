@@ -14,19 +14,20 @@ void mostrarModelConsultation(BuildContext context) {
       borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
     ),
     builder: (context) {
-      return const ConsultationModal();
+      return ConsultationDetailsAddModal(specialty: null,);
     },
   );
 }
 
-class ConsultationModal extends StatefulWidget {
-  const ConsultationModal({super.key});
+class ConsultationDetailsAddModal extends StatefulWidget {
+  final String? specialty;
+  const ConsultationDetailsAddModal({super.key, required this.specialty});
 
   @override
-  State<ConsultationModal> createState() => _ConsultationModalState();
+  State<ConsultationDetailsAddModal> createState() => _ConsultationModalState();
 }
 
-class _ConsultationModalState extends State<ConsultationModal> {
+class _ConsultationModalState extends State<ConsultationDetailsAddModal> {
   final TextEditingController _nomeCtrl = TextEditingController();
   final TextEditingController _descricaoCtrl = TextEditingController();
   DateTime? _selectedDate;
@@ -51,6 +52,12 @@ class _ConsultationModalState extends State<ConsultationModal> {
   ];
 
   @override
+void initState() {
+  super.initState();
+  _selectedSpecialty = widget.specialty;
+}
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(32),
@@ -64,12 +71,18 @@ class _ConsultationModalState extends State<ConsultationModal> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(height: 50),
-                  _buildDropdownField(),
+                  _buildTextField(
+                    controller: TextEditingController(text: widget.specialty),
+                    label: 'Especialidade:',
+                    hintText: 'Selecione a especialidade',
+                    readOnly: true
+                  ),
                   const SizedBox(height: 20),
                   _buildTextField(
                     controller: _nomeCtrl,
                     label: 'Nome do Médico:',
                     hintText: 'Digite o nome do médico',
+                    readOnly: false
                   ),
                   const SizedBox(height: 16),
                   _buildDateField(context),
@@ -137,39 +150,6 @@ class _ConsultationModalState extends State<ConsultationModal> {
     );
   }
 
-  Column _buildDropdownField() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Especialidade:',
-          style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-              color: Color.fromRGBO(81, 81, 81, 1)),
-        ),
-        const SizedBox(height: 10),
-        DropdownButtonFormField<String>(
-          value: _selectedSpecialty,
-          items: specialties.map((String specialty) {
-            return DropdownMenuItem<String>(
-              value: specialty,
-              child: Text(specialty),
-            );
-          }).toList(),
-          onChanged: (String? newValue) {
-            setState(() {
-              _selectedSpecialty = newValue;
-            });
-          },
-          decoration: getAuthenticationInputDecoration(
-            hintText: 'Selecione a especialidade',
-          ),
-        ),
-      ],
-    );
-  }
-
   GestureDetector _buildDateField(BuildContext context) {
     return GestureDetector(
       onTap: () => _selectDate(context),
@@ -197,7 +177,8 @@ class _ConsultationModalState extends State<ConsultationModal> {
                   _selectedDate != null
                       ? DateFormat('dd/MM/yyyy').format(_selectedDate!)
                       : 'Escolha uma data',
-                  style: const TextStyle(fontSize: 16, color: Color.fromARGB(255, 94, 94, 94)),
+                  style: const TextStyle(
+                      fontSize: 16, color: Color.fromARGB(255, 94, 94, 94)),
                 ),
                 const Icon(Icons.calendar_today),
               ],
@@ -224,8 +205,7 @@ class _ConsultationModalState extends State<ConsultationModal> {
         InkWell(
           onTap: () => _selectTime(context),
           child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 15, horizontal:
-10),
+            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               border: Border.all(color: Colors.grey),
@@ -238,9 +218,7 @@ class _ConsultationModalState extends State<ConsultationModal> {
                       ? _selectedTime!.format(context)
                       : 'Escolha um horário',
                   style: const TextStyle(
-                    fontSize: 16,
-                    color: Color.fromARGB(255, 94, 94, 94)
-                  ),
+                      fontSize: 16, color: Color.fromARGB(255, 94, 94, 94)),
                 ),
                 const Icon(Icons.access_time),
               ],
@@ -255,6 +233,7 @@ class _ConsultationModalState extends State<ConsultationModal> {
     required TextEditingController controller,
     required String label,
     required String hintText,
+    required bool readOnly,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -268,6 +247,7 @@ class _ConsultationModalState extends State<ConsultationModal> {
         ),
         const SizedBox(height: 10),
         TextFormField(
+          readOnly: readOnly,
           controller: controller,
           decoration: getAuthenticationInputDecoration(hintText: hintText),
         ),
@@ -321,29 +301,30 @@ class _ConsultationModalState extends State<ConsultationModal> {
   }
 
   void _adicionarConsulta() {
-    if (_formIsValid()) {
-      final consultationModel = ConsultationModel(
-        id: const Uuid().v4(),
-        doctorName: _nomeCtrl.text,
-        specialty: _selectedSpecialty!,
-        time: _selectedTime != null ? _selectedTime!.format(context) : '',
-        date: _selectedDate != null
-            ? DateFormat('dd/MM/yyyy').format(_selectedDate!)
-            : '',
-        description: _descricaoCtrl.text,
-        reminder: _reminder,
-      );
+  if (_formIsValid()) {
+    final consultationModel = ConsultationModel(
+      id: const Uuid().v4(),
+      doctorName: _nomeCtrl.text,
+      specialty: _selectedSpecialty!,
+      time: _selectedTime != null ? _selectedTime!.format(context) : '',
+      date: _selectedDate != null
+          ? DateFormat('dd/MM/yyyy').format(_selectedDate!)
+          : '',
+      description: _descricaoCtrl.text,
+      reminder: _reminder,
+    );
 
-      _consultationService.adicionarConsulta(consultationModel);
-      Navigator.of(context).pop();
-    } else {
-      showSnackBar(
-        context: context,
-        texto: 'Há campos não preenchidos',
-        isErro: true,
-      );
-    }
+    _consultationService.adicionarConsulta(consultationModel);
+    Navigator.pop(context, consultationModel);
+  } else {
+    showSnackBar(
+      context: context,
+      texto: 'Há campos não preenchidos',
+      isErro: true,
+    );
   }
+}
+
 
   bool _formIsValid() {
     return _nomeCtrl.text.isNotEmpty &&
@@ -364,7 +345,6 @@ class _ConsultationModalState extends State<ConsultationModal> {
           data: ThemeData.light().copyWith(
             colorScheme: ThemeData.light().colorScheme.copyWith(
                   primary: const Color.fromRGBO(136, 149, 83, 1),
-                  secondary: const Color.fromRGBO(136, 149, 83, 1),
                 ),
           ),
           child: child!,

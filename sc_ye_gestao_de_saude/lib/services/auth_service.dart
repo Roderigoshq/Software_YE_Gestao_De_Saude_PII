@@ -64,6 +64,39 @@ class AuthService {
     }
   }
 
+  Future<bool> isLoggedInWithGoogle() async {
+  // Obter o usuário atualmente autenticado
+  User? user = FirebaseAuth.instance.currentUser;
+
+  // Verificar se o usuário está autenticado e se o provedor de autenticação é o Google
+  if (user != null) {
+    for (UserInfo userInfo in user.providerData) {
+      if (userInfo.providerId == 'google.com') {
+        return true;
+      }
+    }
+  }
+
+  // Caso não esteja logado com o Google, retornar falso
+  return false;
+}
+
+Future<bool> isUserWithGoogleEmail(String email) async {
+  // Obter o usuário atualmente autenticado
+  User? user = FirebaseAuth.instance.currentUser;
+
+  // Verificar se o usuário está autenticado com o provedor de autenticação do Google
+  if (user != null && user.providerData.any((info) => info.providerId == 'google.com')) {
+    // Se o usuário está autenticado com o Google, verifique se o e-mail fornecido corresponde ao e-mail do usuário
+    if (user.email == email) {
+      return true;
+    }
+  }
+
+  // Caso contrário, retorne falso
+  return false;
+}
+
   Future<String?> login({required String email, required String senha}) async {
     try {
       UserCredential userCredential =

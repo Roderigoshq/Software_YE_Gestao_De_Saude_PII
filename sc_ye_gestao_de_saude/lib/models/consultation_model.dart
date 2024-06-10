@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ConsultationModel {
-  final String id;
-  final String doctorName;
-  final String specialty;
-  final String time;
-  final String date;
-  final String description;
-  final bool reminder;
+   String id;
+   String doctorName;
+   String specialty;
+   String time;
+   String date;
+   String description;
+   bool reminder;
 
   ConsultationModel({
     required this.id,

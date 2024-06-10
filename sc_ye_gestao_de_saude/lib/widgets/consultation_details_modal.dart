@@ -5,6 +5,7 @@ import 'package:sc_ye_gestao_de_saude/services/consultation_service.dart';
 import 'package:uuid/uuid.dart';
 
 class ConsultationsDetailsModal extends StatefulWidget {
+  final String? id;
   final String specialty;
   final String doctorName;
   final String date;
@@ -14,6 +15,7 @@ class ConsultationsDetailsModal extends StatefulWidget {
 
   const ConsultationsDetailsModal({
     super.key,
+    this.id,
     required this.specialty,
     required this.doctorName,
     required this.date,
@@ -127,7 +129,8 @@ class _ConsultationsDatailsModalState extends State<ConsultationsDetailsModal> {
 
   Widget _buildHeader(BuildContext context) {
     return Container(
-      color: const Color.fromRGBO(247, 242, 250, 1), // Adicionando o fundo branco
+      color:
+          const Color.fromRGBO(247, 242, 250, 1), // Adicionando o fundo branco
       padding: const EdgeInsets.all(16), // Ajuste o padding conforme necessário
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -153,7 +156,7 @@ class _ConsultationsDatailsModalState extends State<ConsultationsDetailsModal> {
             ),
           ),
           GestureDetector(
-            onTap: _adicionarConsulta,
+            onTap: _editarConsulta,
             child: const Text(
               "Salvar",
               style: TextStyle(
@@ -168,7 +171,7 @@ class _ConsultationsDatailsModalState extends State<ConsultationsDetailsModal> {
     );
   }
 
-  Column _buildDropdownField() {
+  Widget _buildDropdownField() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -180,21 +183,26 @@ class _ConsultationsDatailsModalState extends State<ConsultationsDetailsModal> {
           ),
         ),
         const SizedBox(height: 10),
-        DropdownButtonFormField<String>(
-          value: _selectedSpecialty,
-          items: specialties.map((String specialty) {
-            return DropdownMenuItem<String>(
-              value: specialty,
-              child: Text(specialty),
-            );
-          }).toList(),
-          onChanged: (String? newValue) {
-            setState(() {
-              _selectedSpecialty = newValue;
-            });
-          },
-          decoration: getAuthenticationInputDecoration(
-            hintText: 'Selecione a especialidade',
+        GestureDetector(
+          onTap: () {},
+          child: AbsorbPointer(
+            child: DropdownButtonFormField<String>(
+              value: _selectedSpecialty,
+              items: specialties.map((String specialty) {
+                return DropdownMenuItem<String>(
+                  value: specialty,
+                  child: Text(specialty),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                setState(() {
+                  _selectedSpecialty = newValue;
+                });
+              },
+              decoration: getAuthenticationInputDecoration(
+                hintText: 'Selecione a especialidade',
+              ),
+            ),
           ),
         ),
       ],
@@ -322,65 +330,47 @@ class _ConsultationsDatailsModalState extends State<ConsultationsDetailsModal> {
     );
   }
 
-  Widget _buildReminderSwitch() {
-    return SwitchListTile(
-      title: const Text(
-        'Ativar lembrete',
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 20,
+  Column _buildReminderSwitch() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Lembrete:',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
         ),
-      ),
-      value: _reminder,
-      onChanged: (bool value) {
-        setState(() {
-          _reminder = value;
-        });
-      },
-      activeColor: const Color.fromRGBO(136, 149, 83, 1),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        const SizedBox(height: 10),
+        SwitchListTile(
+          value: _reminder,
+          onChanged: (bool value) {
+            setState(() {
+              _reminder = value;
+            });
+          },
+          title: const Text('Deseja ativar o lembrete?'),
+        ),
+      ],
     );
   }
 
-  void _adicionarConsulta() async {
-    if (_nomeCtrl.text.isEmpty || _selectedSpecialty == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Preencha todos os campos'),
-        ),
-      );
-      return;
-    }
-
-    setState(() {
-      isCarregando = true;
-    });
-
-    final consultationModel = ConsultationModel(
-      id: const Uuid().v4(),
-      doctorName: _nomeCtrl.text,
-      specialty: _selectedSpecialty!,
-      time: _selectedTime.format(context),
-      date: DateFormat('dd/MM/yyyy').format(_selectedDate),
-      description: _descricaoCtrl.text,
-      reminder: widget.reminder,
-    );
-
-    await _consultationService.addConsultation(consultationModel);
-
-    setState(() {
-      isCarregando = false;
-    });
-
-    Navigator.pop(context);
-  }
-
-  void _selectDate(BuildContext context) async {
+  Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _selectedDate,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2100),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            colorScheme: ThemeData.light().colorScheme.copyWith(
+                  primary: const Color.fromRGBO(136, 149, 83, 1),
+                ),
+          ),
+          child: child!,
+        );
+      },
     );
     if (picked != null && picked != _selectedDate) {
       setState(() {
@@ -389,11 +379,19 @@ class _ConsultationsDatailsModalState extends State<ConsultationsDetailsModal> {
     }
   }
 
-  void _selectTime(BuildContext context) async {
-    final TimeOfDay? picked = await showTimePicker(
-      context: context,
-      initialTime: _selectedTime,
-    );
+  Future<void> _selectTime(BuildContext context) async {
+    final TimeOfDay? picked =
+        await showTimePicker(context: context, initialTime: _selectedTime, builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            colorScheme: ThemeData.light().colorScheme.copyWith(
+                  primary: const Color.fromRGBO(136, 149, 83, 1),
+                  secondary: const Color.fromRGBO(136, 149, 83, 1),
+                ),
+          ),
+          child: child!,
+        );
+      },);
     if (picked != null && picked != _selectedTime) {
       setState(() {
         _selectedTime = picked;
@@ -401,23 +399,66 @@ class _ConsultationsDatailsModalState extends State<ConsultationsDetailsModal> {
     }
   }
 
-  InputDecoration getAuthenticationInputDecoration({
-    required String hintText,
-  }) {
+  InputDecoration getAuthenticationInputDecoration({required String hintText}) {
     return InputDecoration(
       hintText: hintText,
+      filled: true,
+      fillColor: Colors.white,
+      contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(15),
-        borderSide: const BorderSide(color: Colors.grey),
+        borderRadius: BorderRadius.circular(10),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(10),
         borderSide: const BorderSide(color: Colors.grey),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(15),
-        borderSide: const BorderSide(color: Colors.grey),
+        borderRadius: BorderRadius.circular(10),
+        borderSide: const BorderSide(color: Color.fromRGBO(136, 149, 83, 1)),
       ),
     );
+  }
+
+  void _editarConsulta() async {
+    setState(() {
+      isCarregando = true;
+    });
+
+    final String specialty = _selectedSpecialty!;
+    final String doctorName = _nomeCtrl.text;
+    final String date = DateFormat('dd/MM/yyyy').format(_selectedDate);
+    final String time = _selectedTime.format(context);
+    final String description = _descricaoCtrl.text;
+    final bool reminder = _reminder;
+
+    final consulta = ConsultationModel(
+      id: widget.id ?? const Uuid().v4(),
+      specialty: specialty,
+      doctorName: doctorName,
+      date: date,
+      time: time,
+      description: description,
+      reminder: reminder,
+    );
+
+    if (widget.id != null) {
+      await _consultationService.editConsultation(
+        widget.id,
+        specialty,
+        doctorName,
+        date,
+        time,
+        description,
+        reminder,
+      );
+    } else {
+      await _consultationService.addConsultation(consulta);
+    }
+
+    setState(() {
+      isCarregando = false;
+    });
+
+    Navigator.pop(context, consulta);
   }
 }

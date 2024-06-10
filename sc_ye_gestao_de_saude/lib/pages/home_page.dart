@@ -1,13 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:sc_ye_gestao_de_saude/pages/exams_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/camera_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/consultation_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/data_page.dart';
+import 'package:sc_ye_gestao_de_saude/pages/exams_page.dart';
+import 'package:sc_ye_gestao_de_saude/pages/google_settings_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/medication_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/settings_page.dart';
+import 'package:sc_ye_gestao_de_saude/services/auth_service.dart'; // Importe o arquivo onde a função _isLoggedInWithGoogle está definida
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key});
 
   @override
   HomePageState createState() => HomePageState();
@@ -31,19 +34,11 @@ class HomePageState extends State<HomePage> {
     const ExamPage(),
   ];
 
-  void _onItemTapped(int index) {
-    if (_selectedIndex == index) {
-      _navigatorKeys[index].currentState!.popUntil((route) => route.isFirst);
-    } else {
-      setState(() {
-        _selectedIndex = index;
-      });
-    }
-  }
+  final AuthService _authService =
+      AuthService(); // Instancie o serviço de autenticação
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -62,43 +57,81 @@ class HomePageState extends State<HomePage> {
                 color: Color(0xFFC6D687),
               ),
               iconSize: 30,
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SettingsPage()),
-                );
+              onPressed: () async {
+                final isLoggedInWithGoogle =
+                    await _authService.isLoggedInWithGoogle();
+
+                final FirebaseAuth _auth = FirebaseAuth.instance;
+
+                User? user = _auth.currentUser;
+
+                if (user != null) {
+                  String email = user.email!;
+                  print('Email do usuário atualmente autenticado: $email');
+
+                  final isUserWithGoogleEmail =
+                      await _authService.isUserWithGoogleEmail(email);
+                  if (isLoggedInWithGoogle && !isUserWithGoogleEmail) {
+                    // Se o usuário estiver logado com o Google, redirecione para outra página
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              const GoogleSettingsPage()), // Página alternativa
+                    );
+                  } else if (isLoggedInWithGoogle && isUserWithGoogleEmail) {
+                    // Se o usuário estiver logado com o Google e também tiver uma conta com o mesmo e-mail do Google no seu aplicativo
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SettingsPage()),
+                    );
+                  } else {
+                    // Caso contrário, redirecione para a página padrão
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SettingsPage()),
+                    );
+                  }
+                }
               },
             ),
           ],
         ),
       ),
       body: Stack(
-        children: _pages.asMap().map((index, page) {
-          return MapEntry(
-            index,
-            Offstage(
-              offstage: _selectedIndex != index,
-              child: Navigator(
-                key: _navigatorKeys[index],
-                onGenerateRoute: (settings) {
-                  return MaterialPageRoute(
-                    builder: (context) => page,
-                  );
-                },
-              ),
-            ),
-          );
-        }).values.toList(),
+        children: _pages
+            .asMap()
+            .map((index, page) {
+              return MapEntry(
+                index,
+                Offstage(
+                  offstage: _selectedIndex != index,
+                  child: Navigator(
+                    key: _navigatorKeys[index],
+                    onGenerateRoute: (settings) {
+                      return MaterialPageRoute(
+                        builder: (context) => page,
+                      );
+                    },
+                  ),
+                ),
+              );
+            })
+            .values
+            .toList(),
       ),
       // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       // floatingActionButton: SizedBox(
       //   width: 75,
       //   height: 75,
       //   child: FloatingActionButton(
+      //     elevation: 0,
       //     onPressed: () {
       //       _navigatorKeys[_selectedIndex].currentState!.push(
-      //         MaterialPageRoute(builder: (context) => const CameraScreen()),
-      //       );
+      //             MaterialPageRoute(builder: (context) => const CameraScreen()),
+      //           );
       //     },
       //     backgroundColor: const Color(0xFF8F8F8F),
       //     shape: const CircleBorder(),
@@ -146,5 +179,15 @@ class HomePageState extends State<HomePage> {
         ],
       ),
     );
+  }
+
+  void _onItemTapped(int index) {
+    if (_selectedIndex == index) {
+      _navigatorKeys[index].currentState!.popUntil((route) => route.isFirst);
+    } else {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
   }
 }

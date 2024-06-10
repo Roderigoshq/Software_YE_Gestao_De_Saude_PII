@@ -1,67 +1,92 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sc_ye_gestao_de_saude/pages/about_us_page.dart';
+import 'package:sc_ye_gestao_de_saude/pages/google_settings_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/home_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/login_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/politica.dart';
 import 'package:sc_ye_gestao_de_saude/pages/register.dart';
+import 'package:sc_ye_gestao_de_saude/pages/settings_page.dart';
 
 class RegisterOptions extends StatelessWidget {
   const RegisterOptions({super.key});
 
   // GOOGLE
 
-  signInWithGoogle(BuildContext context) async {
-    try {
-      final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
-      final GoogleSignInAuthentication gAuth = await gUser!.authentication;
+  Future<void> signInWithGoogle(BuildContext context) async {
+  try {
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    if (googleUser == null) return;
 
-      final credential = GoogleAuthProvider.credential(
-        idToken: gAuth.idToken,
-        accessToken: gAuth.accessToken,
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+    final credential = GoogleAuthProvider.credential(
+      idToken: googleAuth.idToken,
+      accessToken: googleAuth.accessToken,
+    );
+
+    final authResult = await FirebaseAuth.instance.signInWithCredential(credential);
+
+    if (authResult.user != null) {
+      final user = authResult.user!;
+
+      final snapshot = await FirebaseDatabase.instance.reference().child('usuarios').child(user.uid).once();
+
+      if (snapshot.snapshot.value != null) {
+        Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomePage()),
       );
+      } else {
+        await FirebaseDatabase.instance.reference().child('usuarios').child(user.uid).set({
+          'nome': user.displayName,
+          'email': user.email,
+        });
 
-      final authResult =
-          await FirebaseAuth.instance.signInWithCredential(credential);
-
-      if (authResult.user != null) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const HomePage()),
         );
       }
-    } catch (error) {
-      return('Erro ao fazer login com o Google: $error');
     }
+  } catch (error) {
+    print('Erro ao fazer login com o Google: $error');
   }
+}
 
-  // FACEBOOK
 
-  Future<void> signInWithFacebook(BuildContext context) async {
+
+Future<void> signInWithFacebook(BuildContext context) async {
+  try {
     final LoginResult loginResult = await FacebookAuth.instance
         .login(permissions: ['email', 'public_profile']);
-
-
 
     final OAuthCredential facebookAuthCredential =
         FacebookAuthProvider.credential(loginResult.accessToken!.token);
 
-    try {
-      final authResult = await FirebaseAuth.instance
-          .signInWithCredential(facebookAuthCredential);
+    final authResult =
+        await FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
 
-      if (authResult.user != null) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
-        );
-      }
-    } catch (e) {
-      print("Erro ao fazer login com o Facebook: $e");
+    if (authResult.user != null) {
+      final user = authResult.user!;
+      
+      await FirebaseDatabase.instance.reference().child('usuarios').child(user.uid).set({
+        'nome': user.displayName,
+        'email': user.email,
+      });
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomePage()),
+      );
     }
+  } catch (error) {
+    print('Erro ao fazer login com o Facebook: $error');
   }
+}
 
   @override
   Widget build(BuildContext context) {

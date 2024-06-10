@@ -102,7 +102,29 @@ class _ExamPageState extends State<ExamPage> {
         }
 
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return const Center(child: Text("Nenhum exame encontrado."));
+          return Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'lib/assets/nenhumitem.png',
+                        width: 100,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "Não há nenhum item",
+                        style: TextStyle(
+                          color: Color.fromRGBO(136, 149, 83, 1),
+                          fontFamily: 'Poppins',
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
+                );
         }
 
         var exams = snapshot.data!.docs;
