@@ -66,7 +66,7 @@ class _ExamPageState extends State<ExamPage> {
           Expanded(
             child: user == null
                 ? const Center(child: Text("Usuário não autenticado"))
-                : _buildExamList(user.uid),
+                : _buildCategoryList(user.uid),
           ),
         ],
       ),
@@ -89,7 +89,7 @@ class _ExamPageState extends State<ExamPage> {
     );
   }
 
-  Widget _buildExamList(String userId) {
+  Widget _buildCategoryList(String userId) {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance.collection('exams').where('userId', isEqualTo: userId).snapshots(),
       builder: (context, snapshot) {
@@ -103,28 +103,109 @@ class _ExamPageState extends State<ExamPage> {
 
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
           return Center(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        'lib/assets/nenhumitem.png',
-                        width: 100,
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Text(
-                        "Não há nenhum item",
-                        style: TextStyle(
-                          color: Color.fromRGBO(136, 149, 83, 1),
-                          fontFamily: 'Poppins',
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500),
-                      ),
-                    ],
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'lib/assets/nenhumitem.png',
+                  width: 100,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  "Não há nenhum item",
+                  style: TextStyle(
+                    color: Color.fromRGBO(136, 149, 83, 1),
+                    fontFamily: 'Poppins',
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        var exams = snapshot.data!.docs;
+        var categories = exams.map((e) => e['category']).toSet().toList();
+
+        return ListView.builder(
+          itemCount: categories.length,
+          itemBuilder: (context, index) {
+            var category = categories[index];
+            return ListTile(
+              title: Text(category),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ExamListPage(category: category, userId: userId),
                   ),
                 );
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class ExamListPage extends StatelessWidget {
+  final String category;
+  final String userId;
+
+  const ExamListPage({required this.category, required this.userId, Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Exames - $category'),
+      ),
+      body: _buildExamList(context),
+    );
+  }
+
+  Widget _buildExamList(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance.collection('exams').where('userId', isEqualTo: userId).where('category', isEqualTo: category).snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (snapshot.hasError) {
+          return const Center(child: Text("Erro ao carregar exames."));
+        }
+
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'lib/assets/nenhumitem.png',
+                  width: 100,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  "Não há nenhum item",
+                  style: TextStyle(
+                    color: Color.fromRGBO(136, 149, 83, 1),
+                    fontFamily: 'Poppins',
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          );
         }
 
         var exams = snapshot.data!.docs;
@@ -141,7 +222,7 @@ class _ExamPageState extends State<ExamPage> {
                 trailing: IconButton(
                   icon: const Icon(Icons.delete, color: Colors.red),
                   onPressed: () async {
-                    await _deleteExam(exam);
+                    await _deleteExam(context, exam);
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Exame deletado com sucesso!')),
                     );
@@ -156,7 +237,7 @@ class _ExamPageState extends State<ExamPage> {
     );
   }
 
-  Future<void> _deleteExam(QueryDocumentSnapshot exam) async {
+  Future<void> _deleteExam(BuildContext context, QueryDocumentSnapshot exam) async {
     try {
       // Delete the image from Firebase Storage
       String imageUrl = exam['imageUrl'];

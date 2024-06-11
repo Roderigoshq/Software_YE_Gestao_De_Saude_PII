@@ -57,7 +57,7 @@ class CameraScreenState extends State<CameraScreen> {
       final imageFile = await _controller.takePicture();
       setState(() {});
 
-      _showNameDialog(File(imageFile.path));
+      _showNameAndCategoryDialog(File(imageFile.path));
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Erro ao capturar a imagem: $e')),
@@ -65,18 +65,27 @@ class CameraScreenState extends State<CameraScreen> {
     }
   }
 
-  void _showNameDialog(File imageFile) {
+  void _showNameAndCategoryDialog(File imageFile) {
     final _nameController = TextEditingController();
+    final _categoryController = TextEditingController();
 
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Nome da Foto'),
-          content: TextField(
-            controller: _nameController,
-            decoration:
-                const InputDecoration(hintText: 'Digite o nome da foto'),
+          title: const Text('Nome e Categoria da Foto'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _nameController,
+                decoration: const InputDecoration(hintText: 'Digite o nome da foto'),
+              ),
+              TextField(
+                controller: _categoryController,
+                decoration: const InputDecoration(hintText: 'Digite a categoria'),
+              ),
+            ],
           ),
           actions: [
             TextButton(
@@ -87,8 +96,8 @@ class CameraScreenState extends State<CameraScreen> {
             ),
             TextButton(
               onPressed: () {
-                if (_nameController.text.isNotEmpty) {
-                  _uploadImage(imageFile, _nameController.text);
+                if (_nameController.text.isNotEmpty && _categoryController.text.isNotEmpty) {
+                  _uploadImage(imageFile, _nameController.text, _categoryController.text);
                   Navigator.of(context).pop();
                 }
               },
@@ -100,7 +109,7 @@ class CameraScreenState extends State<CameraScreen> {
     );
   }
 
-  Future<void> _uploadImage(File imageFile, String imageName) async {
+  Future<void> _uploadImage(File imageFile, String imageName, String category) async {
     try {
       setState(() {
         _isUploading = true;
@@ -112,7 +121,7 @@ class CameraScreenState extends State<CameraScreen> {
       }
 
       String filePath =
-          'exams/${user.uid}/${imageName}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+          'exams/${user.uid}/${category}/${imageName}_${DateTime.now()}.jpg';
       UploadTask uploadTask =
           FirebaseStorage.instance.ref().child(filePath).putFile(imageFile);
 
@@ -125,6 +134,7 @@ class CameraScreenState extends State<CameraScreen> {
         'imageUrl': downloadURL,
         'timestamp': FieldValue.serverTimestamp(),
         'imageName': imageName,
+        'category': category,
       });
 
       setState(() {
@@ -210,4 +220,3 @@ class CameraScreenState extends State<CameraScreen> {
     );
   }
 }
-
