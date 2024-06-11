@@ -51,6 +51,7 @@ class HomePageState extends State<HomePage> {
               height: 150,
             ),
             const Spacer(),
+            IconButton(onPressed: (){}, icon: Icon(Icons.sos_rounded,color: Color(0xFFC6D687),),iconSize: 30,),
             IconButton(
               icon: const Icon(
                 Icons.settings,

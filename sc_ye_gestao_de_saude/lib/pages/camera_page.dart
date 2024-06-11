@@ -1,9 +1,10 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
+
 import 'package:camera/camera.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});
@@ -74,7 +75,8 @@ class CameraScreenState extends State<CameraScreen> {
           title: const Text('Nome da Foto'),
           content: TextField(
             controller: _nameController,
-            decoration: const InputDecoration(hintText: 'Digite o nome da foto'),
+            decoration:
+                const InputDecoration(hintText: 'Digite o nome da foto'),
           ),
           actions: [
             TextButton(
@@ -109,11 +111,14 @@ class CameraScreenState extends State<CameraScreen> {
         throw Exception('Usuário não autenticado.');
       }
 
-      String filePath = 'exams/${user.uid}/${imageName}_${DateTime.now().millisecondsSinceEpoch}.jpg';
-      UploadTask uploadTask = FirebaseStorage.instance.ref().child(filePath).putFile(imageFile);
+      String filePath =
+          'exams/${user.uid}/${imageName}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      UploadTask uploadTask =
+          FirebaseStorage.instance.ref().child(filePath).putFile(imageFile);
 
       await uploadTask.whenComplete(() => null);
-      String downloadURL = await FirebaseStorage.instance.ref(filePath).getDownloadURL();
+      String downloadURL =
+          await FirebaseStorage.instance.ref(filePath).getDownloadURL();
 
       await FirebaseFirestore.instance.collection('exams').add({
         'userId': user.uid,
@@ -126,7 +131,8 @@ class CameraScreenState extends State<CameraScreen> {
         _isUploading = false;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Upload realizado com sucesso!')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Upload realizado com sucesso!')));
     } catch (e) {
       setState(() {
         _isUploading = false;
@@ -146,28 +152,50 @@ class CameraScreenState extends State<CameraScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Camera')),
       body: _isCameraReady
           ? Stack(
               children: [
                 CameraPreview(_controller),
-                if (_isUploading) const Center(child: CircularProgressIndicator()),
+                if (_isUploading)
+                  const Center(child: CircularProgressIndicator()),
+                Positioned(
+                  bottom: 30,
+                  left: 0,
+                  right: 0,
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: GestureDetector(
+                      onTap: _captureImage,
+                      child: Container(
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 10,
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: Container(
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             )
           : const Center(child: CircularProgressIndicator()),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _captureImage,
-        child: const Icon(Icons.camera_alt, size: 50),
-        backgroundColor: Colors.white,
-        elevation: 10,
-        shape: CircleBorder(
-          side: BorderSide(
-            color: Colors.black,
-            width: 3,
-          ),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
