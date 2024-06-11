@@ -187,13 +187,16 @@ class CameraScreenState extends State<CameraScreen> {
                             ),
                           ],
                         ),
-                        child: Center(
-                          child: Container(
-                            width: 60,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
+                        child: Padding(
+                          padding: const EdgeInsets.all(3.0),
+                          child: Center(
+                            child: Container(
+                              width: 60,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                              ),
                             ),
                           ),
                         ),
