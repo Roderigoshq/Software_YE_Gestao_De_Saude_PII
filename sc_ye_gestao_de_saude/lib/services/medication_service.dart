@@ -9,49 +9,83 @@ class MedicationService {
   MedicationService() : userId = FirebaseAuth.instance.currentUser!.uid;
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final CollectionReference medicationsCollection = FirebaseFirestore.instance.collection('medications');
 
   Future<void> addMedication(MedicationModel medicationModel) async {
-    try{
-      await _firestore
-        .collection('medications')
+    DocumentReference userDoc = medicationsCollection
         .doc(userId)
         .collection('userMedications')
-        .doc(medicationModel.id)
-        .set(medicationModel.toMap());
-    } catch (e) {
-    print('Erro ao adicionar medicação: $e');
-    throw Exception('Erro ao adicionar medicação: $e');
-     // Para obter mais detalhes sobre o erro
+        .doc(medicationModel.id);
+    await userDoc.set(medicationModel.toMap());
   }
-}
 
-  Future<void> editMedication(MedicationModel updatedMedication) async {
-    try {
-      await _firestore
-          .collection('medications')
-          .doc(userId)
+  Future<void> adicionarConsulta(MedicationModel medicationModel) async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      DocumentReference userDoc = medicationsCollection
+          .doc(user.uid)
           .collection('userMedications')
-          .doc(updatedMedication.id)
-          .update(updatedMedication.toMap());
-    } catch (error) {
-      print("Erro ao editar medicação: $error");
+          .doc();
+      await userDoc.set(medicationModel.toFirestore());
     }
   }
 
-  Future<void> deleteMedication(String id) async {
-    try {
-      await _firestore
-          .collection('medications')
-          .doc(userId)
+  Stream<List<MedicationModel>> getMedications() {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      return medicationsCollection
+          .doc(user.uid)
           .collection('userMedications')
-          .doc(id)
-          .delete();
-    } catch (e) {
-      print("Erro ao excluir a medicação: $e");
+          .snapshots()
+          .map((snapshot) => snapshot.docs
+              .map((doc) => MedicationModel.fromFirestore(doc))
+              .toList());
+    } else {
+      return const Stream.empty();
     }
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> streamMedication() {
+  Future<void> editMedication(
+    String? id,
+    String name,
+    String dosage,
+    String dates,
+    String hour,
+    String minute,
+    bool reminder,
+  ) async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      DocumentReference medicationDoc = medicationsCollection
+          .doc(user.uid)
+          .collection('userMedications')
+          .doc(id);
+
+      await medicationDoc.update({
+        'name': name,
+        'dosage': dosage,
+        'dates': dates.split(', '), // Divida as datas para formato de lista
+        'hour': int.parse(hour),
+        'minute': int.parse(minute),
+        'reminder': reminder
+      });
+    }
+  }
+
+  Future<void> deleteMedication(String? id) async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      DocumentReference medicationDoc = medicationsCollection
+          .doc(user.uid)
+          .collection('userMedications')
+          .doc(id);
+
+      await medicationDoc.delete();
+    }
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> streamMedications() {
     return _firestore
         .collection('medications')
         .doc(userId)
@@ -59,52 +93,11 @@ class MedicationService {
         .snapshots();
   }
 
-  Future<List<MedicationModel>> fetchMedicationModels() async {
-    try {
-      final querySnapshot = await _firestore
-          .collection('medications')
-          .doc(userId)
-          .collection('userMedications')
-          .get();
-
-      final medicationModels = querySnapshot.docs.map((doc) {
-        return MedicationModel.fromMap(doc.data());
-      }).toList();
-
-      return medicationModels;
-    } catch (error) {
-      print("Erro ao buscar modelos de medicação: $error");
-      return [];
-    }
-  }
-
-  Stream<QuerySnapshot<Map<String, dynamic>>> streamMedicationByUser(String userId) {
+  Stream<QuerySnapshot<Map<String, dynamic>>> streamMedicationsByUser(String userId) {
     return _firestore
         .collection('medications')
         .doc(userId)
         .collection('userMedications')
         .snapshots();
-  }
-
-  Future<MedicationModel?> getLatestMedication() async {
-    try {
-      final querySnapshot = await _firestore
-          .collection('medications')
-          .doc(userId)
-          .collection('userMedications')
-          .orderBy('date', descending: true)
-          .limit(1)
-          .get();
-
-      if (querySnapshot.docs.isNotEmpty) {
-        final latestMedication = querySnapshot.docs.first;
-        return MedicationModel.fromMap(latestMedication.data());
-      } else {
-        return null;
-      }
-    } catch (error) {
-      print("Erro ao buscar a medicação mais recente: $error");
-      return null;
-    }
   }
 }

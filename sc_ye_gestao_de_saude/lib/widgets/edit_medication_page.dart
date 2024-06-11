@@ -1,28 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:sc_ye_gestao_de_saude/services/medication_service.dart';
 import 'package:sc_ye_gestao_de_saude/models/medication_model.dart';
-import 'package:uuid/uuid.dart';
+import 'package:sc_ye_gestao_de_saude/services/medication_service.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class MedicationModal extends StatefulWidget {
-  final MedicationModel? medication;
+class EditMedicationPage extends StatefulWidget {
+  final MedicationModel medication;
 
-  const MedicationModal({super.key, this.medication});
+  const EditMedicationPage({Key? key, required this.medication}) : super(key: key);
 
   @override
-  State<MedicationModal> createState() => _MedicationModalState();
+  _EditMedicationPageState createState() => _EditMedicationPageState();
 }
 
-class _MedicationModalState extends State<MedicationModal> {
+class _EditMedicationPageState extends State<EditMedicationPage> {
   final MedicationService _medicationService = MedicationService();
   final TextEditingController _dosagemCtrl = TextEditingController();
   late final ValueNotifier<List<DateTime>> _selectedDays;
   TimeOfDay _selectedTime = TimeOfDay.now();
-  String _selectedUnit = 'mg';  // Unit of dosage.
-  bool _reminder = false;  // For enabling/disabling a reminder.
+  String? _selectedMedication;
+  bool _reminder = false;
   bool isCarregando = false;
-  String? _selectedMedication;  // Variable to hold the selected medication
 
   final OutlineInputBorder _borderStyle = const OutlineInputBorder(
     borderRadius: BorderRadius.all(Radius.circular(15)),
@@ -34,16 +32,11 @@ class _MedicationModalState extends State<MedicationModal> {
   @override
   void initState() {
     super.initState();
-    _selectedDays = ValueNotifier([]);
-
-    if (widget.medication != null) {
-      _selectedMedication = widget.medication!.name;
-      _dosagemCtrl.text = widget.medication!.dosage.split(' ')[0];
-      _selectedUnit = widget.medication!.dosage.split(' ')[1];
-      _selectedDays.value = widget.medication!.dates.map((date) => DateFormat('yyyy-MM-dd').parse(date)).toList();
-      _selectedTime = TimeOfDay(hour: widget.medication!.hour, minute: widget.medication!.minute);
-      _reminder = widget.medication!.reminder;
-    }
+    _selectedDays = ValueNotifier(widget.medication.dates.map((date) => DateFormat('yyyy-MM-dd').parse(date)).toList());
+    _selectedTime = TimeOfDay(hour: widget.medication.hour, minute: widget.medication.minute);
+    _dosagemCtrl.text = widget.medication.dosage;
+    _selectedMedication = widget.medication.name;
+    _reminder = widget.medication.reminder;
   }
 
   @override
@@ -55,46 +48,37 @@ class _MedicationModalState extends State<MedicationModal> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(32),
-      height: MediaQuery.of(context).size.height * 0.9,
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildHeader(),
-            const Divider(),
-            const SizedBox(height: 16),
-            _buildCalendar(),
-            const SizedBox(height: 20),
-            _buildMedicationInput(),
-            const SizedBox(height: 20),
-            _buildDosageInput(),
-            const SizedBox(height: 20),
-            _buildTimePicker(),
-            const SizedBox(height: 20),
-            _buildReminderSwitch(),
-            if (isCarregando) const CircularProgressIndicator(),
-          ],
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Editar Medicação'),
+        backgroundColor: const Color.fromRGBO(136, 149, 83, 1),
+        actions: [
+          TextButton(
+            onPressed: _editarMedicacao,
+            child: const Text('Salvar', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+      body: Container(
+        padding: const EdgeInsets.all(32),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildCalendar(),
+              const SizedBox(height: 20),
+              _buildMedicationInput(),
+              const SizedBox(height: 20),
+              _buildDosageInput(),
+              const SizedBox(height: 20),
+              _buildTimePicker(),
+              const SizedBox(height: 20),
+              _buildReminderSwitch(),
+              if (isCarregando) const CircularProgressIndicator(),
+            ],
+          ),
         ),
       ),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        GestureDetector(
-          onTap: () => Navigator.pop(context),
-          child: const Text("Cancel", style: TextStyle(color: Color.fromRGBO(136, 149, 83, 1), fontSize: 20, fontWeight: FontWeight.bold)),
-        ),
-        const Text("Medicamentos", style: TextStyle(color: Colors.grey, fontSize: 18)),
-        GestureDetector(
-          onTap: _adicionarMedicacao,
-          child: const Text("Save", style: TextStyle(color: Color.fromRGBO(136, 149, 83, 1), fontSize: 20, fontWeight: FontWeight.bold)),
-        ),
-      ],
     );
   }
 
@@ -198,42 +182,13 @@ class _MedicationModalState extends State<MedicationModal> {
           ),
         ),
         const SizedBox(height: 10),
-        Row(
-          children: [
-            Expanded(
-              child: TextFormField(
-                controller: _dosagemCtrl,
-                decoration: InputDecoration(
-                  hintText: 'Digite a dosagem',
-                  border: _borderStyle,
-                  focusedBorder: _borderStyle,
-                ),
-              ),
-            ),
-            const SizedBox(width: 20),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                border: Border.all(color: Colors.grey),
-              ),
-              child: DropdownButton<String>(
-                value: _selectedUnit,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _selectedUnit = newValue!;
-                  });
-                },
-                items: <String>['mg', 'ml', 'g', 'mcg', 'gotas'].map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                underline: Container(), // Remove a linha inferior padrão do DropdownButton
-              ),
-            ),
-          ],
+        TextFormField(
+          controller: _dosagemCtrl,
+          decoration: InputDecoration(
+            hintText: 'Digite a dosagem',
+            border: _borderStyle,
+            focusedBorder: _borderStyle,
+          ),
         ),
       ],
     );
@@ -309,7 +264,7 @@ class _MedicationModalState extends State<MedicationModal> {
     }
   }
 
-  void _adicionarMedicacao() async {
+  void _editarMedicacao() async {
     if (_selectedMedication == null || _dosagemCtrl.text.isEmpty || _selectedDays.value.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Por favor, preencha todos os campos')));
       return;
@@ -319,23 +274,27 @@ class _MedicationModalState extends State<MedicationModal> {
 
     List<String> formattedDates = _selectedDays.value.map((date) => DateFormat('yyyy-MM-dd').format(date)).toList();
 
-    final MedicationModel newMedication = MedicationModel(
-      id: widget.medication?.id ?? Uuid().v4(),
+    final MedicationModel updatedMedication = MedicationModel(
+      id: widget.medication.id,
       name: _selectedMedication!,
-      dosage: '${_dosagemCtrl.text} $_selectedUnit',
+      dosage: _dosagemCtrl.text,
       dates: formattedDates,
       hour: _selectedTime.hour,
       minute: _selectedTime.minute,
       reminder: _reminder,
     );
 
-    if (widget.medication == null) {
-      await _medicationService.addMedication(newMedication);
-    } else {
-      await _medicationService.editMedication(newMedication.id, newMedication.name, newMedication.dosage, newMedication.dates.join(','), newMedication.hour.toString(), newMedication.minute.toString(), newMedication.reminder);
-    }
+    await _medicationService.editMedication(
+      updatedMedication.id,
+      updatedMedication.name,
+      updatedMedication.dosage,
+      updatedMedication.dates.join(', '), // Concatene as datas para o formato de string
+      updatedMedication.hour.toString(),
+      updatedMedication.minute.toString(),
+      updatedMedication.reminder,
+    );
 
-    Navigator.pop(context, true); // Adicione um parâmetro para indicar sucesso
+    Navigator.pop(context);
     setState(() => isCarregando = false);
   }
 }
