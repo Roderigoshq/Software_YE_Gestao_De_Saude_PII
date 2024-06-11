@@ -21,13 +21,13 @@ class _ExamPageState extends State<ExamPage> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+            padding: const EdgeInsets.only(left: 30, top: 20, bottom: 20),
             child: SizedBox(
               width: double.infinity,
               child: Stack(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(right: 20),
+                    padding: const EdgeInsets.only(right: 30),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: const [
@@ -36,7 +36,8 @@ class _ExamPageState extends State<ExamPage> {
                           style: TextStyle(
                             fontFamily: 'Poppins',
                             fontWeight: FontWeight.w400,
-                            fontSize: 30,
+                            fontSize: 29,
+                             color: Color.fromRGBO(123, 123, 123, 1)
                           ),
                         ),
                         Text(
@@ -45,6 +46,7 @@ class _ExamPageState extends State<ExamPage> {
                             fontSize: 40,
                             fontFamily: 'Poppins',
                             fontWeight: FontWeight.bold,
+                             color: Color.fromRGBO(65, 65, 65, 1),
                           ),
                         ),
                       ],
@@ -140,8 +142,10 @@ class _ExamPageState extends State<ExamPage> {
                 title: Text(
                   category,
                   style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Poppins',
+                    fontSize: 27,
+                    fontWeight: FontWeight.w600,
+                    color: Color.fromRGBO(85, 85, 85, 1),
                   ),
                 ),
                 subtitle: Text(
