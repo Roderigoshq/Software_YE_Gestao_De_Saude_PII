@@ -31,7 +31,7 @@ class CameraScreenState extends State<CameraScreen> {
 
       _controller = CameraController(
         firstCamera,
-        ResolutionPreset.medium,
+        ResolutionPreset.high,
       );
 
       await _controller.initialize();
@@ -155,7 +155,15 @@ class CameraScreenState extends State<CameraScreen> {
       body: _isCameraReady
           ? Stack(
               children: [
-                CameraPreview(_controller),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    return SizedBox(
+                      width: constraints.maxWidth,
+                      height: constraints.maxHeight,
+                      child: CameraPreview(_controller),
+                    );
+                  },
+                ),
                 if (_isUploading)
                   const Center(child: CircularProgressIndicator()),
                 Positioned(
@@ -184,7 +192,7 @@ class CameraScreenState extends State<CameraScreen> {
                             width: 60,
                             height: 60,
                             decoration: BoxDecoration(
-                              color: Colors.red,
+                              color: Colors.white,
                               shape: BoxShape.circle,
                             ),
                           ),
@@ -199,3 +207,4 @@ class CameraScreenState extends State<CameraScreen> {
     );
   }
 }
+
