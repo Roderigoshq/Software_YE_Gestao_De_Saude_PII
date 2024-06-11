@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:sc_ye_gestao_de_saude/widgets/exams_modal.dart';
 
 class ExamPage extends StatefulWidget {
   const ExamPage({Key? key}) : super(key: key);
@@ -70,22 +69,6 @@ class _ExamPageState extends State<ExamPage> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          mostrarModelExam(context);
-        },
-        child: const Icon(
-          Icons.add,
-          size: 35,
-          color: Colors.white,
-        ),
-        backgroundColor: const Color.fromRGBO(136, 149, 83, 1),
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 
@@ -131,20 +114,51 @@ class _ExamPageState extends State<ExamPage> {
         var exams = snapshot.data!.docs;
         var categories = exams.map((e) => e['category']).toSet().toList();
 
+        Map<String, String> categoryDescriptions = {
+          'Clinico geral': 'Consulta e exames de saúde geral.',
+          'Cardiologia': 'Exames relacionados ao coração.',
+          'Dermatologia': 'Exames de pele e condições dermatológicas.',
+          'Endocrinologia': 'Exames hormonais e doenças endócrinas.',
+          'Gastroenterologia': 'Exames do sistema digestivo.',
+          'Ginecologia': 'Exames de saúde feminina.',
+          'Neurologia': 'Exames do sistema nervoso.',
+          'Oftalmologia': 'Exames de visão e saúde ocular.',
+          'Ortopedia': 'Exames dos ossos e músculos.',
+          'Pediatria': 'Exames de saúde infantil.',
+          'Psiquiatria': 'Exames de saúde mental.',
+        };
+
         return ListView.builder(
           itemCount: categories.length,
           itemBuilder: (context, index) {
             var category = categories[index];
-            return ListTile(
-              title: Text(category),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ExamListPage(category: category, userId: userId),
+            var description = categoryDescriptions[category] ?? '';
+
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              child: ListTile(
+                title: Text(
+                  category,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
                   ),
-                );
-              },
+                ),
+                subtitle: Text(
+                  description,
+                  style: const TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ExamListPage(category: category, userId: userId),
+                    ),
+                  );
+                },
+              ),
             );
           },
         );
@@ -241,7 +255,7 @@ class ExamListPage extends StatelessWidget {
     try {
       // Delete the image from Firebase Storage
       String imageUrl = exam['imageUrl'];
-      Reference imageRef = FirebaseStorage.instance.refFromURL(imageUrl);
+            Reference imageRef = FirebaseStorage.instance.refFromURL(imageUrl);
       await imageRef.delete();
 
       // Delete the document from Firestore

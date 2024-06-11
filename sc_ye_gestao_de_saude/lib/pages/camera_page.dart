@@ -1,10 +1,10 @@
 import 'dart:io';
-
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; // Adicionado para formatação de data e hora
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});
@@ -17,6 +17,20 @@ class CameraScreenState extends State<CameraScreen> {
   late CameraController _controller;
   bool _isCameraReady = false;
   bool _isUploading = false;
+
+  final List<String> categories = [
+    'Clinico geral',
+    'Cardiologia',
+    'Dermatologia',
+    'Endocrinologia',
+    'Gastroenterologia',
+    'Ginecologia',
+    'Neurologia',
+    'Oftalmologia',
+    'Ortopedia',
+    'Pediatria',
+    'Psiquiatria',
+  ];
 
   @override
   void initState() {
@@ -67,7 +81,7 @@ class CameraScreenState extends State<CameraScreen> {
 
   void _showNameAndCategoryDialog(File imageFile) {
     final _nameController = TextEditingController();
-    final _categoryController = TextEditingController();
+    String? selectedCategory;
 
     showDialog(
       context: context,
@@ -81,9 +95,17 @@ class CameraScreenState extends State<CameraScreen> {
                 controller: _nameController,
                 decoration: const InputDecoration(hintText: 'Digite o nome da foto'),
               ),
-              TextField(
-                controller: _categoryController,
-                decoration: const InputDecoration(hintText: 'Digite a categoria'),
+              DropdownButtonFormField<String>(
+                hint: const Text('Selecione a categoria'),
+                items: categories.map((String category) {
+                  return DropdownMenuItem<String>(
+                    value: category,
+                    child: Text(category),
+                  );
+                }).toList(),
+                onChanged: (newValue) {
+                  selectedCategory = newValue;
+                },
               ),
             ],
           ),
@@ -96,9 +118,13 @@ class CameraScreenState extends State<CameraScreen> {
             ),
             TextButton(
               onPressed: () {
-                if (_nameController.text.isNotEmpty && _categoryController.text.isNotEmpty) {
-                  _uploadImage(imageFile, _nameController.text, _categoryController.text);
+                if (_nameController.text.isNotEmpty && selectedCategory != null) {
+                  _uploadImage(imageFile, _nameController.text, selectedCategory!);
                   Navigator.of(context).pop();
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Por favor, preencha todos os campos')),
+                  );
                 }
               },
               child: const Text('Salvar'),
@@ -120,14 +146,12 @@ class CameraScreenState extends State<CameraScreen> {
         throw Exception('Usuário não autenticado.');
       }
 
-      String filePath =
-          'exams/${user.uid}/${category}/${imageName}_${DateTime.now()}.jpg';
-      UploadTask uploadTask =
-          FirebaseStorage.instance.ref().child(filePath).putFile(imageFile);
+      String formattedDate = DateFormat('yyyy-MM-dd_HH:mm:ss').format(DateTime.now()); // Formatação da data e hora
+      String filePath = 'exams/${user.uid}/${category}/${imageName}_$formattedDate.jpg';
+      UploadTask uploadTask = FirebaseStorage.instance.ref().child(filePath).putFile(imageFile);
 
       await uploadTask.whenComplete(() => null);
-      String downloadURL =
-          await FirebaseStorage.instance.ref(filePath).getDownloadURL();
+      String downloadURL = await FirebaseStorage.instance.ref(filePath).getDownloadURL();
 
       await FirebaseFirestore.instance.collection('exams').add({
         'userId': user.uid,
@@ -142,7 +166,8 @@ class CameraScreenState extends State<CameraScreen> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Upload realizado com sucesso!')));
+        const SnackBar(content: Text('Upload realizado com sucesso!')),
+      );
     } catch (e) {
       setState(() {
         _isUploading = false;
@@ -200,13 +225,10 @@ class CameraScreenState extends State<CameraScreen> {
                         child: Padding(
                           padding: const EdgeInsets.all(3.0),
                           child: Center(
-                            child: Container(
-                              width: 60,
-                              height: 60,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                shape: BoxShape.circle,
-                              ),
+                            child: Icon(
+                              Icons.camera_alt,
+                              color: Colors.black,
+                              size: 60,
                             ),
                           ),
                         ),
