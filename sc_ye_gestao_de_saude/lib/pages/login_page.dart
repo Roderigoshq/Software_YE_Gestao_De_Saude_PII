@@ -51,6 +51,9 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Obter a altura da tela disponível para garantir que o conteúdo não transborde
+    final double height = MediaQuery.of(context).size.height;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -63,181 +66,190 @@ class _LoginPageState extends State<LoginPage> {
           },
         ),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            margin: const EdgeInsets.fromLTRB(0, 0, 0, 25),
-            color: Colors.white,
-            child: const Center(
-              child: Text(
-                "YE Gestão De Saúde",
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 21,
-                  color: Color.fromRGBO(136, 149, 83, 1),
-                ),
-              ),
-            ),
+      body: SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: height, // Garante que o ConstrainedBox tenha pelo menos a altura da tela
           ),
-          Container(
-            margin: const EdgeInsets.fromLTRB(0, 0, 0, 45),
-            color: Colors.white,
-            child: Center(
-              child: Image.asset(
-                'lib/assets/Logo_gestao_de_saude.png',
-                width: 100,
-                height: 100,
-              ),
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.fromLTRB(45, 0, 45, 20),
+          child: IntrinsicHeight(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(
-                    labelText: 'Email*',
-                    labelStyle: TextStyle(fontSize: 14),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Color.fromRGBO(196, 196, 196, 1),
-                      ),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Color.fromRGBO(136, 149, 83, 1),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 15),
-                TextField(
-                  controller: _senhaController,
-                  decoration: InputDecoration(
-                    labelText: 'Senha*',
-                    labelStyle: const TextStyle(fontSize: 14),
-                    enabledBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Color.fromRGBO(196, 196, 196, 1),
-                      ),
-                    ),
-                    focusedBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Color.fromRGBO(136, 149, 83, 1),
-                      ),
-                    ),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _senhaVisivel ? Icons.visibility : Icons.visibility_off,
-                        color: Colors.grey,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _senhaVisivel = !_senhaVisivel;
-                        });
-                      },
-                    ),
-                  ),
-                  obscureText: !_senhaVisivel,
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Checkbox(
-                      value: _manterConectado,
-                      onChanged: (value) {
-                        setState(() {
-                          _manterConectado = value!;
-                        });
-                      },
-                      activeColor: const Color.fromRGBO(136, 149, 83, 1),
-                    ),
-                    const Text(
-                      'Mantenha-me conectado',
+                Container(
+                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 25),
+                  color: Colors.white,
+                  child: const Center(
+                    child: Text(
+                      "YE Gestão De Saúde",
                       style: TextStyle(
-                          fontSize: 10,
-                          fontFamily: 'Poppins',
-                          color: Color.fromARGB(255, 48, 48, 48),
-                          fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ForgotPasswordPage(),
+                        fontFamily: 'Poppins',
+                        fontSize: 21,
+                        color: Color.fromRGBO(136, 149, 83, 1),
                       ),
-                    );
-                  },
-                  child: const Text(
-                    "Esqueci minha senha",
-                    style: TextStyle(
-                      color: Color.fromRGBO(136, 149, 83, 1),
-                      decoration: TextDecoration.underline,
-                      fontWeight: FontWeight.w700,
-                      fontFamily: 'Poppins',
-                      fontSize: 12,
                     ),
                   ),
                 ),
-                const SizedBox(height: 40),
-                ElevatedButton(
-                  onPressed: () async {
-                    String email = _emailController.text;
-                    String senha = _senhaController.text;
-
-                    String? errorMessage = await _authService.login(
-                      email: email,
-                      senha: senha,
-                    );
-
-                    if (errorMessage == null) {
-                      _savePreferences();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const HomePage(),
-                        ),
-                      );
-                    } else {
-                      showSnackBar(
-                        context: context,
-                        texto: errorMessage,
-                        isErro: true,
-                      );
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.fromLTRB(73, 22, 73, 22),
-                    backgroundColor: const Color.fromRGBO(136, 149, 83, 1),
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                Container(
+                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 45),
+                  color: Colors.white,
+                  child: Center(
+                    child: Image.asset(
+                      'lib/assets/Logo_gestao_de_saude.png',
+                      width: 100,
+                      height: 100,
                     ),
                   ),
-                  child: const Text(
-                    "Login",
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                    ),
+                ),
+                Container(
+                  padding: const EdgeInsets.fromLTRB(45, 0, 45, 20),
+                  child: Column(
+                    children: [
+                      TextField(
+                        controller: _emailController,
+                        decoration: const InputDecoration(
+                          labelText: 'Email*',
+                          labelStyle: TextStyle(fontSize: 14),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Color.fromRGBO(196, 196, 196, 1),
+                            ),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Color.fromRGBO(136, 149, 83, 1),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      TextField(
+                        controller: _senhaController,
+                        decoration: InputDecoration(
+                          labelText: 'Senha*',
+                          labelStyle: const TextStyle(fontSize: 14),
+                          enabledBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Color.fromRGBO(196, 196, 196, 1),
+                            ),
+                          ),
+                          focusedBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Color.fromRGBO(136, 149, 83, 1),
+                            ),
+                          ),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _senhaVisivel ? Icons.visibility : Icons.visibility_off,
+                              color: Colors.grey,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _senhaVisivel = !_senhaVisivel;
+                              });
+                            },
+                          ),
+                        ),
+                        obscureText: !_senhaVisivel,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Checkbox(
+                            value: _manterConectado,
+                            onChanged: (value) {
+                              setState(() {
+                                _manterConectado = value!;
+                              });
+                            },
+                            activeColor: const Color.fromRGBO(136, 149, 83, 1),
+                          ),
+                          const Text(
+                            'Mantenha-me conectado',
+                            style: TextStyle(
+                                fontSize: 10,
+                                fontFamily: 'Poppins',
+                                color: Color.fromARGB(255, 48, 48, 48),
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ForgotPasswordPage(),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          "Esqueci minha senha",
+                          style: TextStyle(
+                            color: Color.fromRGBO(136, 149, 83, 1),
+                            decoration: TextDecoration.underline,
+                            fontWeight: FontWeight.w700,
+                            fontFamily: 'Poppins',
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 40),
+                      ElevatedButton(
+                        onPressed: () async {
+                          String email = _emailController.text;
+                          String senha = _senhaController.text;
+
+                          String? errorMessage = await _authService.login(
+                            email: email,
+                            senha: senha,
+                          );
+
+                          if (errorMessage == null) {
+                            _savePreferences();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const HomePage(),
+                              ),
+                            );
+                          } else {
+                            showSnackBar(
+                              context: context,
+                              texto: errorMessage,
+                              isErro: true,
+                            );
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.fromLTRB(73, 22, 73, 22),
+                          backgroundColor: const Color.fromRGBO(136, 149, 83, 1),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: const Text(
+                          "Login",
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
