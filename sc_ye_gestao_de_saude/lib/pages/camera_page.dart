@@ -13,7 +13,7 @@ class CameraScreen extends StatefulWidget {
   CameraScreenState createState() => CameraScreenState();
 }
 
-class CameraScreenState extends State<CameraScreen> {
+class CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver {
   late CameraController _controller;
   bool _isCameraReady = false;
   bool _isUploading = false;
@@ -35,7 +35,24 @@ class CameraScreenState extends State<CameraScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _initializeCamera();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive || state == AppLifecycleState.paused) {
+      _controller.dispose();
+    } else if (state == AppLifecycleState.resumed) {
+      _initializeCamera();
+    }
   }
 
   Future<void> _initializeCamera() async {
@@ -176,12 +193,6 @@ class CameraScreenState extends State<CameraScreen> {
         SnackBar(content: Text('Erro ao fazer upload da imagem: $e')),
       );
     }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 
   @override

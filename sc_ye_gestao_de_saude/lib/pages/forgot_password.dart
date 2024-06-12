@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:sc_ye_gestao_de_saude/components/success_popup.dart';
+import 'package:sc_ye_gestao_de_saude/pages/login_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/settings_page.dart';
 
 class ForgotPasswordPage extends StatelessWidget {
@@ -70,10 +71,7 @@ class ForgotPasswordPage extends StatelessWidget {
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           color: const Color.fromARGB(255, 104, 104, 104),
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const SettingsPage()),
-            );
+            Navigator.pop(context);
           },
         ),
         title: const Center(
