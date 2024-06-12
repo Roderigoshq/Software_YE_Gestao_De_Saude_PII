@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sc_ye_gestao_de_saude/models/medication_model.dart';
 import 'package:sc_ye_gestao_de_saude/services/medication_service.dart';
+import 'package:sc_ye_gestao_de_saude/widgets/medication_detail_modal.dart';
 import 'package:sc_ye_gestao_de_saude/widgets/medication_modal.dart';
 
 class MedicationPage extends StatefulWidget {
@@ -27,9 +28,7 @@ class MedicationPageState extends State<MedicationPage> {
       });
     });
   }
-
-  @override
-  Widget build(BuildContext context) {
+Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -74,7 +73,7 @@ class MedicationPageState extends State<MedicationPage> {
                     right: 0,
                     child: Image.asset(
                       'lib/assets/pilula.png',
-                      height: 130,
+                      height: 110,
                     ),
                   ),
                 ],
@@ -124,73 +123,73 @@ class MedicationPageState extends State<MedicationPage> {
                           fontSize: 18, // Tamanho da fonte maior
                         ),
                       ),
-                      onTap: () async {
-                        bool? result = await showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          builder: (context) => MedicationModal(medication: medication),
-                        );
-                        if (result == true) {
-                          setState(() {});
-                        }
-                      },
-                      trailing: PopupMenuButton<String>(
-                        onSelected: (value) async {
-                          if (value == 'delete') {
-                            bool? confirmDelete = await showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text(
-                                    'Confirmar Exclusão',
-                                    style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontWeight: FontWeight.w600,
-                                      color: Color.fromARGB(255, 66, 66, 66)),
-                                  ),
-                                  content: const Text('Tem certeza de que deseja excluir essa medicação?'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () => Navigator.pop(context, false),
-                                      child: const Text(
-                                        'Cancelar',
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          PopupMenuButton<String>(
+                            onSelected: (value) async {
+                              if (value == 'delete') {
+                                bool? confirmDelete = await showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text(
+                                        'Confirmar Exclusão',
                                         style: TextStyle(
                                           fontFamily: 'Poppins',
-                                          color: Color.fromRGBO(136, 149, 83, 1)
-                                        ),
+                                          fontWeight: FontWeight.w600,
+                                          color: Color.fromARGB(255, 66, 66, 66)),
                                       ),
-                                    ),
-                                    TextButton(
-                                      onPressed: () => Navigator.pop(context, true),
-                                      child: const Text(
-                                        'Confirmar',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          color: Color.fromRGBO(136, 149, 83, 1)
+                                      content: const Text('Tem certeza de que deseja excluir essa medicação?'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () => Navigator.pop(context, false),
+                                          child: const Text(
+                                            'Cancelar',
+                                            style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              color: Color.fromRGBO(136, 149, 83, 1)
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                  ],
+                                        TextButton(
+                                          onPressed: () => Navigator.pop(context, true),
+                                          child: const Text(
+                                            'Confirmar',
+                                            style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              color: Color.fromRGBO(136, 149, 83, 1)
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
                                 );
-                              },
-                            );
 
-                            if (confirmDelete == true) {
-                              await dbService.deleteMedication(medication.id);
-                              setState(() {
-                                medications.removeAt(index);
-                              });
-                            }
-                          }
-                        },
-                        itemBuilder: (BuildContext context) {
-                          return [
-                            const PopupMenuItem<String>(
-                              value: 'delete',
-                              child: Text('Excluir'),
-                            ),
-                          ];
-                        },
+                                if (confirmDelete == true) {
+                                  await dbService.deleteMedication(medication.id);
+                                  setState(() {
+                                    medications.removeAt(index);
+                                  });
+                                }
+                              }
+                            },
+                            itemBuilder: (BuildContext context) {
+                              return [
+                                const PopupMenuItem<String>(
+                                  value: 'delete',
+                                  child: Text('Excluir'),
+                                ),
+                              ];
+                            },
+                          ),
+                          const Icon(
+                            Icons.arrow_right,
+                            color: Color.fromRGBO(85, 85, 85, 1),
+                            size: 35,
+                          ),
+                        ],
                       ),
                     );
                   },
@@ -200,21 +199,38 @@ class MedicationPageState extends State<MedicationPage> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          bool? result = await showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            builder: (context) => const MedicationModal(),
-          );
-          if (result == true) {
-            setState(() {});
-          }
-        },
-        child: const Icon(Icons.add, size: 36, color: Colors.white),
-        backgroundColor: const Color.fromRGBO(136, 149, 83, 1),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 0, 5, 40),
+        child: GestureDetector(
+          onTap: () async {
+            bool? result = await showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              builder: (context) => const MedicationModal(),
+            );
+
+            if (result == true) {
+              // Atualizar a lista de consultas
+              setState(() {});
+            }
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                  color: const Color.fromRGBO(136, 149, 83, 1), width: 8),
+              color: const Color.fromRGBO(136, 149, 83, 1),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.add,
+              size: 36,
+              color: Colors.white,
+            ),
+          ),
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
+
 }

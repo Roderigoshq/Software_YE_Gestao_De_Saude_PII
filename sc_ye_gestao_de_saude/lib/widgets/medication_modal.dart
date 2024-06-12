@@ -87,50 +87,49 @@ class _MedicationModalState extends State<MedicationModal> {
       children: [
         GestureDetector(
           onTap: () => Navigator.pop(context),
-          child: const Text("Cancel", style: TextStyle(color: Color.fromRGBO(136, 149, 83, 1), fontSize: 20, fontWeight: FontWeight.bold)),
+          child: const Text("Canc", style: TextStyle(color: Color.fromRGBO(136, 149, 83, 1), fontSize: 20, fontWeight: FontWeight.bold)),
         ),
         const Text("Medicamentos", style: TextStyle(color: Colors.grey, fontSize: 18)),
         GestureDetector(
           onTap: _adicionarMedicacao,
-          child: const Text("Save", style: TextStyle(color: Color.fromRGBO(136, 149, 83, 1), fontSize: 20, fontWeight: FontWeight.bold)),
+          child: const Text("Salvar", style: TextStyle(color: Color.fromRGBO(136, 149, 83, 1), fontSize: 20, fontWeight: FontWeight.bold)),
         ),
       ],
     );
   }
 
   Widget _buildCalendar() {
-    return ValueListenableBuilder<List<DateTime>>(
-      valueListenable: _selectedDays,
-      builder: (context, value, _) {
-        return TableCalendar(
-          firstDay: DateTime.utc(2010, 1, 1),
-          lastDay: DateTime.utc(2030, 12, 31),
-          focusedDay: DateTime.now(),
-          calendarFormat: CalendarFormat.month,
-          selectedDayPredicate: (day) => value.any((selectedDay) => isSameDay(selectedDay, day)),
-          onDaySelected: (selectedDay, focusedDay) {
-            setState(() {
-              if (value.any((day) => isSameDay(day, selectedDay))) {
-                _selectedDays.value = List.from(value)..removeWhere((day) => isSameDay(day, selectedDay));
-              } else {
-                _selectedDays.value = List.from(value)..add(selectedDay);
-              }
-            });
-          },
-          calendarStyle: const CalendarStyle(
-            selectedDecoration: BoxDecoration(
-              color: Color.fromRGBO(136, 149, 83, 1),
-              shape: BoxShape.circle,
-            ),
-            todayDecoration: BoxDecoration(
-              color: Colors.green,
-              shape: BoxShape.circle,
-            ),
+  return ValueListenableBuilder<List<DateTime>>(
+    valueListenable: _selectedDays,
+    builder: (context, value, _) {
+      return TableCalendar(
+        firstDay: DateTime.utc(2010, 1, 1),
+        lastDay: DateTime.utc(2030, 12, 31),
+        focusedDay: DateTime.now(),
+        calendarFormat: CalendarFormat.month,
+        selectedDayPredicate: (day) => value.any((selectedDay) => isSameDay(selectedDay, day)),
+        onDaySelected: (selectedDay, focusedDay) {
+          setState(() {
+            if (value.any((day) => isSameDay(day, selectedDay))) {
+              _selectedDays.value = List.from(value)..removeWhere((day) => isSameDay(day, selectedDay));
+            } else {
+              _selectedDays.value = List.from(value)..add(selectedDay);
+            }
+          });
+        },
+        calendarStyle: const CalendarStyle(
+          selectedDecoration: BoxDecoration(
+            color: Color.fromRGBO(136, 149, 83, 1),
+            shape: BoxShape.circle,
+          ),
           ),
         );
-      },
-    );
-  }
+    },
+      );
+    }
+
+
+
 
   Widget _buildMedicationInput() {
     List<String> medicamentos = [
