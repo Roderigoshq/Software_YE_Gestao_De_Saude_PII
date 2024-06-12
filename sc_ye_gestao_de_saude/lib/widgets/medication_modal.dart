@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:sc_ye_gestao_de_saude/services/medication_service.dart';
 import 'package:sc_ye_gestao_de_saude/models/medication_model.dart';
@@ -87,7 +88,7 @@ class _MedicationModalState extends State<MedicationModal> {
       children: [
         GestureDetector(
           onTap: () => Navigator.pop(context),
-          child: const Text("Canc", style: TextStyle(color: Color.fromRGBO(136, 149, 83, 1), fontSize: 20, fontWeight: FontWeight.bold)),
+          child: const Text("Cancelar", style: TextStyle(color: Color.fromRGBO(136, 149, 83, 1), fontSize: 20, fontWeight: FontWeight.bold)),
         ),
         const Text("Medicamentos", style: TextStyle(color: Colors.grey, fontSize: 18)),
         GestureDetector(
@@ -185,58 +186,63 @@ class _MedicationModalState extends State<MedicationModal> {
     );
   }
 
-  Widget _buildDosageInput() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Dosagem:',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
+  
+Widget _buildDosageInput() {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text(
+        'Dosagem:',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+        ),
+      ),
+      const SizedBox(height: 10),
+      Row(
+        children: [
+          Expanded(
+            child: TextFormField(
+              controller: _dosagemCtrl,
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly
+              ],
+              decoration: InputDecoration(
+                hintText: 'Digite a dosagem',
+                border: _borderStyle,
+                focusedBorder: _borderStyle,
+              ),
+            ),
           ),
-        ),
-        const SizedBox(height: 10),
-        Row(
-          children: [
-            Expanded(
-              child: TextFormField(
-                controller: _dosagemCtrl,
-                decoration: InputDecoration(
-                  hintText: 'Digite a dosagem',
-                  border: _borderStyle,
-                  focusedBorder: _borderStyle,
-                ),
-              ),
+          const SizedBox(width: 20),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              border: Border.all(color: Colors.grey),
             ),
-            const SizedBox(width: 20),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                border: Border.all(color: Colors.grey),
-              ),
-              child: DropdownButton<String>(
-                value: _selectedUnit,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _selectedUnit = newValue!;
-                  });
-                },
-                items: <String>['mg', 'ml', 'g', 'mcg', 'gotas'].map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                underline: Container(), // Remove a linha inferior padrão do DropdownButton
-              ),
+            child: DropdownButton<String>(
+              value: _selectedUnit,
+              onChanged: (String? newValue) {
+                setState(() {
+                  _selectedUnit = newValue!;
+                });
+              },
+              items: <String>['mg', 'ml', 'g', 'mcg', 'gotas'].map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              underline: Container(), // Remove a linha inferior padrão do DropdownButton
             ),
-          ],
-        ),
-      ],
-    );
-  }
+          ),
+        ],
+      ),
+    ],
+  );
+}
 
   Widget _buildTimePicker() {
     return Column(

@@ -56,7 +56,7 @@ class _ExamPageState extends State<ExamPage> {
                     right: 0,
                     child: Image.asset(
                       'lib/assets/exame.png',
-                      height: 130,
+                      height: 110,
                     ),
                   ),
                 ],

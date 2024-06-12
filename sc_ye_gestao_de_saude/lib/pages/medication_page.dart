@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sc_ye_gestao_de_saude/models/medication_model.dart';
 import 'package:sc_ye_gestao_de_saude/services/medication_service.dart';
-import 'package:sc_ye_gestao_de_saude/widgets/medication_detail_modal.dart';
 import 'package:sc_ye_gestao_de_saude/widgets/medication_modal.dart';
 
 class MedicationPage extends StatefulWidget {
@@ -28,7 +27,9 @@ class MedicationPageState extends State<MedicationPage> {
       });
     });
   }
-Widget build(BuildContext context) {
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -95,16 +96,24 @@ Widget build(BuildContext context) {
                         const Text(
                           "Não há nenhum item",
                           style: TextStyle(
-                            color: Color.fromRGBO(136, 149, 83, 1),
-                            fontFamily: 'Poppins',
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500),
+                              color: Color.fromRGBO(136, 149, 83, 1),
+                              fontFamily: 'Poppins',
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500),
                         ),
                       ],
                     ),
                   );
                 }
                 var medications = snapshot.data!;
+                
+                // Ordenar a lista de medicações pelo horário
+                medications.sort((a, b) {
+                  final aTime = a.hour * 60 + a.minute;
+                  final bTime = b.hour * 60 + b.minute;
+                  return aTime.compareTo(bTime);
+                });
+
                 return ListView.builder(
                   itemCount: medications.length,
                   itemBuilder: (context, index) {
@@ -136,9 +145,9 @@ Widget build(BuildContext context) {
                                       title: const Text(
                                         'Confirmar Exclusão',
                                         style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontWeight: FontWeight.w600,
-                                          color: Color.fromARGB(255, 66, 66, 66)),
+                                            fontFamily: 'Poppins',
+                                            fontWeight: FontWeight.w600,
+                                            color: Color.fromARGB(255, 66, 66, 66)),
                                       ),
                                       content: const Text('Tem certeza de que deseja excluir essa medicação?'),
                                       actions: [
@@ -147,9 +156,8 @@ Widget build(BuildContext context) {
                                           child: const Text(
                                             'Cancelar',
                                             style: TextStyle(
-                                              fontFamily: 'Poppins',
-                                              color: Color.fromRGBO(136, 149, 83, 1)
-                                            ),
+                                                fontFamily: 'Poppins',
+                                                color: Color.fromRGBO(136, 149, 83, 1)),
                                           ),
                                         ),
                                         TextButton(
@@ -157,9 +165,8 @@ Widget build(BuildContext context) {
                                           child: const Text(
                                             'Confirmar',
                                             style: TextStyle(
-                                              fontFamily: 'Poppins',
-                                              color: Color.fromRGBO(136, 149, 83, 1)
-                                            ),
+                                                fontFamily: 'Poppins',
+                                                color: Color.fromRGBO(136, 149, 83, 1)),
                                           ),
                                         ),
                                       ],
@@ -232,5 +239,4 @@ Widget build(BuildContext context) {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
-
 }

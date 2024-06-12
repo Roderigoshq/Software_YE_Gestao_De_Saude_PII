@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:sc_ye_gestao_de_saude/firebase_options.dart';
 import 'package:sc_ye_gestao_de_saude/pages/initial_banner_page.dart';
 import 'package:sc_ye_gestao_de_saude/pages/loading_page.dart';
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
