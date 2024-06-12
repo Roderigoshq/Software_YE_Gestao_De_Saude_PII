@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +10,7 @@ import 'package:sc_ye_gestao_de_saude/models/pressure_model.dart';
 import 'package:sc_ye_gestao_de_saude/models/weight_height_model.dart';
 import 'package:sc_ye_gestao_de_saude/services/glucose_service.dart';
 import 'package:sc_ye_gestao_de_saude/services/pressure_service.dart';
+import 'package:sc_ye_gestao_de_saude/services/storage_service.dart';
 import 'package:sc_ye_gestao_de_saude/services/weight_height_service.dart';
 import 'package:uuid/uuid.dart';
 
@@ -102,6 +105,7 @@ class DadosPageState extends State<DadosPage>
     _loadLatestGlucose();
     _loadLatestPressure();
     _fetchUserName();
+    getProfilePicture();
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -240,6 +244,21 @@ class DadosPageState extends State<DadosPage>
 
   String? _glucoseErrorText;
   String? _dateErrorText;
+  Uint8List? pickedImage;
+  StorageService storage = StorageService();
+
+  Future<void> getProfilePicture() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final String uid = user.uid;
+    final String fileName = 'profilephotos/$uid/profilephoto.png';
+
+    final imageBytes = await storage.getFile(fileName);
+    if (imageBytes != null) {
+      setState(() => pickedImage = imageBytes);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -297,33 +316,59 @@ class DadosPageState extends State<DadosPage>
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          MouseRegion(
-                            cursor: SystemMouseCursors.click,
-                            child: GestureDetector(
-                              onTap: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return Dialog(
-                                      backgroundColor: Colors.transparent,
-                                      child: InteractiveViewer(
-                                        child: Image.asset(
-                                          'lib/assets/3106921 2.png',
-                                          height: 300,
-                                          width: 300,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                              child: Image.asset(
-                                'lib/assets/3106921 2.png',
-                                height: 60,
-                                width: 60,
-                              ),
-                            ),
-                          ),
+                          Container(
+  width: 60,
+  height: 60,
+  child: MouseRegion(
+    cursor: SystemMouseCursors.click,
+    child: GestureDetector(
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return Dialog(
+              backgroundColor: Colors.transparent,
+              child: InteractiveViewer(
+                child: pickedImage != null
+                    ? ClipOval(
+                        child: Image.memory(
+                          pickedImage!,
+                          height: 300,
+                          width: 300,
+                          fit: BoxFit.cover, // Ajuste para cobrir o oval
+                        ),
+                      )
+                    : ClipOval(
+                        child: Image.asset(
+                          'lib/assets/3106921 2.png',
+                          height: 300,
+                          width: 300,
+                          fit: BoxFit.cover, // Ajuste para cobrir o oval
+                        ),
+                      ),
+              ),
+            );
+          },
+        );
+      },
+      child: ClipOval(
+        child: pickedImage != null
+            ? Image.memory(
+                pickedImage!,
+                height: 60,
+                width: 60,
+                fit: BoxFit.cover, // Ajuste para cobrir o oval
+              )
+            : Image.asset(
+                'lib/assets/3106921 2.png',
+                height: 60,
+                width: 60,
+                fit: BoxFit.cover, // Ajuste para cobrir o oval
+              ),
+      ),
+    ),
+  ),
+),
                         ],
                       ),
                     ],

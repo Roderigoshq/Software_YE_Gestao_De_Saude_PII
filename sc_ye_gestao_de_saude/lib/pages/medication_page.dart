@@ -15,7 +15,6 @@ class MedicationPageState extends State<MedicationPage> {
   final MedicationService dbService = MedicationService();
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
-  String _searchTerm = '';
   bool _isSearching = false;
 
   @override

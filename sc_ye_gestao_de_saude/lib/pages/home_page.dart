@@ -123,26 +123,6 @@ class HomePageState extends State<HomePage> {
             .values
             .toList(),
       ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      // floatingActionButton: SizedBox(
-      //   width: 75,
-      //   height: 75,
-      //   child: FloatingActionButton(
-      //     elevation: 0,
-      //     onPressed: () {
-      //       _navigatorKeys[_selectedIndex].currentState!.push(
-      //             MaterialPageRoute(builder: (context) => const CameraScreen()),
-      //           );
-      //     },
-      //     backgroundColor: const Color(0xFF8F8F8F),
-      //     shape: const CircleBorder(),
-      //     child: const Icon(
-      //       Icons.document_scanner_rounded,
-      //       size: 35,
-      //       color: Colors.white,
-      //     ),
-      //   ),
-      // ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
         onTap: _onItemTapped,
